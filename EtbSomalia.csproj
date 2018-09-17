@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
+    <Folder Include="Services\" />
+    <Folder Include="ViewsModel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\images\etbsomalia-white.png" />
