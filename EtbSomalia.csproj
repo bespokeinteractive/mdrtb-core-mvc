@@ -1,0 +1,127 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="wwwroot\images\afyalogo-white.png" />
+    <Content Remove="wwwroot\images\banner-right-leaf.png" />
+    <Content Remove="wwwroot\images\banner-right.png" />
+    <Content Remove="wwwroot\images\banner.png" />
+    <Content Remove="wwwroot\images\worldvision-white.png" />
+    <Content Remove="wwwroot\css\materialize.css" />
+    <Content Remove="wwwroot\css\materialize.custom.css" />
+    <Content Remove="wwwroot\css\materialize.style.css" />
+    <Content Remove="wwwroot\css\vendor.fullcalendar.css" />
+    <Content Remove="wwwroot\css\vendor.jq.jvectormap.css" />
+    <Content Remove="wwwroot\css\vendor.perfect-scrollbar.css" />
+    <Content Remove="wwwroot\js\additional-methods.min.js" />
+    <Content Remove="wwwroot\js\custom-script.js" />
+    <Content Remove="wwwroot\js\jquery.validate.min.js" />
+    <Content Remove="wwwroot\js\materialize.js" />
+    <Content Remove="wwwroot\js\plugins.js" />
+    <Content Remove="wwwroot\js\vendor.chart-script.js" />
+    <Content Remove="wwwroot\js\vendor.chart.min.js" />
+    <Content Remove="wwwroot\js\vendor.perfect-scrollbar.js" />
+    <Content Remove="wwwroot\js\vendor.sparkline.min.js" />
+    <Content Remove="wwwroot\fonts\material-design-icons\LICENSE.txt" />
+    <Content Remove="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.eot" />
+    <Content Remove="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.svg" />
+    <Content Remove="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.ttf" />
+    <Content Remove="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.woff" />
+    <Content Remove="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.woff2" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Bold.woff" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Bold.woff2" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Light.woff" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Light.woff2" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Medium.woff" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Medium.woff2" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Regular.woff" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Regular.woff2" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Thin.woff" />
+    <Content Remove="wwwroot\fonts\roboto\Roboto-Thin.woff2" />
+    <Content Remove="wwwroot\images\avatar\avatar-1.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-10.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-11.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-12.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-13.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-14.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-15.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-16.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-17.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-2.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-3.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-4.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-5.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-6.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-7.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-8.png" />
+    <Content Remove="wwwroot\images\avatar\avatar-9.png" />
+    <Content Remove="Views\Shared\_RightSideBarNav.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\images\etbsomalia-white.png" />
+    <None Include="wwwroot\images\banner-right-leaf.png" />
+    <None Include="wwwroot\images\banner-right.png" />
+    <None Include="wwwroot\images\banner.png" />
+    <None Include="wwwroot\images\worldvision-white.png" />
+    <None Include="wwwroot\css\materialize.css" />
+    <None Include="wwwroot\css\materialize.custom.css" />
+    <None Include="wwwroot\css\materialize.style.css" />
+    <None Include="wwwroot\css\vendor.fullcalendar.css" />
+    <None Include="wwwroot\css\vendor.jq.jvectormap.css" />
+    <None Include="wwwroot\css\vendor.perfect-scrollbar.css" />
+    <None Include="wwwroot\js\additional-methods.min.js" />
+    <None Include="wwwroot\js\custom-script.js" />
+    <None Include="wwwroot\js\jquery.validate.min.js" />
+    <None Include="wwwroot\js\materialize.js" />
+    <None Include="wwwroot\js\plugins.js" />
+    <None Include="wwwroot\js\vendor.chart-script.js" />
+    <None Include="wwwroot\js\vendor.chart.min.js" />
+    <None Include="wwwroot\js\vendor.perfect-scrollbar.js" />
+    <None Include="wwwroot\js\vendor.sparkline.min.js" />
+    <None Include="wwwroot\fonts\material-design-icons\LICENSE.txt" />
+    <None Include="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.eot" />
+    <None Include="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.svg" />
+    <None Include="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.ttf" />
+    <None Include="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.woff" />
+    <None Include="wwwroot\fonts\material-design-icons\MaterialIcons-Regular.woff2" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Bold.woff" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Bold.woff2" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Light.woff" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Light.woff2" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Medium.woff" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Medium.woff2" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Regular.woff" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Regular.woff2" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Thin.woff" />
+    <None Include="wwwroot\fonts\roboto\Roboto-Thin.woff2" />
+    <None Include="wwwroot\images\avatar\avatar-1.png" />
+    <None Include="wwwroot\images\avatar\avatar-10.png" />
+    <None Include="wwwroot\images\avatar\avatar-11.png" />
+    <None Include="wwwroot\images\avatar\avatar-12.png" />
+    <None Include="wwwroot\images\avatar\avatar-13.png" />
+    <None Include="wwwroot\images\avatar\avatar-14.png" />
+    <None Include="wwwroot\images\avatar\avatar-15.png" />
+    <None Include="wwwroot\images\avatar\avatar-16.png" />
+    <None Include="wwwroot\images\avatar\avatar-17.png" />
+    <None Include="wwwroot\images\avatar\avatar-2.png" />
+    <None Include="wwwroot\images\avatar\avatar-3.png" />
+    <None Include="wwwroot\images\avatar\avatar-4.png" />
+    <None Include="wwwroot\images\avatar\avatar-5.png" />
+    <None Include="wwwroot\images\avatar\avatar-6.png" />
+    <None Include="wwwroot\images\avatar\avatar-7.png" />
+    <None Include="wwwroot\images\avatar\avatar-8.png" />
+    <None Include="wwwroot\images\avatar\avatar-9.png" />
+    <None Include="Views\Shared\_RightSideBarNav.cshtml" />
+  </ItemGroup>
+</Project>

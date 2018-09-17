@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtbSomalia", "EtbSomalia.csproj", "{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
