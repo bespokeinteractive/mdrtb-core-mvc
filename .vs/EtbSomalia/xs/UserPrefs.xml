@@ -1,5 +1,10 @@
 ﻿<Properties StartupConfiguration="{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Views/Shared/_Layout.cshtml">
+    <Files>
+      <File FileName="Views/Shared/_Layout.cshtml" Line="1" Column="1" />
+      <File FileName="../LaljiRamji/Views/Shared/_Layout.cshtml" Line="71" Column="84" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

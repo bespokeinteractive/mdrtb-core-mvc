@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Core.Extensions
+namespace EtbSomalia.Extensions
 {
     public class CrytoUtilsExtensions
     {

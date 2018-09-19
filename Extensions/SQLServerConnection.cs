@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 
-namespace Core.Extensions
+namespace EtbSomalia.Extensions
 {
     public class SqlServerConnection
     {
