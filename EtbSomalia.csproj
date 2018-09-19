@@ -70,6 +70,7 @@
     <Folder Include="wwwroot\images\" />
     <Folder Include="Services\" />
     <Folder Include="ViewsModel\" />
+    <Folder Include="Views\Patient\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\images\etbsomalia-white.png" />
@@ -127,5 +128,8 @@
     <None Include="wwwroot\images\avatar\avatar-9.png" />
     <None Include="Views\Shared\_RightSideBarNav.cshtml" />
     <None Include="Views\Account\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewsModel\GenderModel.cs" />
   </ItemGroup>
 </Project>

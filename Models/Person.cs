@@ -1,4 +1,6 @@
 ﻿using System;
+using EtbSomalia.Extensions;
+
 namespace EtbSomalia.Models
 {
     public class Person
@@ -19,6 +21,16 @@ namespace EtbSomalia.Models
             AgeEstimate = false;
 
             PersonAddress = new PersonAddress();
+        }
+
+        public Person Save(){
+            SqlServerConnection conn = new SqlServerConnection();
+            Id = conn.SqlServerUpdate("INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_estimate) output INSERTED.ps_idnt VALUES ('" + Name + "', '" + Gender + "', getdate(), true)");
+
+            PersonAddress.Person = this;
+            PersonAddress.Save();
+            return this;
+
         }
     }
 }

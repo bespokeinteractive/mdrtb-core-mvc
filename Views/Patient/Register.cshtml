@@ -1,0 +1,54 @@
+﻿@model EtbSomalia.ViewModel.RegistrationAddPatientViewModel;
+
+@{
+    ViewData["Title"] = "Register Patient";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-panel">
+            <h4 class="header2">Form with icon prefixes</h4>
+            <div class="row">
+                @using (Html.BeginForm("RegisterNewPatient", "Patient", FormMethod.Post))
+                {
+                    <div class="input-field">
+                        <i class="material-icons prefix">account_circle</i>
+                        @Html.TextBoxFor(model => model.Patient.Person.Name)
+                        <label for="first_name">Full Names</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">bubble_chart</i>
+                        @Html.DropDownListFor(model => model.Patient.Person.Gender, new SelectList(new string[] { "Male", "Female" }))
+                        <label for="gender">Gender</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.DateOfBirth)
+                        <label for="password">Date of Birth</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">settings_phone</i>
+                        @Html.TextBoxFor(model => model.Patient.Person.PersonAddress.Telephone)
+                        <label for="telephone">Telephone</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">perm_contact_calendar</i>
+                        @Html.TextAreaFor(model => model.Patient.Person.PersonAddress.Address, new { @class = "materialize-textarea" })
+                        <label for="message">Address</label>
+                    </div>
+
+                    <div class="input-field">
+                        <button class="btn cyan waves-effect waves-light right" type="submit" name="action">
+                            Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

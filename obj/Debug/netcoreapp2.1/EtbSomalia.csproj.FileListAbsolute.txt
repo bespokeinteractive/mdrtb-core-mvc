@@ -43,6 +43,8 @@
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/EtbSomalia.TagHelpers.output.cache
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/EtbSomalia.RazorCoreGenerate.cache
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Home/Index.g.cshtml.cs
+/Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Patient/Intake.g.cshtml.cs
+/Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Patient/Register.g.cshtml.cs
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Shared/Error.g.cshtml.cs
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Shared/_CookieConsentPartial.g.cshtml.cs
 /Users/daugmaud/Projects/mdrtb-core-mvc/obj/Debug/netcoreapp2.1/Razor/Views/Shared/_Layout.g.cshtml.cs

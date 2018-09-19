@@ -14,7 +14,9 @@ namespace EtbSomalia.Models
         }
 
         public Patient Save(){
+            Person.Save();
 
+            //Save patient
 
             return this;
         }
