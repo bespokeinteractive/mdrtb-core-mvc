@@ -10,8 +10,6 @@ namespace EtbSomalia.Models
         public String Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public Boolean AgeEstimate { get; set; }
-        public PersonAddress PersonAddress { get; set; }
-
         public Person()
         {
             Id = 0;
@@ -19,16 +17,12 @@ namespace EtbSomalia.Models
             Gender = "";
             DateOfBirth = DateTime.Now;
             AgeEstimate = false;
-
-            PersonAddress = new PersonAddress();
         }
 
         public Person Save(){
             SqlServerConnection conn = new SqlServerConnection();
-            Id = conn.SqlServerUpdate("INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_estimate) output INSERTED.ps_idnt VALUES ('" + Name + "', '" + Gender + "', getdate(), true)");
+            Id = conn.SqlServerUpdate("INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_estimate) output INSERTED.ps_idnt VALUES ('" + Name + "', '" + Gender + "', getdate(), 1)");
 
-            PersonAddress.Person = this;
-            PersonAddress.Save();
             return this;
 
         }

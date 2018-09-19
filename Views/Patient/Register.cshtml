@@ -31,13 +31,13 @@
 
                     <div class="input-field">
                         <i class="material-icons prefix">settings_phone</i>
-                        @Html.TextBoxFor(model => model.Patient.Person.PersonAddress.Telephone)
+                        @Html.TextBoxFor(model => model.Address.Telephone)
                         <label for="telephone">Telephone</label>
                     </div>
 
                     <div class="input-field">
                         <i class="material-icons prefix">perm_contact_calendar</i>
-                        @Html.TextAreaFor(model => model.Patient.Person.PersonAddress.Address, new { @class = "materialize-textarea" })
+                        @Html.TextAreaFor(model => model.Address.Address, new { @class = "materialize-textarea" })
                         <label for="message">Address</label>
                     </div>
 

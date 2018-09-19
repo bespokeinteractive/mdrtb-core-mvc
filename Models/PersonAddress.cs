@@ -33,7 +33,7 @@ namespace EtbSomalia.Models
 
         public PersonAddress Save(){
             SqlServerConnection conn = new SqlServerConnection();
-            //Id = conn.SqlServerUpdate("DECLARE @fac INT=" + Facility.Id + " , @norm INT=" + Item.Id + ", @val INT=" + Value + "; IF NOT EXISTS (SELECT nr_idnt FROM Norms WHERE nr_facility=@fac AND nr_norm=@norm) BEGIN INSERT INTO Norms(nr_facility, nr_norm, nr_available) output INSERTED.nr_idnt VALUES (@fac, @norm, @val) END ELSE BEGIN UPDATE Norms SET nr_available=@val output INSERTED.nr_idnt WHERE nr_facility=@fac AND nr_norm=@norm END");
+            Id = conn.SqlServerUpdate("INSERT INTO PersonAddress(pa_person, pa_default, pa_telephone, pa_address) output INSERTED.pa_idnt VALUES ('" + Person.Id + "', 1, '" + Telephone + "', '" + Address + "')");
 
             return this;
         }

@@ -63,7 +63,7 @@ using EtbSomalia.Models;
             WriteLiteral("\r\n<div class=\"row\" style=\"margin-top:40px;\">\r\n    <div class=\"col-md-5\">\r\n        ");
             EndContext();
             BeginContext(122, 103, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "05de72b6d53e4a0d80c91b7d8aa69b8c", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d944d27196f04e34afce4f17d52387b4", async() => {
                 BeginContext(205, 16, true);
                 WriteLiteral("Register Patient");
                 EndContext();

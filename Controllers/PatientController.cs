@@ -29,7 +29,12 @@ namespace EtbSomalia.Controllers
         [HttpPost]
         public IActionResult RegisterNewPatient()
         {
+            Patient patient = PatientAddModel.Patient;
+            patient.Save();
 
+            PersonAddress address = PatientAddModel.Address;
+            address.Person = patient.Person;
+            address.Save();
 
             return LocalRedirect("/registration/intake/12" );
         }

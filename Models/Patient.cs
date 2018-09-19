@@ -1,4 +1,5 @@
 ﻿using System;
+using EtbSomalia.Extensions;
 
 namespace EtbSomalia.Models
 {
@@ -16,7 +17,8 @@ namespace EtbSomalia.Models
         public Patient Save(){
             Person.Save();
 
-            //Save patient
+            SqlServerConnection conn = new SqlServerConnection();
+            Id = conn.SqlServerUpdate("INSERT INTO Patient(pt_person) output INSERTED.pt_idnt VALUES (" + Person.Id + ")");
 
             return this;
         }

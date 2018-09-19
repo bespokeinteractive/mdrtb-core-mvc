@@ -1,15 +1,19 @@
 ﻿<Properties StartupConfiguration="{AADB1D20-3E22-467D-A0D2-5F10AF4D7935}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Controllers/PatientController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Views/Patient/Register.cshtml">
     <Files>
-      <File FileName="Models/Patient.cs" Line="8" Column="43" />
-      <File FileName="Controllers/PatientController.cs" Line="14" Column="47" />
-      <File FileName="Views/Patient/Intake.cshtml" Line="1" Column="1" />
-      <File FileName="Views/Patient/Register.cshtml" Line="12" Column="59" />
+      <File FileName="Controllers/PatientController.cs" Line="35" Column="57" />
+      <File FileName="Models/Patient.cs" Line="21" Column="1" />
+      <File FileName="Models/Person.cs" Line="26" Column="25" />
+      <File FileName="Models/PersonAddress.cs" Line="34" Column="37" />
+      <File FileName="Extensions/SQLServerConnection.cs" Line="40" Column="1" />
+      <File FileName="Views/Patient/Register.cshtml" Line="34" Column="60" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/daugmaud/Projects/mdrtb-core-mvc/Controllers/PatientController.cs" relfile="Controllers/PatientController.cs" line="35" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.EtbSomalia PreferredExecutionTarget="MonoDevelop.Default" />
