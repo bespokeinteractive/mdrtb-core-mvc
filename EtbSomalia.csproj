@@ -65,12 +65,16 @@
     <Content Remove="wwwroot\images\avatar\avatar-9.png" />
     <Content Remove="Views\Shared\_RightSideBarNav.cshtml" />
     <Content Remove="Views\Account\Login.cshtml" />
+    <Content Remove="wwwroot\js\patient-register-script.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="Services\" />
-    <Folder Include="ViewsModel\" />
+    <Folder Include="ViewModel\" />
     <Folder Include="Views\Patient\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Nasty-C-ft-Kaien-Cruz-Everything.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\images\etbsomalia-white.png" />
@@ -128,6 +132,7 @@
     <None Include="wwwroot\images\avatar\avatar-9.png" />
     <None Include="Views\Shared\_RightSideBarNav.cshtml" />
     <None Include="Views\Account\Login.cshtml" />
+    <None Include="wwwroot\js\patient-register-script.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="ViewsModel\GenderModel.cs" />

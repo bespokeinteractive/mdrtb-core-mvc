@@ -14,6 +14,10 @@ namespace EtbSomalia.Models
             Person = new Person();
         }
 
+        public String GetAge(){
+            return "";
+        }
+
         public Patient Save(){
             Person.Save();
 

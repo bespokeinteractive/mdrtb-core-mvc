@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using EtbSomalia.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EtbSomalia.Models
 {
@@ -39,6 +40,10 @@ namespace EtbSomalia.Models
 
         public List<Concept> GetAnswers(){
             return svc.GetConceptAnswers(this);
+        }
+
+        public IEnumerable<SelectListItem> GetAnswersIEnumerable(){
+            return svc.GetConceptAnswersIEnumerable(this);
         }
     }
 }

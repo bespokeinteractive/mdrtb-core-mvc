@@ -1,16 +1,157 @@
-﻿@model EtbSomalia.ViewModel.RegistrationAddPatientViewModel;
+﻿@model EtbSomalia.ViewModel.PatientRegisterViewModel;
 
 @{
     ViewData["Title"] = "Register Patient";
 }
 
+<script src="~/js/patient-register-script.js"></script>
+
+<style type="text/css">
+    .aside {
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 0;
+        padding: 15px 0 0;
+        vertical-align: top;
+        width: 100%;
+    }
+    ul.left-menu {
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-left: none;
+    }
+    ul.left-menu li {
+        border-bottom: 1px solid white;
+        padding: 3px 10px 0px 20px;
+        min-height: 55px;
+        width: 180px;
+        color: #666;
+        background: #eee;
+        padding-bottom: 5px;
+        position: relative;
+        -moz-box-shadow: inset 0px -1px 0px #bbbbbb;
+        -webkit-box-shadow: inset 0px -1px 0px #bbbbbb;
+        box-shadow: inset 0px -1px 0px #bbbbbb;
+    }
+    ul.left-menu li:last-of-type {
+        border-bottom: none;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    ul.left-menu li:hover:not(.selected) {
+        color: white;
+        background: #524e95;
+        cursor: pointer;
+    }
+    ul.left-menu li:hover:not(.selected) .menu-title {
+        color: white;
+    }
+    ul.left-menu li:hover:not(.selected) .menu-date {
+        border-bottom: 1px dotted white;
+    }
+    ul.left-menu li .arrow-border, ul.left-menu li .arrow {
+        display: none;
+    }
+    ul.left-menu li.selected {
+        background: white;
+        color: #363463;
+    }
+    ul.left-menu li.selected .arrow-border, ul.left-menu li.selected .arrow {
+        display: block;
+    }
+    ul.left-menu li.selected .menu-date {
+        border-bottom: 1px dotted #888;
+    }
+    ul.left-menu li i {
+        font-size: 1.2em;
+        margin: -3px;
+        padding: 0px;
+    }
+    ul.left-menu li .menu-date {
+        display: block;
+        font-size: 1.25em;
+        border-bottom: 1px dotted #ccc;
+        padding-bottom: 7px;
+    }
+    ul.left-menu li .menu-title {
+        line-height: 1.3em;
+        display: block;
+        font-size: 0.75em;
+        padding-top: 7px;
+    }
+    ul.left-menu li .arrow-border {
+        border-color: transparent transparent transparent #bbb;
+        border-style: solid;
+        border-right-width: 20px;
+        border-left-width: 14px;
+        border-bottom-width: 16px;
+        border-top-width: 16px;
+        height: 0;
+        width: 0;
+        position: absolute;
+        right: -34px;
+        top: 18px;
+    }
+    ul.left-menu li .arrow {
+        border-color: transparent transparent transparent white;
+        border-style: solid;
+        border-right-width: 20px;
+        border-left-width: 14px;
+        border-bottom-width: 16px;
+        border-top-width: 16px;
+        height: 0;
+        width: 0;
+        position: absolute;
+        right: -33px;
+        top: 18px;
+    }
+    .input-field.prev {
+        margin-left: 45px;
+    }
+</style>
+
 <div class="row">
+    <div class="col-md-2">
+        <div class="aside">
+            <ul id="left-menu" class="left-menu" style="border-left: 1px solid #ccc;">
+                <li class="menu-item item-1 selected">
+                    <span class="menu-date">
+                        Patient Details
+                    </span>
+                    <span class="menu-title">
+                        Demographic Information
+                    </span>
+                    <span class="arrow-border"></span>
+                    <span class="arrow"></span>
+                </li>
+
+                <li class="menu-item item-2">
+                    <span class="menu-date">
+                        <i class="icon-user"></i>
+                        Pat drient Details
+                    </span>
+                    <span class="menu-title">
+                        <i class="icon-globe"></i>
+                        Demographic Information
+                    </span>
+                    <span class="arrow-border"></span>
+                    <span class="arrow"></span>
+                </li>
+
+                <li class="menu-item">
+                    &nbsp;
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="col-md-6">
-        <div class="card-panel">
-            <h4 class="header2">Form with icon prefixes</h4>
-            <div class="row">
-                @using (Html.BeginForm("RegisterNewPatient", "Patient", FormMethod.Post))
-                {
+        @using (Html.BeginForm("RegisterNewPatient", "Patient", FormMethod.Post))
+        {
+            <div class="card-panel tab-1">
+                <h3 class="header2">DEMOGRAPHIC DETAILS</h3>
+                <div class="row">
                     <div class="input-field">
                         <i class="material-icons prefix">account_circle</i>
                         @Html.TextBoxFor(model => model.Patient.Person.Name)
@@ -19,7 +160,7 @@
 
                     <div class="input-field">
                         <i class="material-icons prefix">bubble_chart</i>
-                        @Html.DropDownListFor(model => model.Patient.Person.Gender, new SelectList(new string[] { "Male", "Female" }))
+                        @Html.DropDownListFor(model => model.Patient.Person.Gender, Model.Gender)
                         <label for="gender">Gender</label>
                     </div>
 
@@ -41,14 +182,60 @@
                         <label for="message">Address</label>
                     </div>
 
-                    <div class="input-field">
-                        <button class="btn cyan waves-effect waves-light right" type="submit" name="action">
-                            Submit
-                            <i class="material-icons right">send</i>
-                        </button>
+                    <div class="input-field next">
+                        <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right">Next</a>
                     </div>
-                }
+                </div>
             </div>
-        </div>
+
+            <div class="card-panel tab-2" style="display:none;">
+                <h3 class="header2">ENROLLMENT DETAILS</h3>
+                <div class="row">
+                    <div class="input-field">
+                        <i class="material-icons prefix">business</i>
+                        @Html.DropDownListFor(model => model.Patient.Person.Gender, Model.Facilities)
+                        <label>Facility Enrolled</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.DateEnrolled, new { @class="datepicker"})
+                        <label>Date Enrolled</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">chrome_reader_mode</i>
+                        @Html.DropDownListFor(model => model.Program.Type, Model.TBTypes)
+                        <label>Type of Tuberculosis</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">assignment_turned_in</i>
+                        @Html.DropDownListFor(model => model.Program.Type, Model.TBConfirmation)
+                        <label>Confirmation Type for Tuberculosis</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">swap_calls</i>
+                        @Html.DropDownListFor(model => model.Program.Program, Model.ResistanceProfile)
+                        <label>Resistance Profile</label>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="material-icons prefix">playlist_play</i>
+                        @Html.DropDownListFor(model => model.Program.Category, Model.TBCategory)
+                        <label>Resistance Profile</label>
+                    </div>
+
+                    <div class="input-field prev">
+                        <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow left">Prev</a>
+                    </div>
+
+                    <div class="input-field post">
+                        <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right">Save</a>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
