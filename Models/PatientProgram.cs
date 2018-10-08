@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+using System;
+using EtbSomalia.Extensions;
+using EtbSomalia.Services;
 
 namespace EtbSomalia.Models
 {
@@ -9,6 +12,7 @@ namespace EtbSomalia.Models
         public Patient Patient { get; set; }
         public Facility Facility { get; set; }
         public Concept Program { get; set; }
+        public Concept Confirmation { get; set; }
         public Concept Outcome { get; set; }
         public Concept Type { get; set; }
         public Concept Category { get; set; }
@@ -17,13 +21,42 @@ namespace EtbSomalia.Models
         public DateTime DateCompleted { get; set; }
 
 
+        //Services
+        DashboardService dashboard = new DashboardService();
+
         public PatientProgram()
         {
+            Id = 0;
+            TbmuNumber = "";
+            Patient = new Patient();
+            Facility = new Facility();
             DateEnrolled = DateTime.Now;
         }
 
-        public PatientProgram Save(){
+        public PatientProgram(Int64 idx)
+        {
+            Id = idx;
+            TbmuNumber = "";
+            Patient = new Patient();
+            Facility = new Facility();
+            DateEnrolled = DateTime.Now;
+        }
 
+        public PatientProgram(Patient patient)
+        {
+            Id = 0;
+            TbmuNumber = "";
+            Patient = patient;
+            Facility = new Facility();
+            DateEnrolled = DateTime.Now;
+        }
+
+
+        public PatientProgram Save(){
+            TbmuNumber = dashboard.GetNextTbmuNumber(Facility, DateEnrolled);
+
+            SqlServerConnection conn = new SqlServerConnection();
+            Id = conn.SqlServerUpdate("INSERT INTO PatientProgram(pp_tbmu, pp_patient, pp_facility, pp_progam, pp_category, pp_type, pp_confirmation, pp_enrolled_on) output INSERTED.pp_idnt VALUES ('" + TbmuNumber  + "', " + Patient.Id + ", " + Facility.Id + ", " + Program.Id + ", " + Category.Id + ", " + Type.Id + ", " + Confirmation.Id + ", '" + DateEnrolled.Date + "')");
 
             return this;
         }

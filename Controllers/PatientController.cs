@@ -13,7 +13,8 @@ namespace EtbSomalia.Controllers
     public class PatientController : Controller
     {
         [BindProperty]
-        public PatientRegisterViewModel PatientAddModel { get; set; }
+        public PatientRegisterViewModel ViewModel { get; set; }
+        public PatientProgram PatientProgram { get; set; }
 
         // GET: /<controller>/
         [Route("registration/add")]
@@ -37,16 +38,26 @@ namespace EtbSomalia.Controllers
         [HttpPost]
         public IActionResult RegisterNewPatient()
         {
-            Patient patient = PatientAddModel.Patient;
+            Patient patient = ViewModel.Patient;
+            patient.Person.DateOfBirth = DateTime.ParseExact(ViewModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             patient.Save();
 
-            PersonAddress address = PatientAddModel.Address;
+            PersonAddress address = ViewModel.Address;
             address.Person = patient.Person;
             address.Save();
 
-            return LocalRedirect("/registration/intake/12" );
+            PatientProgram program = new PatientProgram(patient);
+            program.DateEnrolled = DateTime.Parse(ViewModel.DateEnrolled);
+            program.Facility = new Facility(ViewModel.FacilityId);
+            program.Type = new Concept(ViewModel.TypeId);
+            program.Confirmation = new Concept(ViewModel.ConfirmationId);
+            program.Program = new Concept(ViewModel.ProgramId);
+            program.Category = new Concept(ViewModel.CategoryId);
+            program.Save();
+            
+            return LocalRedirect("/registration/intake/" + patient.Id);
         }
-
+        
         [AllowAnonymous]
         public string GetBirthdateFromString(string value)
         {

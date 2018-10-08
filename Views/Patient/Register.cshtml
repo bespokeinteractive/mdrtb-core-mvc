@@ -128,12 +128,10 @@
 
                 <li class="menu-item item-2">
                     <span class="menu-date">
-                        <i class="icon-user"></i>
-                        Pat drient Details
+                        Intake Details
                     </span>
                     <span class="menu-title">
-                        <i class="icon-globe"></i>
-                        Demographic Information
+                        Enrollment Information
                     </span>
                     <span class="arrow-border"></span>
                     <span class="arrow"></span>
@@ -193,7 +191,7 @@
                 <div class="row">
                     <div class="input-field">
                         <i class="material-icons prefix">business</i>
-                        @Html.DropDownListFor(model => model.Patient.Person.Gender, Model.Facilities)
+                        @Html.DropDownListFor(model => model.FacilityId, Model.Facilities)
                         <label>Facility Enrolled</label>
                     </div>
 
@@ -205,26 +203,26 @@
 
                     <div class="input-field">
                         <i class="material-icons prefix">chrome_reader_mode</i>
-                        @Html.DropDownListFor(model => model.Program.Type, Model.TBTypes)
+                        @Html.DropDownListFor(model => model.TypeId, Model.TBTypes)
                         <label>Type of Tuberculosis</label>
                     </div>
 
                     <div class="input-field">
                         <i class="material-icons prefix">assignment_turned_in</i>
-                        @Html.DropDownListFor(model => model.Program.Type, Model.TBConfirmation)
+                        @Html.DropDownListFor(model => model.ConfirmationId, Model.TBConfirmation)
                         <label>Confirmation Type for Tuberculosis</label>
                     </div>
 
                     <div class="input-field">
                         <i class="material-icons prefix">swap_calls</i>
-                        @Html.DropDownListFor(model => model.Program.Program, Model.ResistanceProfile)
+                        @Html.DropDownListFor(model => model.ProgramId, Model.ResistanceProfile)
                         <label>Resistance Profile</label>
                     </div>
 
                     <div class="input-field">
                         <i class="material-icons prefix">playlist_play</i>
-                        @Html.DropDownListFor(model => model.Program.Category, Model.TBCategory)
-                        <label>Resistance Profile</label>
+                        @Html.DropDownListFor(model => model.CategoryId, Model.TBCategory)
+                        <label>Patient Category</label>
                     </div>
 
                     <div class="input-field prev">

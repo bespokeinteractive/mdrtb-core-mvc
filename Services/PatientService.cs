@@ -9,6 +9,6 @@ namespace EtbSomalia.Services
             Patient patient = new Patient();
 
             return patient;
-        }
+        }        
     }
 }

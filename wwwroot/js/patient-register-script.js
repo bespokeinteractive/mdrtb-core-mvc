@@ -33,7 +33,7 @@
     });
 
     jq('.input-field.post a').click(function(){
-        var count = jq('#Patient_Person_Name').val().split(' ');
+        var count = jq('#Patient_Person_Name').val().split(' ').length;
         if (count < 2){
             Materialize.toast('<span>Specify atleast two Names</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
             return;
