@@ -1,0 +1,228 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"]</title>
+
+        <environment include="Development">
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/css/site.css" />
+            <link rel="stylesheet" href="~/css/materialize.css" />
+            <link rel="stylesheet" href="~/css/materialize.style.css" />
+            <link rel="stylesheet" href="~/css/materialize.custom.css" />
+            <link rel="stylesheet" href="~/css/vendor.perfect-scrollbar.css" />
+        </environment>
+
+        <environment exclude="Development">
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>
+
+        <environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/vendor.perfect-scrollbar.js"></script>
+            <script src="~/js/materialize.js"></script>
+            <script src="~/js/plugins.js"></script>
+            <script src="~/js/custom-script.js"></script>
+            <script src="~/js/vendor.chart.min.js"></script>
+        </environment>
+
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
+
+        <style>
+            .navbar-inverse {
+                background: url("/images/banner.png") repeat-x scroll 0 0;
+                height: 55px;
+            }
+            .navbar-collapse.collapse.right-leaf {
+                background: url("/images/banner-right.png") no-repeat scroll 0 0;
+                float: right;
+                height: 55px!important;
+                margin-right: -25px;
+                width: 460px;
+            }
+            .navbar-collapse.collapse.right-leaf .clr {
+                background: url("/images/banner-right-leaf.png") repeat-x scroll 0 0;
+                display: inline-block;
+                float: right!important;
+                height: 55px;
+                padding-right: 20px;
+                width: 410px;
+            }
+            .nav > li > a {
+                margin-left: -35px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="loader-wrapper">
+            <div id="loader"></div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                        <img alt="Lalji Ramji" src="~/images/etbsomalia-white.png" style="width:195px; margin-top:-15px;" />
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse right-leaf">
+                    <div class="clr">
+                        @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                        { 
+                            <ul class="nav navbar-nav">
+                                <li>
+                                    <a href="https://www.wvi.org/somalia" target="_blank">
+                                        <img alt="World Vision" src="~/images/worldvision-white.png" style="width: 150px; margin-top: 0px;" />
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <!-- Icons far Right -->
+                            <ul class="right hide-on-med-and-down">
+                                <li>
+                                    <a class="waves-effect waves-block waves-light toggle-fullscreen">
+                                        <i class="material-icons">settings_overscan</i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown">
+                                        <i class="material-icons">
+                                            notifications_none
+                                            <small class="notification-badge">5</small>
+                                        </i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" class="waves-effect waves-block waves-light profile-button" data-activates="profile-dropdown" style="margin-top: -5px">
+                                        <span class="avatar-status avatar-online">
+                                            <img src="~/images/avatar/avatar-7.png" alt="avatar">
+                                            <i></i>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse">
+                                        <i class="material-icons">format_indent_increase</i>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <!-- Notifications-dropdown -->
+                            <ul id="notifications-dropdown" class="dropdown-content">
+                                <li>
+                                    <h6>
+                                        <span class="new badge">5</span>
+                                    </h6>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#!" class="grey-text text-darken-2">
+                                        <span class="material-icons icon-bg-circle cyan small">add_shopping_cart</span> Fuel order has been placed!
+                                    </a>
+                                    <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">2 hours ago &mdash; Uhuru Highway</time>
+                                </li>
+                                <li>
+                                    <a href="#!" class="grey-text text-darken-2">
+                                        <span class="material-icons icon-bg-circle red small">stars</span> Fuel Delivered
+                                    </a>
+                                    <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">3 days ago &mdash; Gitimbine</time>
+                                </li>
+                                <li>
+                                    <a href="#!" class="grey-text text-darken-2">
+                                        <span class="material-icons icon-bg-circle teal small">settings</span> New tank Configured
+                                    </a>
+                                    <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">4 days ago &mdash; Nkubu</time>
+                                </li>
+                                <li>
+                                    <a href="#!" class="grey-text text-darken-2">
+                                        <span class="material-icons icon-bg-circle deep-orange small">today</span> Director meeting started
+                                    </a>
+                                    <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
+                                </li>
+                                <li>
+                                    <a href="#!" class="grey-text text-darken-2">
+                                        <span class="material-icons icon-bg-circle amber small">trending_up</span> Generate monthly report
+                                    </a>
+                                    <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
+                                </li>
+                            </ul>
+
+                            <!-- Profile-Dropdown -->
+                            <ul id="profile-dropdown" class="dropdown-content">
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">face</i> My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">settings</i> Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">live_help</i> Get Help
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a asp-area="" asp-controller="Account" asp-action="Logout" class="grey-text text-darken-1">
+                                        <i class="material-icons">keyboard_tab</i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+
+                        }
+                        else
+                        {
+                            <ul class="nav navbar-nav right">
+                                <li>
+                                    <a href="https://www.wvi.org/somalia" target="_blank">
+                                        <img alt="World Vision" src="~/images/worldvision-white.png" style="width: 150px; margin-top: 0px;" />
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container body-content">
+            <partial name="_RightSideBarNav" />
+
+            @RenderBody()
+            <hr style="margin-bottom:5px" />
+            <footer>
+                <p>Copyright &copy; 2018 &mdash; Somali NTP in collaboration with World Vision</p>
+            </footer>
+        </div>
+
+
+        @RenderSection("Scripts", required: false)
+    </body>
+</html>

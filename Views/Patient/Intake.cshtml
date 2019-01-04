@@ -1,0 +1,95 @@
+﻿@model EtbSomalia.ViewModel.PatientIntakeViewModel;
+@{
+    ViewData["Title"] = "Intake Form";
+}
+
+<script type="text/javascript">
+    jq(function() {
+        jq('#submit-form').click(function(){
+            //Verify Form
+            jq('form').submit();
+        });
+
+    });
+</script>
+
+<style>
+    #profile-page-header .card-image {
+        height: 100px;
+    }
+
+    #profile-page-header .card-profile-image {
+        top: 40px;
+    }
+
+    div.row div.col.offset-m2 {
+        margin-left: 15%;
+    }
+</style>
+
+
+<div id="profile-page-header" class="card">
+    <div class="card-image waves-effect waves-block waves-light">
+        <img class="activator" src="~/images/gallary/23.png" alt="user background">
+    </div>
+    <figure class="card-profile-image">
+        <img src="../../images/avatar/avatar-7.png" alt="profile image" class="circle z-depth-2 responsive-img activator gradient-45deg-light-blue-cyan gradient-shadow">
+    </figure>
+    <div class="card-content">
+        <div class="row pt-2">
+            <div class="col s12 m3 offset-m2">
+                <h4 class="card-title grey-text text-darken-4">@</h4>
+                <p class="medium-small grey-text">@</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">Age/Sex</h4>
+                <p class="medium-small grey-text">@, @</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">@(  )</h4>
+                <p class="medium-small grey-text">@</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">0</h4>
+                <p class="medium-small grey-text">Visits Completed</p>
+            </div>
+            <div class="col s12 m1 right-align">
+                <a class="btn-floating activator waves-effect waves-light rec accent-2 right">
+                    <i class="material-icons">perm_identity</i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-reveal">
+        <p>
+            <span class="card-title grey-text text-darken-4">
+                @Model.Patient.Person.Name
+                <i class="material-icons right">close</i>
+            </span>
+            <span>
+                <i class="material-icons cyan-text text-darken-2 left">perm_identity</i> @Model.Program.TbmuNumber
+            </span>
+        </p>
+        <p><i class="material-icons cyan-text text-darken-2 left">perm_phone_msg</i> @Model.Patient.Person.Address.Telephone</p>
+        <p><i class="material-icons cyan-text text-darken-2 left">cake</i> @(Model.Patient.Person.DateOfBirth.ToString("dd MMM yyyy"))</p>
+    </div>
+</div>
+
+<ul class="collapsible">
+    <li>
+        <div class="collapsible-header active">
+            <i class="material-icons">filter_drama</i>
+            First
+            <span class="new badge">4</span>
+        </div>
+        <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+    </li>
+    <li>
+        <div class="collapsible-header">
+            <i class="material-icons">place</i>
+            Second
+            <span class="badge">1</span>
+        </div>
+        <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+    </li>
+</ul>
