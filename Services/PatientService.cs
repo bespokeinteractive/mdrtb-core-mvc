@@ -84,8 +84,8 @@ namespace EtbSomalia.Services
                 program.ReferredBy = new Concept(Convert.ToInt64(dr[22]), dr[23].ToString());
 
                 program.Default = Convert.ToBoolean(dr[24]);
-                program.ArtStarted = Convert.ToBoolean(dr[25]);
-                program.CptStarted = Convert.ToBoolean(dr[26]);
+                program.ArtStarted = Convert.ToInt32(dr[25]);
+                program.CptStarted = Convert.ToInt32(dr[26]);
 
                 program.ArtStartedOn = Convert.ToDateTime(dr[27]);
                 program.CptStartedOn = Convert.ToDateTime(dr[28]);

@@ -31,8 +31,8 @@ namespace EtbSomalia.Models
         public DateTime DateEnrolled { get; set; }
         public DateTime DateCompleted { get; set; }
 
-        public bool ArtStarted { get; set; }
-        public bool CptStarted { get; set; }
+        public int ArtStarted { get; set; }
+        public int CptStarted { get; set; }
 
         public DateTime ArtStartedOn { get; set; }
         public DateTime CptStartedOn { get; set; }
@@ -60,8 +60,8 @@ namespace EtbSomalia.Models
 
             DateEnrolled = DateTime.Now;
 
-            ArtStarted = false;
-            CptStarted = false;
+            ArtStarted = 0;
+            CptStarted = 0;
 
             ArtStartedOn = DateTime.Now;
             CptStartedOn = DateTime.Now;

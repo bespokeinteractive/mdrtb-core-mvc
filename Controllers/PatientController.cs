@@ -54,6 +54,9 @@ namespace EtbSomalia.Controllers
             model.ARTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.ART_STARTED_ON));
             model.CPTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.CPT_STARTED_ON));
 
+            model.ArtStartedOn = model.Program.ArtStartedOn.ToString("d MMMM, yyyy");
+            model.CptStartedOn = model.Program.CptStartedOn.ToString("d MMMM, yyyy");
+
             //Patient Regimen
             model.Regimen = core.GetPatientRegimen(model.Program);
             if (model.Regimen is null) {
@@ -107,11 +110,12 @@ namespace EtbSomalia.Controllers
         public IActionResult RegisterNewIntake()
         {
             PatientProgram pp = IntakeModel.Program;
+            pp.ArtStartedOn = DateTime.Parse(IntakeModel.ArtStartedOn);
+            pp.CptStartedOn = DateTime.Parse(IntakeModel.CptStartedOn);
             pp.UpdateIntake(HttpContext);
 
             PatientRegimen pr = IntakeModel.Regimen;
             pr.Program = pp;
-            pr.StartedOn = DateTime.Parse(IntakeModel.RegimenStartedOn);
             pr.Save(HttpContext);
 
             PatientExamination px = IntakeModel.Examination;
@@ -123,7 +127,7 @@ namespace EtbSomalia.Controllers
             px.XrayExamDate = DateTime.Parse(IntakeModel.XrayExamDate);
             px.Save(HttpContext);
 
-            return LocalRedirect("/");
+            return LocalRedirect("/patients/profile/" + pp.Patient.Id);
         }
 
 

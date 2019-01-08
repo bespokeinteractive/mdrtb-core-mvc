@@ -256,7 +256,7 @@ namespace EtbSomalia.Services
 
         public PatientProgram UpdateIntake(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();
-            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_registeer_no='" + pp.RegisterNumber + "', pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_dots_by=" + pp.DotsBy.Id + ", pp_referred_by=" + pp.ReferredBy.Id + ", pp_facility=" + pp.Facility.Id + ", pp_supporter='" + pp.TreatmentSupporter + "', pp_supporter_contacts='" + pp.SupporterContacts + "' output INSERTED.pp_idnt WHERE pp_idnt=" + pp.Id);
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_registeer_no='" + pp.RegisterNumber + "', pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_dots_by=" + pp.DotsBy.Id + ", pp_referred_by=" + pp.ReferredBy.Id + ", pp_facility=" + pp.Facility.Id + ", pp_supporter='" + pp.TreatmentSupporter + "', pp_supporter_contacts='" + pp.SupporterContacts + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' output INSERTED.pp_idnt WHERE pp_idnt=" + pp.Id);
 
             return pp;
         }

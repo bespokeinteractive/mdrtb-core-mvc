@@ -212,7 +212,7 @@
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
                         @Html.TextBoxFor(model => model.SputumSmearDate, new { @class = "datepicker" })
-                        <label for="icon_prefix">Started On</label>
+                        <label for="icon_prefix">Examination Date</label>
                     </div>
                 </div>
 
@@ -226,7 +226,7 @@
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
                         @Html.TextBoxFor(model => model.GeneXpertDate, new { @class = "datepicker" })
-                        <label for="icon_prefix">Started On</label>
+                        <label for="icon_prefix">Examination Date</label>
                     </div>
                 </div>
 
@@ -240,6 +240,34 @@
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
                         @Html.TextBoxFor(model => model.HivExamDate, new { @class = "datepicker" })
+                        <label for="icon_prefix">Examination Date</label>
+                    </div>
+                </div>
+
+                <div class="row hiv-opts" style="padding: 0 52% 0 80px;">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">hdr_weak</i>
+                        @Html.DropDownListFor(model => model.Program.ArtStarted, Model.BoolOpts)
+                        <label>Started on ART</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.ArtStartedOn, new { @class = "datepicker" })
+                        <label for="icon_prefix">Started On</label>
+                    </div>
+                </div>
+
+                <div class="row hiv-opts" style="padding: 0 52% 0 80px;">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">hdr_weak</i>
+                        @Html.DropDownListFor(model => model.Program.CptStarted, Model.BoolOpts)
+                        <label>Started on CPT</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.CptStartedOn, new { @class = "datepicker" })
                         <label for="icon_prefix">Started On</label>
                     </div>
                 </div>
@@ -254,7 +282,7 @@
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
                         @Html.TextBoxFor(model => model.XrayExamDate, new { @class = "datepicker" })
-                        <label for="icon_prefix">Started On</label>
+                        <label for="icon_prefix">Examination Date</label>
                     </div>
                 </div>
 

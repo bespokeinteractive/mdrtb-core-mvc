@@ -5,13 +5,12 @@ namespace EtbSomalia.Extensions
 {
     public class SqlServerConnection
     {
-        private static String sConn = "Data Source=192.168.100.10;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
+        private static String sConn = "Data Source=192.168.1.252;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
         private readonly SqlConnection conn = new SqlConnection(sConn);
         private SqlCommand comm = new SqlCommand();
 
         public SqlDataReader SqlServerConnect(string SqlString)
         {
-
             try {
                 conn.Open();
                 comm = new SqlCommand(SqlString, conn);
@@ -25,19 +24,16 @@ namespace EtbSomalia.Extensions
 
         public Int64 SqlServerUpdate(string SqlString)
         {
-            try
-            {
+            try {
                 SqlCommand command = new SqlCommand(SqlString, conn);
                 command.Connection.Open();
 
                 return Convert.ToInt64(command.ExecuteScalar());
             }
-            catch (Exception)
-            {
+            catch (Exception) {
                 return 0;
             }
-            finally
-            {
+            finally {
                 if (conn.State == System.Data.ConnectionState.Open)
                     conn.Close();
             }

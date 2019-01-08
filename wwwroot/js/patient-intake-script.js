@@ -10,6 +10,15 @@
         jq('.collapsible').collapsible('open', index);
     }); 
 
+    jq('#Examination_HivExam_Id').change(function(){
+        if (jq(this).val() == 36) {
+            jq('.hiv-opts').show(100);
+        }
+        else {
+            jq('.hiv-opts').hide(100);
+        }
+    }).change();
+
     jq('#Examination_Weight, #Examination_Height').on('change keyup blur', function(){
         var weight = jq('#Examination_Weight').val();
         var height = jq('#Examination_Height').val();
@@ -21,5 +30,6 @@
 
         jq('#Examination_BMI').val(bmi.toFixed(1));
     });
+
 
 });
