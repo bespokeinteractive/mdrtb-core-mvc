@@ -30,6 +30,14 @@ namespace EtbSomalia.Models
             return days + "days";
         }
 
+        public int GetAgeInYears()
+        {
+            int age = DateTime.Now.Year - Person.DateOfBirth.Year;
+            if (Person.DateOfBirth > DateTime.Now.AddYears(-age)) age--;
+
+            return age;
+        }
+
         public Patient Save(){
             Person.Save();
 

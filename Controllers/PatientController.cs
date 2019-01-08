@@ -13,8 +13,10 @@ namespace EtbSomalia.Controllers
     public class PatientController : Controller
     {
         [BindProperty]
-        public PatientRegisterViewModel ViewModel { get; set; }
-        public PatientProgram PatientProgram { get; set; }
+        public PatientRegisterViewModel RegisterModel { get; set; }
+
+        [BindProperty]
+        public PatientIntakeViewModel IntakeModel { get; set; }
 
         // GET: /<controller>/
         [Route("registration/add")]
@@ -32,10 +34,46 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("registration/intake/{idnt}")]
-        public IActionResult Intake(long idnt, PatientIntakeViewModel model, PatientService ps)
+        public IActionResult Intake(long idnt, PatientIntakeViewModel model, PatientService ps, ConceptService cs)
         {
+            MdrtbCoreService core = new MdrtbCoreService(HttpContext);
+            model.Facilities = core.GetFacilitiesIEnumerable();
             model.Program = ps.GetPatientProgram(idnt);
             model.Patient = ps.GetPatient(model.Program.Patient.Id);
+            model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
+            model.DotsBy = cs.GetConceptAnswersIEnumerable(new Concept(Constants.DOTS_BY));
+            model.Referees = cs.GetConceptAnswersIEnumerable(new Concept(Constants.REFERRED_BY));
+
+            //Exam Options
+            model.SputumSmearItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
+            model.GeneXpertItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.GENE_XPERT));
+            model.HivExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.HIV_EXAM));
+            model.XrayExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.XRAY_EXAM));
+
+            //HIV Options
+            model.ARTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.ART_STARTED_ON));
+            model.CPTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.CPT_STARTED_ON));
+
+            //Patient Regimen
+            model.Regimen = core.GetPatientRegimen(model.Program);
+            if (model.Regimen is null) {
+                model.Regimen = new PatientRegimen();
+            }
+            else {
+                model.RegimenStartedOn = model.Regimen.StartedOn.ToString("d MMMM, yyyy");
+            }
+
+            //Patient Examination
+            model.Examination = core.GetPatientExamination(model.Program, new Examination(1));
+            if (model.Examination is null) {
+                model.Examination = new PatientExamination();
+            }
+            else {
+                model.SputumSmearDate = model.Examination.SputumSmearDate.ToString("d MMMM, yyyy");
+                model.GeneXpertDate = model.Examination.GeneXpertDate.ToString("d MMMM, yyyy");
+                model.HivExamDate = model.Examination.HivExamDate.ToString("d MMMM, yyyy");
+                model.XrayExamDate = model.Examination.XrayExamDate.ToString("d MMMM, yyyy");
+            }
 
             return View(model);
         }
@@ -43,22 +81,24 @@ namespace EtbSomalia.Controllers
         [HttpPost]
         public IActionResult RegisterNewPatient()
         {
-            Patient patient = ViewModel.Patient;
-            patient.Person.DateOfBirth = DateTime.ParseExact(ViewModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            Patient patient = RegisterModel.Patient;
+            patient.Person.DateOfBirth = DateTime.ParseExact(RegisterModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             patient.Save();
 
-            PersonAddress address = ViewModel.Address;
+            PersonAddress address = RegisterModel.Address;
             address.Person = patient.Person;
             address.Save();
 
-            PatientProgram program = new PatientProgram(patient);
-            program.DateEnrolled = DateTime.Parse(ViewModel.DateEnrolled);
-            program.Facility = new Facility(ViewModel.FacilityId);
-            program.Type = new Concept(ViewModel.TypeId);
-            program.Confirmation = new Concept(ViewModel.ConfirmationId);
-            program.Program = new Concept(ViewModel.ProgramId);
-            program.Category = new Concept(ViewModel.CategoryId);
-            program.Save();
+            PatientProgram program = new PatientProgram(patient) {
+                DateEnrolled = DateTime.Parse(RegisterModel.DateEnrolled),
+                Facility = new Facility(RegisterModel.FacilityId),
+                Type = new Concept(RegisterModel.TypeId),
+                Confirmation = new Concept(RegisterModel.ConfirmationId),
+                Program = new Programs(RegisterModel.ProgramId),
+                Category = new Concept(RegisterModel.CategoryId)
+            };
+
+            program.Create(HttpContext);
             
             return LocalRedirect("/registration/intake/" + program.Id);
         }
@@ -66,6 +106,23 @@ namespace EtbSomalia.Controllers
         [HttpPost]
         public IActionResult RegisterNewIntake()
         {
+            PatientProgram pp = IntakeModel.Program;
+            pp.UpdateIntake(HttpContext);
+
+            PatientRegimen pr = IntakeModel.Regimen;
+            pr.Program = pp;
+            pr.StartedOn = DateTime.Parse(IntakeModel.RegimenStartedOn);
+            pr.Save(HttpContext);
+
+            PatientExamination px = IntakeModel.Examination;
+            px.Program = pp;
+            px.Exam = new Examination(1);
+            px.SputumSmearDate = DateTime.Parse(IntakeModel.SputumSmearDate);
+            px.GeneXpertDate = DateTime.Parse(IntakeModel.GeneXpertDate);
+            px.HivExamDate = DateTime.Parse(IntakeModel.HivExamDate);
+            px.XrayExamDate = DateTime.Parse(IntakeModel.XrayExamDate);
+            px.Save(HttpContext);
+
             return LocalRedirect("/");
         }
 

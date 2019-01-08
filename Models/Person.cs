@@ -12,8 +12,7 @@ namespace EtbSomalia.Models
         public bool AgeEstimate { get; set; }
         public PersonAddress Address { get; set; }
 
-        public Person()
-        {
+        public Person() {
             Id = 0;
             Name = "";
             Gender = "";
@@ -26,7 +25,6 @@ namespace EtbSomalia.Models
             Id = conn.SqlServerUpdate("INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_estimate) output INSERTED.ps_idnt VALUES ('" + Name + "', '" + Gender + "', getdate(), 1)");
 
             return this;
-
         }
     }
 }

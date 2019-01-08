@@ -3,15 +3,15 @@ namespace EtbSomalia.Models
 {
     public class Users
     {
-        public Int64 Id { get; set; }
-        public String Name { get; set; }
-        public String Email { get; set; }
-        public String Username { get; set; }
-        public String Password { get; set; }
-        public Boolean Enabled { get; set; }
-        public Boolean ToChange { get; set; }
-        public Int64 AdminLevel { get; set; }
-        public String AccessLevel { get; set; }
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public bool Enabled { get; set; }
+        public bool ToChange { get; set; }
+        public long AdminLevel { get; set; }
+        public string AccessLevel { get; set; }
         public string Message { get; set; }
 
         public Users()
@@ -27,6 +27,15 @@ namespace EtbSomalia.Models
             AccessLevel = "";
 
             Message = "";
+        }
+
+        public Users(long idnt) : this() {
+            Id = idnt;
+        }
+
+        public Users(long idnt, string name) : this() {
+            Id = idnt;
+            Name = name;
         }
     }
 }

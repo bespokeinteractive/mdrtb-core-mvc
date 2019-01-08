@@ -3,15 +3,7 @@
     ViewData["Title"] = "Intake Form";
 }
 
-<script type="text/javascript">
-    jq(function() {
-        jq('#submit-form').click(function(){
-            //Verify Form
-            jq('form').submit();
-        });
-
-    });
-</script>
+<script src="~/js/patient-intake-script.js"></script>
 
 <style>
     #profile-page-header .card-image {
@@ -25,6 +17,14 @@
     div.row div.col.offset-m2 {
         margin-left: 15%;
     }
+
+    .collapsible span.badge {
+        margin-top: 0;
+    }
+
+    span.badge.new:after {
+        content: " fields";
+    }
 </style>
 
 
@@ -33,21 +33,21 @@
         <img class="activator" src="~/images/gallary/23.png" alt="user background">
     </div>
     <figure class="card-profile-image">
-        <img src="../../images/avatar/avatar-7.png" alt="profile image" class="circle z-depth-2 responsive-img activator gradient-45deg-light-blue-cyan gradient-shadow">
+        <img src='../../images/avatar/avatar-@(Model.Patient.Person.Gender=="Male"?"7":"16").png' alt="profile image" class="circle z-depth-2 responsive-img activator gradient-45deg-light-blue-cyan gradient-shadow">
     </figure>
     <div class="card-content">
         <div class="row pt-2">
             <div class="col s12 m3 offset-m2">
-                <h4 class="card-title grey-text text-darken-4">@</h4>
-                <p class="medium-small grey-text">@</p>
+                <h4 class="card-title grey-text text-darken-4">@Model.Patient.Person.Name</h4>
+                <p class="medium-small grey-text">@Model.Program.TbmuNumber</p>
             </div>
             <div class="col s12 m2 center-align">
                 <h4 class="card-title grey-text text-darken-4">Age/Sex</h4>
-                <p class="medium-small grey-text">@, @</p>
+                <p class="medium-small grey-text">@Model.Patient.Person.Gender, @Model.Patient.GetAge()</p>
             </div>
             <div class="col s12 m2 center-align">
-                <h4 class="card-title grey-text text-darken-4">@(  )</h4>
-                <p class="medium-small grey-text">@</p>
+                <h4 class="card-title grey-text text-darken-4">@(Model.Program.Program.Id == 1 ? "TB Program" : "MDR-TB")</h4>
+                <p class="medium-small grey-text">@Model.Program.Type.Name</p>
             </div>
             <div class="col s12 m2 center-align">
                 <h4 class="card-title grey-text text-darken-4">0</h4>
@@ -75,21 +75,198 @@
     </div>
 </div>
 
-<ul class="collapsible">
-    <li>
-        <div class="collapsible-header active">
-            <i class="material-icons">filter_drama</i>
-            First
-            <span class="new badge">4</span>
-        </div>
-        <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-    </li>
-    <li>
-        <div class="collapsible-header">
-            <i class="material-icons">place</i>
-            Second
-            <span class="badge">1</span>
-        </div>
-        <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-    </li>
-</ul>
+@using (Html.BeginForm("RegisterNewIntake", "Patient", FormMethod.Post))
+{
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header waves-light gradient-45deg-purple-deep-orange lightrn-1 white-text active">
+                <i class="material-icons ">assignment_ind</i>
+                VISIT DETAILS
+                <span class="new badge">8</span>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">business</i>
+                        @Html.DropDownListFor(model => model.Program.Facility.Id, Model.Facilities)
+                        <label>Facility Enrolled</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">create</i>
+                        @Html.TextBoxFor(model => model.Program.RegisterNumber)
+                        <label for="icon_prefix">Register Number</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">border_color</i>
+                        @Html.TextBoxFor(model => model.Program.LaboratoryNumber)
+                        <label for="icon_prefix">Lab Number</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">history</i>
+                        @Html.TextBoxFor(model => model.Examination.Weight, new { type = "number", min = "0", step = "1" })
+                        <label for="icon_prefix">Weight (kgs)</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">swap_vert</i>
+                        @Html.TextBoxFor(model => model.Examination.Height, new { type = "number", min = "0", step = "1" })
+                        <label for="icon_prefix">Height (cm)</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">exit_to_app</i>
+                        @if (Model.Patient.GetAgeInYears() <= 5) {
+                            @Html.TextBoxFor(model => model.Examination.MUAC, new { type = "number", min = "0", step = "1" })
+                            @Html.HiddenFor(model => model.Examination.BMI)
+                            <label for="icon_prefix">MUAC</label>
+                        }
+                        else {
+                            @Html.TextBoxFor(model => model.Examination.BMI, new { type = "number", min = "0", step = "1" })
+                            @Html.HiddenFor(model => model.Examination.MUAC)
+                            <label for="icon_prefix">BMI</label>
+                        }
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">room_service</i>
+                        @Html.DropDownListFor(model => model.Regimen.Regimen.Id, Model.Regimens)
+                        <label for="icon_prefix">Regimen</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.RegimenStartedOn, new { @class = "datepicker" })
+                        <label for="icon_prefix">Regimen Started On</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="1">Next</a>
+                </div>
+            </div>
+        </li>
+
+        <li>
+            <div class="collapsible-header gradient-45deg-light-blue-cyan white-text">
+                <i class="material-icons">assignment</i>
+                TREATMENT DETAILS
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">transfer_within_a_station</i>
+                        @Html.DropDownListFor(model => model.Program.ReferredBy.Id, Model.Referees)
+                        <label>Referred By</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">record_voice_over</i>
+                        @Html.DropDownListFor(model => model.Program.DotsBy.Id, Model.DotsBy)
+                        <label for="icon_prefix">DOTs By</label>
+                    </div>
+
+                    <div class="input-field col s4">
+                        <i class="material-icons prefix">wc</i>
+                        @Html.TextBoxFor(model => model.Program.TreatmentSupporter, new { placeholder = "Daamin" })
+                        <label>Treatment Supporter</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">perm_contact_calendar</i>
+                        @Html.TextAreaFor(model => model.Program.SupporterContacts, new { @class = "materialize-textarea" })
+                        <label for="message">Treatment Supporter Address/Contacts</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0;padding-left: 55px;">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="0">Prev</a>
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="2">Next</a>
+                </div>
+            </div>
+
+        </li>
+
+        <li>
+            <div class="collapsible-header gradient-45deg-red-pink accent-2 white-text">
+                <i class="material-icons">assignment</i>
+                EXAMINATIONS/INVESTIGATIONS
+                <span class="new badge">1</span>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">colorize</i>
+                        @Html.DropDownListFor(model => model.Examination.SputumSmear.Id, Model.SputumSmearItems)
+                        <label>Sputum Smear</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.SputumSmearDate, new { @class = "datepicker" })
+                        <label for="icon_prefix">Started On</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">device_hub</i>
+                        @Html.DropDownListFor(model => model.Examination.GeneXpert.Id, Model.GeneXpertItems)
+                        <label>GeneXpert Exam</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.GeneXpertDate, new { @class = "datepicker" })
+                        <label for="icon_prefix">Started On</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">hdr_weak</i>
+                        @Html.DropDownListFor(model => model.Examination.HivExam.Id, Model.HivExamItems)
+                        <label>HIV/AIDS Exam</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.HivExamDate, new { @class = "datepicker" })
+                        <label for="icon_prefix">Started On</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">compare</i>
+                        @Html.DropDownListFor(model => model.Examination.XrayExam.Id, Model.XrayExamItems)
+                        <label>X-Ray Exam</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.XrayExamDate, new { @class = "datepicker" })
+                        <label for="icon_prefix">Started On</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0;padding-left:55px;">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="1">Prev</a>
+                    <a class="btn submit waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow right" id="submit_form">Submit</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    @Html.HiddenFor(model => model.Program.Id)
+    @Html.HiddenFor(model => model.Regimen.Id)
+    @Html.HiddenFor(model => model.Examination.Id)
+}

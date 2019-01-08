@@ -64,7 +64,8 @@ namespace EtbSomalia.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.UserData, user.Username),
+                    new Claim(ClaimTypes.Dsa, user.Id.ToString()),
+                    new Claim(ClaimTypes.Dns, user.Username),
                     new Claim(ClaimTypes.Role, "Administrator"),
                 };
 
