@@ -8,13 +8,14 @@ namespace EtbSomalia.Models
     {
         public long Id { get; set; }
 
-        public double Height { get; set; }
+        public string LabNo { get; set; }
+        public double Height { get; set; } 
         public double Weight { get; set; }
         public double MUAC { get; set; }
         public double BMI { get; set; }
 
         public PatientProgram Program { get; set; }
-        public Examination Exam { get; set; }
+        public Visit Visit { get; set; }
 
         public Concept SputumSmear { get; set; }
         public Concept GeneXpert { get; set; }
@@ -33,13 +34,14 @@ namespace EtbSomalia.Models
         public PatientExamination() {
             Id = 0;
 
+            LabNo = "";
             Height = 0;
             Weight = 0;
             MUAC = 0;
             BMI = 0;
 
             Program = new PatientProgram();
-            Exam = new Examination();
+            Visit = new Visit();
 
             SputumSmear = new Concept();
             GeneXpert = new Concept();

@@ -35,8 +35,8 @@
     <figure class="card-profile-image">
         <img src='../../images/avatar/avatar-@(Model.Patient.Person.Gender=="Male"?"7":"16").png' alt="profile image" class="circle z-depth-2 responsive-img activator gradient-45deg-light-blue-cyan gradient-shadow">
     </figure>
-    <div class="card-content">
-        <div class="row pt-2">
+    <div class="card-content" style="padding:0">
+        <div class="row pt-2" style="margin-bottom:10px">
             <div class="col s12 m3 offset-m2">
                 <h4 class="card-title grey-text text-darken-4">@Model.Patient.Person.Name</h4>
                 <p class="medium-small grey-text">@Model.Program.TbmuNumber</p>
@@ -54,7 +54,7 @@
                 <p class="medium-small grey-text">Visits Completed</p>
             </div>
             <div class="col s12 m1 right-align">
-                <a class="btn-floating activator waves-effect waves-light rec accent-2 right">
+                <a class="btn-floating activator waves-effect waves-light rec accent-2 right" style="margin-right: 10px;">
                     <i class="material-icons">perm_identity</i>
                 </a>
             </div>

@@ -5,7 +5,7 @@ namespace EtbSomalia.Extensions
 {
     public class SqlServerConnection
     {
-        private static String sConn = "Data Source=192.168.1.252;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
+        private static readonly String sConn = "Data Source=192.168.100.10;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
         private readonly SqlConnection conn = new SqlConnection(sConn);
         private SqlCommand comm = new SqlCommand();
 

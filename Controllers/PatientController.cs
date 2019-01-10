@@ -37,8 +37,12 @@ namespace EtbSomalia.Controllers
         public IActionResult Intake(long idnt, PatientIntakeViewModel model, PatientService ps, ConceptService cs)
         {
             MdrtbCoreService core = new MdrtbCoreService(HttpContext);
-            model.Facilities = core.GetFacilitiesIEnumerable();
             model.Program = ps.GetPatientProgram(idnt);
+            if (!model.Program.DotsBy.Id.Equals(0)) {
+                return LocalRedirect("/patients/profile/" + model.Program.Patient.Id);
+            }
+
+            //Other Fields
             model.Patient = ps.GetPatient(model.Program.Patient.Id);
             model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
             model.DotsBy = cs.GetConceptAnswersIEnumerable(new Concept(Constants.DOTS_BY));
@@ -57,7 +61,8 @@ namespace EtbSomalia.Controllers
             model.ArtStartedOn = model.Program.ArtStartedOn.ToString("d MMMM, yyyy");
             model.CptStartedOn = model.Program.CptStartedOn.ToString("d MMMM, yyyy");
 
-            //Patient Regimen
+            //Facilities/Regimen
+            model.Facilities = core.GetFacilitiesIEnumerable();
             model.Regimen = core.GetPatientRegimen(model.Program);
             if (model.Regimen is null) {
                 model.Regimen = new PatientRegimen();
@@ -67,7 +72,7 @@ namespace EtbSomalia.Controllers
             }
 
             //Patient Examination
-            model.Examination = core.GetPatientExamination(model.Program, new Examination(1));
+            model.Examination = core.GetPatientExamination(model.Program, new Visit(1));
             if (model.Examination is null) {
                 model.Examination = new PatientExamination();
             }
@@ -77,6 +82,25 @@ namespace EtbSomalia.Controllers
                 model.HivExamDate = model.Examination.HivExamDate.ToString("d MMMM, yyyy");
                 model.XrayExamDate = model.Examination.XrayExamDate.ToString("d MMMM, yyyy");
             }
+
+            return View(model);
+        }
+
+        [Route("patients/profile/{idnt}")]
+        public IActionResult Profile(long idnt, PatientProfileViewModel model, PatientService ps, MdrtbCoreService core, long program = 0) {
+            model.Patient = ps.GetPatient(idnt);
+
+            if (program.Equals(0)) {
+                model.Program = ps.GetPatientProgram(model.Patient);
+            }
+            else {
+                model.Program = ps.GetPatientProgram(program);
+            }
+
+            model.Regimen = core.GetPatientRegimen(model.Program);
+            model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
+            model.LatestVitals = ps.GetLatestVitals(model.Patient);
+            model.Examinations = core.GetRecentExaminations(model.Program);
 
             return View(model);
         }
@@ -120,7 +144,8 @@ namespace EtbSomalia.Controllers
 
             PatientExamination px = IntakeModel.Examination;
             px.Program = pp;
-            px.Exam = new Examination(1);
+            px.Visit = new Visit(1);
+            px.LabNo = pp.LaboratoryNumber;
             px.SputumSmearDate = DateTime.Parse(IntakeModel.SputumSmearDate);
             px.GeneXpertDate = DateTime.Parse(IntakeModel.GeneXpertDate);
             px.HivExamDate = DateTime.Parse(IntakeModel.HivExamDate);

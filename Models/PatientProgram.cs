@@ -29,7 +29,7 @@ namespace EtbSomalia.Models
         public Concept Category { get; set; }
 
         public DateTime DateEnrolled { get; set; }
-        public DateTime DateCompleted { get; set; }
+        public DateTime? DateCompleted { get; set; }
 
         public int ArtStarted { get; set; }
         public int CptStarted { get; set; }
@@ -59,6 +59,7 @@ namespace EtbSomalia.Models
             Category = new Concept();
 
             DateEnrolled = DateTime.Now;
+            DateCompleted = null;
 
             ArtStarted = 0;
             CptStarted = 0;
@@ -89,6 +90,15 @@ namespace EtbSomalia.Models
             MdrtbCoreService core = new MdrtbCoreService(Context);
 
             return core.UpdateIntake(this);
+        }
+
+        public int GetVisitsCount() {
+            return new MdrtbCoreService().GetPatientExaminationVisitsCount(this);
+        }
+
+        public int GetDaysInProgram() {
+            DateTime CloseDate = DateCompleted ?? DateTime.Now;
+            return Convert.ToInt32((CloseDate - DateEnrolled).TotalDays);
         }
     }
 }

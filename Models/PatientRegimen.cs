@@ -26,8 +26,7 @@ namespace EtbSomalia.Models
             Notes = "";
         }
 
-        public PatientRegimen Save(HttpContext Context)
-        {
+        public PatientRegimen Save(HttpContext Context) {
             MdrtbCoreService core = new MdrtbCoreService(Context);
             return core.SavePatientRegimen(this);
         }

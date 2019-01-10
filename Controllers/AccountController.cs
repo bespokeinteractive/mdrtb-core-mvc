@@ -25,12 +25,13 @@ namespace EtbSomalia.Controllers
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(LoginModel model, string ReturnUrl = "/")
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
+            model.ReturnUrl = ReturnUrl;
 
-            return View(new LoginModel());
+            return View(model);
         }
 
         [HttpPost]
@@ -84,6 +85,8 @@ namespace EtbSomalia.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
+                if (!string.IsNullOrEmpty(Input.ReturnUrl.Trim()))
+                    return LocalRedirect(Input.ReturnUrl.Trim());
                 return LocalRedirect("/");
             }
 

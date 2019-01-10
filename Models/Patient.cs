@@ -14,6 +14,10 @@ namespace EtbSomalia.Models
             Person = new Person();
         }
 
+        public string GetName() {
+            return Person.Name;
+        }
+
         public string GetAge(){
             int age = DateTime.Now.Year - Person.DateOfBirth.Year;
             if (Person.DateOfBirth > DateTime.Now.AddYears(-age)) age--;

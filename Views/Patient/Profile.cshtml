@@ -1,0 +1,264 @@
+﻿@model EtbSomalia.ViewModel.PatientProfileViewModel;
+@{
+    ViewData["Title"] = Model.Patient.GetName();
+    int visits = Model.Program.GetVisitsCount();
+}
+
+<style>
+    #profile-page-header .card-image {
+        height: 150px;
+    }
+    #profile-page-header .card-profile-image {
+        top: 90px;
+    }
+    .nav-content .body {
+        min-height: 300px;
+    }
+    .collection .collection-item.avatar {
+        width: 100%;
+    }
+    div.dtls span {
+        display: inline-block;
+        width: 120px;
+    }
+    td, th {
+        padding: 3px 15px;
+    }
+    td a.material-icons.right.blue-text {
+        display: inline-block;
+        font-size: 16px;
+        height: auto;
+        line-height: 1;
+    }
+</style>
+
+<div id="profile-page-header" class="card" style="margin-bottom:0; border-radius:0">
+    <div class="card-image waves-effect waves-block waves-light">
+        <img class="activator" src="~/images/gallary/14.png" alt="user background">
+    </div>
+    <figure class="card-profile-image">
+        <img src='../../images/avatar/avatar-@(Model.Patient.Person.Gender=="Male"?"7":"16").png' alt="profile image" class="circle z-depth-2 responsive-img activator gradient-45deg-light-blue-cyan gradient-shadow">
+    </figure>
+    <div class="card-content" style="padding:0">
+        <div class="row pt-2" style="margin-bottom:10px">
+            <div class="col s12 m3 offset-m2">
+                <h4 class="card-title grey-text text-darken-4">@Model.Patient.Person.Name</h4>
+                <p class="medium-small grey-text">@Model.Program.TbmuNumber</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">Age/Sex</h4>
+                <p class="medium-small grey-text">@Model.Patient.Person.Gender, @Model.Patient.GetAge()</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">@(Model.Program.Program.Id == 1 ? "TB Program" : "MDR-TB")</h4>
+                <p class="medium-small grey-text">@Model.Program.Type.Name</p>
+            </div>
+            <div class="col s12 m2 center-align">
+                <h4 class="card-title grey-text text-darken-4">@visits</h4>
+                <p class="medium-small grey-text">@(visits == 1 ? "Visit" : "Visits") Completed</p>
+            </div>
+            <div class="col s12 m1 right-align">
+                <a class="btn-floating activator waves-effect waves-light rec accent-2 right" style="margin-right: 10px;">
+                    <i class="material-icons">perm_identity</i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-reveal">
+        <p>
+            <span class="card-title grey-text text-darken-4">
+                @Model.Patient.Person.Name
+                <i class="material-icons right">close</i>
+            </span>
+            <span>
+                <i class="material-icons cyan-text text-darken-2 left">perm_identity</i> @Model.Program.TbmuNumber
+            </span>
+        </p>
+        <p><i class="material-icons cyan-text text-darken-2 left">perm_phone_msg</i> @Model.Patient.Person.Address.Telephone</p>
+        <p><i class="material-icons cyan-text text-darken-2 left">cake</i> @(Model.Patient.Person.DateOfBirth.ToString("dd MMM yyyy"))</p>
+    </div>
+</div>
+
+<div id="profile-page-content" class="row">
+    <div id="profile-page-sidebar" class="col s12 m3">
+        <div class="card red accent-2" style="margin-bottom: 0;">
+            <div class="card-content white-text center-align" style="padding:10px">
+                <p class="card-title" style="margin-bottom:0">
+                    <i class="material-icons">timer</i> @Model.Program.GetDaysInProgram()
+                </p>
+                <p>Days In Program</p>
+            </div>
+        </div>
+
+        <ul id="profile-page-about-details" class="collection z-depth-1">
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12">
+                        <i class="material-icons left">card_travel</i> Update Details
+                    </div>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12">
+                        <i class="material-icons left">poll</i> Add Visits
+                    </div>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12">
+                        <i class="material-icons left">domain</i> Update Regimen
+                    </div>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12">
+                        <i class="material-icons left">cake</i> View Contacts
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="profile-page-sidebar" class="col s12 m9 zero-margin" style="padding: 0 9px 0 0px;">
+        <nav class="navbar nav-extended">
+            <div class="nav-content" style="border: 1px solid rgba(0,0,0,0.1)">
+                <ul class="tabs">
+                    <li class="tab"><a href="#general" class="active">General</a></li>
+                    <li class="tab"><a href="#visits">Visits</a></li>
+                    <li class="tab"><a href="#treatment">Treatment</a></li>
+                    <li class="tab"><a href="#chart">Chart</a></li>
+                    <li class="tab"><a href="#history">History</a></li>
+                    <li class="tab"><a href="#contacts">Contacts</a></li>
+                </ul>
+
+                <div id="general" class="body">
+                    <ul id="profile-page-about-feed" class="collection z-depth-1">
+                        <li class="collection-item avatar">
+                            <img src="../../images/avatar/avatar-2.png" alt="" class="circle deep-orange accent-2">
+                            <span class="title bold-text">PROGRAMME ENROLLMENT</span>
+                            <span class="ultra-small deep-orange-text right">@Model.Program.DateEnrolled.ToString("dd/MM/yyyy")</span>
+                            <p>
+                                <div class="col-md-5 dtls" style="padding:0;">
+                                    <span class="bold-text blue-text">System Idnt: </span> @Model.Program.TbmuNumber<br />
+                                    <span class="bold-text blue-text">Register No. </span> @Model.Program.RegisterNumber<br />
+                                    <span class="bold-text blue-text">Laboratory No. </span> @Model.Program.LaboratoryNumber<br />
+                                </div>
+
+                                <div class="col-md-7 dtls">
+                                    <span class="bold-text blue-text">Location: </span> @Model.Program.Facility.Name, @Model.Program.Facility.Region.Name<br />
+                                    <span class="bold-text blue-text">Category: </span> @Model.Program.Category.Name<br />
+                                    <span class="bold-text blue-text">Confirmation: </span> @Model.Program.Confirmation.Name<br />
+                                </div>
+                            </p>
+                        </li>
+
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle teal accent-4">trending_up</i>
+                            <span class="title bold-text">LATEST VITAL SIGNS</span>
+                            <a class="ultra-small blue-text right zero-padding">Update Vitals</a>
+                            <p>
+                                <div class="col-md-5" style="padding-left:0">
+                                    <table class="bordered">
+                                        <thead class="deep-orange white-text">
+                                            <tr>
+                                                <th colspan="2">WEIGHT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td class="bold-text">DATE</td><td>@Model.LatestVitals.Weight</td></tr>
+                                            <tr><td class="bold-text">RESULTS</td><td>@Model.LatestVitals.WeightOn</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-7" style="padding:0">
+                                    <table class="bordered">
+                                        <thead class="deep-orange white-text">
+                                            <tr>
+                                                <th colspan="2">HEIGHT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td class="bold-text">DATE</td><td>@Model.LatestVitals.Height</td></tr>
+                                            <tr><td class="bold-text">RESULTS</td><td>@Model.LatestVitals.HeightOn</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </p>
+                        </li>
+
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle cyan">assessment</i>
+                            <span class="title">Patient Regimen</span>
+                            <p>
+                                @Model.Regimen.Regimen.Name, @Model.Regimen.Regimen.Description (@Model.Regimen.Regimen.Program.Description)
+                                <br>
+                                <span class="ultra-small">From @Model.Regimen.StartedOn.ToString("dd/MM/yyyy") @(Model.Program.DateCompleted == null ? "(Active)" : " to " + (Model.Program.DateCompleted ?? DateTime.Now).ToString("dd/MM/yyyy"))</span>
+                            </p>
+                            <a href="#!" class="secondary-content">
+                                <i class="material-icons">healing</i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
+                        <h5 class="card-stats-number zero-margin" style="padding-left:20px;"><i class="material-icons" style="display: inline-block">call_missed_outgoing</i>PATIENT DIAGNOSIS</h5>
+                    </div>
+
+                    <table id="reading" class="custom bordered">
+                        <thead class="deep-orange accent-2">
+                            <tr>
+                                <th>DATE</th>
+                                <th>EXAMINATION</th>
+                                <th>VISIT</th>
+                                <th>LAB N0.</th>
+                                <th>RESULTS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var exam in Model.Examinations) {
+                            <tr>
+                                <td>@exam.Date.ToString("dd/MM/yyyy")</td>
+                                <td>@exam.Name</td>
+                                <td>@exam.Visit.Name</td>
+                                <td>@exam.LabNo</td>
+                                <td>@exam.Result.Name.ToUpper() <a class="material-icons tiny right blue-text">border_color</a></td>
+                            </tr>
+                            }
+                        </tbody>
+
+                        <thead class="deep-orange accent-2">
+                            <tr>
+                                <th colspan="5">&nbsp;</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div id="visits" class="body">
+                    No Data Available
+                </div>
+
+                <div id="treatment" class="body">
+                    No Data Available
+                </div>
+
+                <div id="chart" class="body">
+                    No Data Available
+                </div>
+
+                <div id="history" class="body">
+                    No Data Available
+                </div>
+
+                <div id="contacts" class="body">
+                    No Data Available
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
