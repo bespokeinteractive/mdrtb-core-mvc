@@ -48,10 +48,12 @@
 </script>
 
 <script src="~/js/scripts/dashboard-analytics.js"></script>
+<script src="~/js/home-index-script.js"></script>
 <style>
     .collection-item .row {
         margin: 0;
     }
+
     .collection .collection-item {
         padding: 10px 0px;
     }
@@ -348,26 +350,26 @@
 <!-- Main Options -->
 <div class="row" style="margin-top: -30px;">
     <div class="col s12 m5 l5">
-        <img class="zero margin" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;"/>
+        <img class="zero margin" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;" />
         <div class="collection z-depth-1" style="padding-bottom:30px">
-            <div class="input-field col s11" >
+            <div class="input-field col s11">
                 <i class="material-icons prefix">history</i>
-                <input id="icon_prefix" type="text" class="validate">
-                <label for="icon_prefix">Search for Patients</label>
+                <input id="search_string" type="text" class="validate">
+                <label for="search_string">Search for Patients</label>
             </div>
 
             <div class="col s1" style="padding:15px 0;margin-left:-10px;">
-                <a class="btn-floating waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow">
+                <a class="btn-floating btn-search waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow">
                     <i class="material-icons">search</i>
                 </a>
             </div>
 
             <a class="card-title col s12 blue-text" style="padding-left: 50px; line-height: 1.6rem;" href="/registration/add">
-                <i class="material-icons left" style="margin-right: 10px;">group_add</i> 
+                <i class="material-icons left" style="margin-right: 10px;">group_add</i>
                 Register Patient
 
             </a>
-         </div>
+        </div>
     </div>
 
     <ul id="profile-page-about-details" class="collection z-depth-1 col s12 m3 l3" style="padding:0">

@@ -6,6 +6,7 @@ using EtbSomalia.ViewModel;
 using EtbSomalia.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace EtbSomalia.Controllers
 {
@@ -97,6 +98,10 @@ namespace EtbSomalia.Controllers
                 model.Program = ps.GetPatientProgram(program);
             }
 
+            if (model.Program.DotsBy.Id.Equals(0)){
+                return LocalRedirect("/registration/intake/" + model.Program.Id);
+            }
+
             model.Regimen = core.GetPatientRegimen(model.Program);
             model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
@@ -104,6 +109,19 @@ namespace EtbSomalia.Controllers
 
             return View(model);
         }
+
+        [Route("patients/search")]
+        public IActionResult Search(PatientSearchViewModel model, string q = "") {
+            model.Query = q;
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public JsonResult SearchPatient(string qString) {
+            PatientService ps = new PatientService(HttpContext);
+            return Json(ps.SearchPatients(qString));
+        }
+
 
         [HttpPost]
         public IActionResult RegisterNewPatient()

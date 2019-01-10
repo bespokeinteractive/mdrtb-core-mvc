@@ -17,4 +17,7 @@
     <Folder Include="Views\Patient\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\Patient\Search.cs" />
+  </ItemGroup>
 </Project>

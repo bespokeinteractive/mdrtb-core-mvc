@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Security.Claims;
 using EtbSomalia.Extensions;
 using EtbSomalia.Models;
+using EtbSomalia.ViewModel;
 using Microsoft.AspNetCore.Http;
 
 namespace EtbSomalia.Services
@@ -161,6 +163,37 @@ namespace EtbSomalia.Services
             }
 
             return vitals;
+        }
+
+        public List<PatientSearch> SearchPatients(string filter)
+        {
+            List<PatientSearch> search = new List<PatientSearch>();
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "",false) + " ORDER BY ps_name");
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    PatientSearch ps = new PatientSearch();
+                    ps.Patient.Id = Convert.ToInt64(dr[0]);
+                    ps.Patient.Person.Name = dr[1].ToString();
+                    ps.Patient.Person.Gender = dr[2].ToString().FirstCharToUpper();
+                    ps.Patient.Person.DateOfBirth = Convert.ToDateTime(dr[3]);
+
+                    ps.Program.Id = Convert.ToInt64(dr[4]);
+                    ps.Program.TbmuNumber = dr[5].ToString();
+
+                    ps.Status = dr[6].ToString();
+                    ps.Facility = dr[7].ToString();
+
+                    ps.age = ps.Patient.GetAge();
+
+                    search.Add(ps);
+                }
+            }
+
+            return search;
         }
     }
 }

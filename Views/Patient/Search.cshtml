@@ -1,0 +1,108 @@
+﻿@model EtbSomalia.ViewModel.PatientSearchViewModel;
+
+@{
+    ViewData["Title"] = "Search Patient";
+}
+
+<script type="text/javascript">
+    var qString = '@Model.Query';
+
+    jq(function() {
+       jq('a.btn-search').click(function(){
+            SearchPatient();
+       });
+
+       if (qString != ''){
+            SearchPatient();
+       }
+    });
+
+    function SearchPatient(){
+        jq.ajax({
+            dataType: "json",
+            url: '/Patient/SearchPatient',
+            data: {
+                "qString": jq('#Query').val()
+            },
+            beforeSend: function() {
+                jq('body').removeClass('loaded');
+            },
+            success: function(results) {
+                jq('#search-table tbody').empty();
+                var ix = 1;
+                jq.each(results, function(i, search) {
+                    var row = "<tr>";
+                    row += "<td>" + ix + ".</td>";
+                    row += "<td>" + search.program.tbmuNumber + "</td>";
+                    row += "<td><a class='blue-text' href='/patients/profile/" + search.patient.id + "'>" + search.patient.person.name + "</td>";
+                    row += "<td>" + search.age + "</td>";
+                    row += "<td>" + search.patient.person.gender + "</td>";
+                    row += "<td>" + search.facility + "</td>";
+                    row += "<td>" + search.status + "</td>";
+                    row += "<td>&nbsp;</td>";
+
+                    row += "</tr>";
+                    jq('#search-table tbody').append(row);
+
+                    ix += 1;
+                })
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            },
+            complete: function() {
+                $('body').addClass('loaded');
+            }
+        });
+    }
+
+</script>
+
+<style>
+    #search-table,
+    #search-table th,
+    #search-table td {
+        border-radius: 0px;
+    }
+    td, th {
+        padding: 10px;
+    }
+</style>
+
+<div class="col s12" style="margin-top:10px;">
+    <div id="search-title">
+        <h4 class="zero-margin deep-orange-text" style="display:inline-block; padding-top: 30px;">PATIENT SEARCH</h4>
+
+        <div class="right" style="padding:15px 0;margin-left:-10px;">
+            <a class="btn-floating btn-search waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow">
+                <i class="material-icons">search</i>
+            </a>
+        </div>
+
+        <div class="input-field col-md-3 right">
+            @Html.TextBoxFor(model => model.Query)
+            <label for="search_string" style="padding-left:15px">Search for Patients</label>
+        </div>
+    </div>
+
+    <table id="search-table" class="bordered stripped" cellspacing="0">
+        <thead class="deep-orange white-text">
+            <tr>
+                <th style="width:1px">#</th>
+                <th>IDENTIFIER</th>
+                <th>NAME</th>
+                <th>AGE</th>
+                <th>GENDER</th>
+                <th>FACILITY</th>
+                <th>STATUS</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="8">No Records Found</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

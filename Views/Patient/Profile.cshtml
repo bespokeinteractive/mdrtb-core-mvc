@@ -30,6 +30,21 @@
         height: auto;
         line-height: 1;
     }
+    .visits-list .collection-item.avatar {
+        min-height: 50px;
+        padding-left: 72px !important;
+    }
+    .visits-list.collection .collection-item {
+        background-color: #fff;
+        line-height: 1.5rem;
+        padding: 5px;
+        margin: 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .visits-list.collection .collection-item.avatar .secondary-content {
+        top: 3px;
+        right: 0px;
+    }
 </style>
 
 <div id="profile-page-header" class="card" style="margin-bottom:0; border-radius:0">
@@ -221,13 +236,13 @@
 
                         <tbody>
                             @foreach (var exam in Model.Examinations) {
-                            <tr>
-                                <td>@exam.Date.ToString("dd/MM/yyyy")</td>
-                                <td>@exam.Name</td>
-                                <td>@exam.Visit.Name</td>
-                                <td>@exam.LabNo</td>
-                                <td>@exam.Result.Name.ToUpper() <a class="material-icons tiny right blue-text">border_color</a></td>
-                            </tr>
+                                <tr>
+                                    <td>@exam.Date.ToString("dd/MM/yyyy")</td>
+                                    <td>@exam.Name</td>
+                                    <td>@exam.Visit.Name</td>
+                                    <td>@exam.LabNo</td>
+                                    <td>@exam.Result.Name.ToUpper() <a class="material-icons tiny right blue-text">border_color</a></td>
+                                </tr>
                             }
                         </tbody>
 
@@ -240,7 +255,18 @@
                 </div>
 
                 <div id="visits" class="body">
-                    No Data Available
+                    <div class="col s12 m3 zero-margin zero-padding">
+                        <ul class="collection visits-list zero-margin">
+                            <li class="collection-item avatar selected">
+                                <img src="../../images/avatar/avatar-3.png" alt="" class="circle">
+                                <span class="email-title">Visit 1</span>
+                                <p class="truncate grey-text ultra-small">Before Treatment</p>
+                                <a href="#!" class="secondary-content email-time">
+                                    <span class="grey-text ultra-small">22/12/18</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div id="treatment" class="body">

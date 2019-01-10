@@ -5,7 +5,7 @@ namespace EtbSomalia.Extensions
 {
     public class SqlServerConnection
     {
-        private static readonly String sConn = "Data Source=192.168.100.10;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
+        private static readonly String sConn = "Data Source=10.253.4.169;Initial Catalog=EtbSomalia;User ID=root;Password=root-2011;Max Pool Size=200;";
         private readonly SqlConnection conn = new SqlConnection(sConn);
         private SqlCommand comm = new SqlCommand();
 
@@ -47,7 +47,7 @@ namespace EtbSomalia.Extensions
             if (!AndJoin)
                 JOIN = " OR ";
 
-            char[] Seps = new [] { '.', ' ', '*', '-', '+', '&', '%', '/', '$', '#' };
+            char[] Seps = new [] { ' ', '*', '-', '&', '%', '/', '$', '#' };
             string[] MyInfo = sString.Split(Seps, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i <= (MyInfo.Length - 1); i++)
             {
