@@ -1,0 +1,194 @@
+﻿@model EtbSomalia.ViewModel.ContactAddViewModel;
+
+@{
+    ViewData["Title"] = "Add Contacts";
+}
+
+<style>
+    div.row div.col.offset-m2 {
+        margin-left: 15%;
+    }
+
+    .collapsible span.badge {
+        margin-top: 0;
+    }
+
+    span.badge.new:after {
+        content: "";
+    }
+</style>
+
+<script src="~/js/contact-add-script.js"></script>
+
+@using (Html.BeginForm("RegisterNewContact", "Contact", FormMethod.Post))
+{
+    <ul class="collapsible">
+        <li>
+            <div class="collapsible-header waves-light gradient-45deg-purple-deep-orange lightrn-1 white-text active">
+                <i class="material-icons ">assignment_ind</i>
+                CONTACT DETAILS
+                <span class="new badge"><b>@Model.Program.Patient.Person.Name.ToUpper()</b>, @Model.Program.TbmuNumber</span>
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">account_circle</i>
+                        @Html.TextBoxFor(model => model.Contact.Person.Name)
+                        <label for="icon_prefix">Full Names</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">bubble_chart</i>
+                        @Html.DropDownListFor(model => model.Contact.Person.Gender, Model.Gender)
+                        <label for="gender">Gender</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.DateOfBirth, new { placeholder = "DD/MM/YYYY" })
+                        <label for="password">Date of Birth</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">settings_phone</i>
+                        @Html.TextBoxFor(model => model.Contact.Person.Address.Telephone)
+                        <label for="icon_prefix">Telephone</label>
+                    </div>
+
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">perm_contact_calendar</i>
+                        @Html.TextAreaFor(model => model.Contact.Person.Address.Address, new { @class = "materialize-textarea" })
+                        <label for="message">Address</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="1">Next</a>
+                </div>
+            </div>
+        </li>
+
+        <li>
+            <div class="collapsible-header gradient-45deg-light-blue-cyan white-text">
+                <i class="material-icons">assignment</i>
+                SCREENING DETAILS
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">location_on</i>
+                        @Html.DropDownListFor(model => model.Contact.Location.Id, Model.Location)
+                        <label for="gender">Location with Index</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">code</i>
+                        @Html.DropDownListFor(model => model.Contact.Relation.Id, Model.Relation)
+                        <label for="gender">Relation to Index</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">swap_horiz</i>
+                        @Html.DropDownListFor(model => model.Contact.Proximity.Id, Model.Proximity)
+                        <label for="gender">Proximity to Index</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">devices</i>
+                        @Html.DropDownListFor(model => model.Contact.DiseaseAfter.Id, Model.DeseaseAfterExposure)
+                        <label for="gender">Disease after Exposure</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">screen_share</i>
+                        @Html.DropDownListFor(model => model.Contact.PrevouslyTreated.Id, Model.PreviouslyTreated)
+                        <label for="gender">Previously Treated for TB</label>
+                    </div>
+
+                    <div class="col s12" style="padding-left:55px;">
+                        @Html.CheckBoxFor(model => model.Examination.Cough, new { @class = "filled-in" })
+                        <label for="Examination_Cough">Cough?</label>
+                    </div>
+
+                    <div class="col s12" style="padding-left:55px;">
+                        @Html.CheckBoxFor(model => model.Examination.Fever, new { @class = "filled-in" })
+                        <label for="Examination_Fever">Fever?</label>
+                    </div>
+
+                    <div class="col s12" style="padding-left:55px;">
+                        @Html.CheckBoxFor(model => model.Examination.WeightLoss, new { @class = "filled-in" })
+                        <label for="Examination_WeightLoss">Weight Loss?</label>
+                    </div>
+
+                    <div class="col s12" style="padding-left:55px;">
+                        @Html.CheckBoxFor(model => model.Examination.NightSweat, new { @class = "filled-in" })
+                        <label for="Examination_NightSweat">Night Sweat?</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0;padding-left: 55px;">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="0">Prev</a>
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="2">Next</a>
+                </div>
+            </div>
+        </li>
+
+        <li>
+            <div class="collapsible-header gradient-45deg-red-pink accent-2 white-text">
+                <i class="material-icons">assignment</i>
+                EXAMINATIONS/INVESTIGATIONS
+            </div>
+            <div class="collapsible-body">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">touch_app</i>
+                        @Html.DropDownListFor(model => model.Examination.LTBI.Id, Model.LatentTBI)
+                        <label>LTBI (Skin Test)</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">colorize</i>
+                        @Html.DropDownListFor(model => model.Examination.SputumSmear.Id, Model.SputumSmearItems)
+                        <label>Sputum Smear</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">device_hub</i>
+                        @Html.DropDownListFor(model => model.Examination.GeneXpert.Id, Model.GeneXpertItems)
+                        <label>GeneXpert Exam</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">compare</i>
+                        @Html.DropDownListFor(model => model.Examination.XrayExam.Id, Model.XrayExamItems)
+                        <label>X-Ray Exam</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.Examination.PreventiveTherapy, new { placeholder = "Regimen" })
+                        <label for="icon_prefix">Preventive Therapy</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">event</i>
+                        @Html.TextBoxFor(model => model.NextVisit)
+                        <label for="icon_prefix">Next Screening</label>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:0;padding-left:55px;">
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="1">Prev</a>
+                    <a class="btn submit waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow right" id="submit_form">Submit</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    @Html.HiddenFor(model => model.Program.Id)
+    @Html.HiddenFor(model => model.Program.DateEnrolled)
+}

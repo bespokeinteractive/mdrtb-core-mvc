@@ -106,6 +106,7 @@ namespace EtbSomalia.Controllers
             model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
             model.Examinations = core.GetRecentExaminations(model.Program);
+            model.Contacts = ps.GetContacts(model.Patient);
 
             return View(model);
         }
@@ -226,8 +227,6 @@ namespace EtbSomalia.Controllers
 
             return "";
         }
-
-
 
         public Boolean IsNumber(String s)
         {

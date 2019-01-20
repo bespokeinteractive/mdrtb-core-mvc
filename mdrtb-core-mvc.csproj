@@ -15,9 +15,17 @@
     <Folder Include="Services\" />
     <Folder Include="ViewModel\" />
     <Folder Include="Views\Patient\" />
+    <Folder Include="Views\Contact\" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Views\Patient\Search.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\data-tables\images\sort_asc.png" />
+    <Content Remove="wwwroot\lib\data-tables\js\jquery.dataTables.min.js" />
+    <Content Remove="wwwroot\lib\data-tables\js\jquery.dataTables.js" />
+    <Content Remove="wwwroot\lib\data-tables\js\jquery.js" />
+    <Content Remove="wwwroot\lib\data-tables\data-tables-script.js" />
   </ItemGroup>
 </Project>

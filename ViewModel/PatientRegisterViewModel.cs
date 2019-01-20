@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EtbSomalia.Models;
+using EtbSomalia.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EtbSomalia.ViewModel
@@ -33,7 +34,7 @@ namespace EtbSomalia.ViewModel
             Patient = new Patient();
             Program = new PatientProgram();
 
-            Gender = InitializeGender();
+            Gender = new PatientService().InitializeGender();
 
             Facilities = new List<SelectListItem>();
             TBCategory = new List<SelectListItem>();
@@ -45,12 +46,6 @@ namespace EtbSomalia.ViewModel
             DateEnrolled = DateTime.Now.ToString("d MMMM, yyyy");
         }
 
-        private List<SelectListItem> InitializeGender(){
-            List<SelectListItem> gender = new List<SelectListItem>();
-            gender.Add(new SelectListItem("Male", "male"));
-            gender.Add(new SelectListItem("Female", "female"));
 
-            return gender;
-        }
     }
 }

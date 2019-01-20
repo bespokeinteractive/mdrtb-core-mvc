@@ -12,6 +12,7 @@ namespace EtbSomalia.ViewModel
         public Vitals LatestVitals { get; set; }
 
         public List<Examinations> Examinations { get; set; }
+        public List<Contacts> Contacts { get; set; }
 
         public PatientProfileViewModel() {
             Patient = new Patient();
@@ -20,6 +21,7 @@ namespace EtbSomalia.ViewModel
 
             LatestVitals = new Vitals();
             Examinations = new List<Examinations>();
+            Contacts = new List<Contacts>();
         }
     }
 }

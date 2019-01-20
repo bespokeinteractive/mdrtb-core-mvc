@@ -9,6 +9,10 @@
             window.location.href = "/patients/search?q=" + searchString;
         }
 
+    }); 
+
+    jq('li.collection-item.dismissable p.contacts').click(function(){
+        window.location.href = jq(this).data('url');
     });
 
 });

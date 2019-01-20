@@ -8,10 +8,13 @@ namespace EtbSomalia.Models
         public long Id { get; set; }
         public Person Person { get; set; }
 
-        public Patient()
-        {
+        public Patient() {
             Id = 0;
             Person = new Person();
+        }
+
+        public Patient(long idnt) : this() {
+            Id = idnt;
         }
 
         public string GetName() {
@@ -19,27 +22,11 @@ namespace EtbSomalia.Models
         }
 
         public string GetAge(){
-            int age = DateTime.Now.Year - Person.DateOfBirth.Year;
-            if (Person.DateOfBirth > DateTime.Now.AddYears(-age)) age--;
-
-            int mnth = Convert.ToInt32(DateTime.Now.Subtract(Person.DateOfBirth).Days / (365.25 / 12));
-            int days = Convert.ToInt32((DateTime.Now - Person.DateOfBirth).TotalDays);
-
-            if (age > 2)
-                return age + "yrs";
-            if (mnth > 2)
-                return mnth + "mnths";
-            if (days == 1)
-                return "1 day";
-            return days + "days";
+            return Person.GetAge();
         }
 
-        public int GetAgeInYears()
-        {
-            int age = DateTime.Now.Year - Person.DateOfBirth.Year;
-            if (Person.DateOfBirth > DateTime.Now.AddYears(-age)) age--;
-
-            return age;
+        public int GetAgeInYears() {
+            return Person.GetAgeInYears();
         }
 
         public Patient Save(){

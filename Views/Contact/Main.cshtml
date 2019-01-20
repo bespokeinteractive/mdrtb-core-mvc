@@ -1,0 +1,159 @@
+﻿@model EtbSomalia.ViewModel.ContactMainViewModel
+@{
+    ViewData["Title"] = Model.Contact.Person.Name;
+}
+
+<style>
+    h4 {
+        padding-left: 12px;
+    }
+
+    .card .card-title {
+        font-size: 20px;
+        font-weight: 300;
+    }
+
+    .card-title.activator.grey-text.text-darken-4.truncate {
+        padding-top: 10px;
+        margin-bottom: 0px;
+    }
+
+    .activator.grey-text.text-darken-1 {
+        font-size: 1.1em;
+    }
+
+    #profile-card .card-content p {
+        color: #555;
+        font-size: 1.1em;
+        margin: 4px 0;
+    }
+
+    .card-content p span {
+        vertical-align: super;
+    }
+
+    #profile-card .card-content {
+        padding: 15px 20px 5px 20px;
+    }
+
+    .preview .body .col-md-1 {
+        width: 5%;
+    }
+
+    .preview .body .col-md-3 {
+        width: 29%;
+    }
+
+    .preview .body .col-md-5 {
+        width: 37%;
+    }
+    nav .input-field input:focus, nav .input-field input[type=text]:valid, nav .input-field input[type=password]:valid, nav .input-field input[type=email]:valid, nav .input-field input[type=url]:valid, nav .input-field input[type=date]:valid {
+        border-bottom: 1px solid #9e9e9e;
+    }
+    table td {
+        padding: 5px;
+    }
+    table td a {
+        color: #333;
+    }
+    table td a:hover {
+        color: #448AFF;
+    }
+    td i.material-icons {
+        height: 0px;
+        line-height: 0px;
+    }
+    #invoice-table th:nth-child(6),
+    #invoice-table td:nth-child(6),
+    #invoice-table th:nth-child(7),
+    #invoice-table td:nth-child(7) {
+        text-align: right;
+    }
+    td i.material-icons {
+        height: 0px;
+        line-height: 0px;
+    }
+</style>
+
+<script type="text/javascript">
+    jq(function() {
+        String.prototype.toAccounting = function() {
+            var str =  parseFloat(this).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+
+            if (str.charAt(0) == '-'){
+                return '(' + str.substring(1,40) + ')';
+            }
+            else {
+                return str;
+            }
+        };
+    });
+</script>
+
+<div class="rows">
+    <!--Navigation Column-->
+    <div class="col-md-4" style="padding-right:5px;">
+        <div id="profile-card" class="card">
+            <div class="card-image waves-effect waves-block waves-light">
+                <img class="activator" src="~/images/gallary/11.png" alt="user bg">
+            </div>
+
+            <div class="card-content">
+                <img src="~/images/avatar/avatar-10.png" alt="" class="circle responsive-img activator card-profile-image grey lighten-3 padding-2">
+                <a class="btn-floating activator btn-move-up waves-effect waves-light red accent-2 z-depth-5 right">
+                    <i class="material-icons">edit</i>
+                </a>
+                <div class="card-title activator grey-text text-darken-4 truncate">@Model.Contact.Person.Name</div>
+                <div class="activator"><a class="grey-text text-darken-1">@Model.Contact.Identifier</a></div>
+                <hr style="margin: 10px 0;" />
+                <p class="truncate">
+                    <i class="material-icons">assignment_ind</i>
+                    <span>@Model.Contact.Person.Address.Address</span>
+                </p>
+
+                <p>
+                    <i class="material-icons">perm_phone_msg</i>
+                    <span>@Model.Contact.Person.Address.Telephone</span>
+                </p>
+
+                <p>
+                    <i class="material-icons">event</i>
+                    <span>@DateTime.Now.ToString("dd/MM/yyyy")</span>
+                </p>
+
+                <p style="display:none;">
+                    <i class="material-icons">turned_in</i>
+                    <span>$ @string.Format("{0:N}", 0)</span>
+                </p>
+            </div>
+
+            <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4 truncate">
+                    N/A
+                    <i class="material-icons right">close</i>
+                </span>
+                <p>Here you can edit details about this customer</p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Column -->
+    <div class="col-md-8" style="padding: 0; margin-top: 7px; margin-bottom: 0px;">
+        <nav class="navbar nav-extended">
+            <div class="nav-content preview" style="border: 1px solid rgba(0,0,0,0.1); margin-top: -5px;">
+                <ul class="tabs">
+                    <li class="tab summ"><a href="#summary" class="active">DETAILS</a></li>
+                </ul>
+
+                <!-- SUMMARY TAB -->
+                <div id="summary" class="body">
+                    Loading...
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Finally -->
+    <div class="clear both"></div>
+</div>

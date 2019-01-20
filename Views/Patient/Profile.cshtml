@@ -22,7 +22,7 @@
         width: 120px;
     }
     td, th {
-        padding: 3px 15px;
+        padding: 6px 15px;
     }
     td a.material-icons.right.blue-text {
         display: inline-block;
@@ -45,7 +45,19 @@
         top: 3px;
         right: 0px;
     }
+    #contacts-table th {
+        padding: 10px;
+    }
+    td i.material-icons {
+        height: 0px;
+        line-height: 0px;
+    }
 </style>
+
+<script>
+    var xProg = @Model.Program.Id
+</script>
+<script src="~/js/patient-profile-script.js"></script>
 
 <div id="profile-page-header" class="card" style="margin-bottom:0; border-radius:0">
     <div class="card-image waves-effect waves-block waves-light">
@@ -85,6 +97,7 @@
                 @Model.Patient.Person.Name
                 <i class="material-icons right">close</i>
             </span>
+
             <span>
                 <i class="material-icons cyan-text text-darken-2 left">perm_identity</i> @Model.Program.TbmuNumber
             </span>
@@ -282,7 +295,41 @@
                 </div>
 
                 <div id="contacts" class="body">
-                    No Data Available
+                    <table id="contacts-table" class="bordered" cellspacing="0">
+                        <thead class="deep-orange lighten-1 white-text">
+                            <tr>
+                                <th>IDNT</th>
+                                <th>NAME</th>
+                                <th>GENDER</th>
+                                <th>AGE</th>
+                                <th>STATUS</th>
+                                <th>INDEX</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contact in Model.Contacts)
+                            {
+                                <tr>
+                                    <td>@contact.Identifier</td>
+                                    <td><a class="blue-text" href="/contacts/@contact.Id">@contact.Person.Name.ToUpper()</a></td>
+                                    <td>@contact.Person.Gender.ToUpper()</td>
+                                    <td>@contact.GetAge().ToUpper()</td>
+                                    <td>@contact.Status.Name.ToUpper()</td>
+                                    <td>@contact.Index.TbmuNumber</td>
+                                    <td><i class="material-icons red-text">delete_forever</i></td>
+                                </tr>
+                            }
+
+                            @if (Model.Contacts.Count.Equals(0)){
+                                <tr>
+                                    <td colspan="7">NO CONTACTS FOUND</td>
+                                </tr> 
+                            }
+                        </tbody>
+                    </table>
+
+                    <a style="margin-top:20px" class="btn btn-add-contacts waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow">ADD CONTACT</a>
                 </div>
             </div>
         </nav>

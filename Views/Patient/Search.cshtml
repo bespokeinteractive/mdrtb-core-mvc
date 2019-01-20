@@ -39,7 +39,7 @@
                     row += "<td>" + search.patient.person.gender + "</td>";
                     row += "<td>" + search.facility + "</td>";
                     row += "<td>" + search.status + "</td>";
-                    row += "<td>&nbsp;</td>";
+                    row += "<td><a class='material-icons tiny-box grey-text right'>border_color</a></td>";
 
                     row += "</tr>";
                     jq('#search-table tbody').append(row);
@@ -67,6 +67,16 @@
     }
     td, th {
         padding: 10px;
+    }
+    a.material-icons.tiny-box {
+        display: block;
+        font-size: 14px;
+        height: 14px;
+        line-height: 1;
+        cursor: pointer;
+    }
+    a.material-icons:hover {
+        color: #2196F3 !important;
     }
 </style>
 
