@@ -1,4 +1,7 @@
 ﻿using System;
+using EtbSomalia.Services;
+using Microsoft.AspNetCore.Http;
+
 namespace EtbSomalia.Models
 {
     public class Users
@@ -10,12 +13,13 @@ namespace EtbSomalia.Models
         public string Password { get; set; }
         public bool Enabled { get; set; }
         public bool ToChange { get; set; }
-        public long AdminLevel { get; set; }
+        public int AdminRole { get; set; }
+        public int AdminLevel { get; set; }
         public string AccessLevel { get; set; }
         public string Message { get; set; }
+        public Roles Role { get; set; }
 
-        public Users()
-        {
+        public Users() {
             Id = 0;
             Name = "";
             Email = "";
@@ -23,10 +27,12 @@ namespace EtbSomalia.Models
             Password = "";
             Enabled = true;
             ToChange = false;
+            AdminRole = 0;
             AdminLevel = 0;
             AccessLevel = "";
-
             Message = "";
+
+            Role = new Roles();
         }
 
         public Users(long idnt) : this() {
@@ -36,6 +42,14 @@ namespace EtbSomalia.Models
         public Users(long idnt, string name) : this() {
             Id = idnt;
             Name = name;
+        }
+
+        public Users Save(HttpContext context) {
+            return new UserService(context).SaveUser(this);
+        }
+
+        public Users UpdatePassword() {
+            return new UserService().UpdateUserPassword(this);
         }
     }
 }

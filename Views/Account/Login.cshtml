@@ -9,12 +9,10 @@
     .row {
         margin: 30px;
     }
-
     .login-div {
         border-top: solid 20px #FF7F2B;
         padding: 0px;
     }
-
     .login-border {
         border-left: solid 2px #efefef;
         border-right: solid 2px #efefef;
@@ -22,109 +20,47 @@
         min-height: 500px;
         padding: 20px;
     }
-
     .login-form-descr {
         margin-bottom: 40px;
     }
-
     .login-form-reset {
         margin-top: 50px;
     }
-
     .input-field .prefix {
         margin-top: 15px;
     }
-
     .input-field div {
         margin-left: 45px;
     }
-
     form button.btn {
         margin-top: 10px;
         margin-left: 45px;
     }
-
     input.error {
         border-bottom: 2px solid #FF4081 !important;
     }
-
     div.col-md-8 img {
         width: 100%;
     }
-
     body {
         background-color: #fff;
+    }
+    .modal.modal-fixed-footer .modal-content{
+        border-radius: 0;
     }
 </style>
 
 <script>
-$(function() {
-        //Username Blurred
-        jq('#Username').blur(function() {
-            var un = jq(this).val();
-            var dv = jq(this).closest('div').find('div');
-            if (un.length == 0) {
-                dv.html("Enter a username");
-                jq(this).addClass('error');
-            }
-            else if (un.length < 4) {
-                dv.html("Enter at least 4 characters");
-                jq(this).addClass('error');
-            }
-            else {
-                dv.html("");
-                jq(this).removeClass('error');
-            }
-        });
+    var messages = "@Model.Message";
+    var tochange = @Model.ToChange;
+</script>
 
-        //Password Blurred
-        jq('#Password').blur(function() {
-            var pw = jq(this).val();
-            var dv = jq(this).closest('div').find('div');
-            if (pw.length == 0) {
-                dv.html("Enter a password");
-                jq(this).addClass('error');
-            }
-            else if (pw.length < 4) {
-                dv.html("Enter at least 4 characters");
-                jq(this).addClass('error');
-            }
-            else {
-                dv.html("");
-                jq(this).removeClass('error');
-            }
-        });
-
-        //Validate Form before Submit
-        jq('form a').on('click', function(e) {
-            jq('#Username').blur();
-            jq('#Password').blur();
-
-            var un = jq('#User_Username');
-            var pw = jq('#User_Password');
-
-            if (un.hasClass('error') || pw.hasClass('error')) {
-                return;
-            }
-
-            jq("form").submit();
-        });
-
-        if ("@Model.Message" !== ""){
-            setTimeout(
-              function()
-              {
-                Materialize.toast('<span>@Model.Message</span><a class="btn-flat yellow-text" href="#!">Try Again<a>', 3000);
-              }, 
-            1000);
-        }
-
-});</script>
+<script src="~/js/account-login-script.js"></script>
 
 <div class="row">
     <div class="col-md-8">
         <div>
-            <img src="~/images/igrp_web_v4.pNg" alt="Infographic" />@Model.Message
+            <img src="~/images/igrp_web_v4.pNg" alt="Infographic" />
         </div>
     </div>
 
@@ -150,10 +86,49 @@ $(function() {
                 </div>
 
                 @Html.HiddenFor(model => model.ReturnUrl)
+                @Html.HiddenFor(model => model.NewPass)
                 <button type="submit" class="waves-effect waves-light btn gradient-45deg-deep-orange-orange z-depth-4 mr-1">Login</button>
 
                 <div class="login-form-reset">Click <a href="#">here</a> if you have forgotten either your username or password, or not able to access the system.</div>
             }
         </div>
+    </div>
+</div>
+
+<div id="changepw" class="modal modal-fixed-footer" style="width: 500px">
+    <div class="modal-content">
+        <h4>Change Password</h4>
+        <p>Specify the below Parameters to change your password</p>
+        <div>
+            <div class="input-field">
+                <i class="material-icons prefix">local_gas_station</i>
+                <input type="text" value="@Model.User.Username" />
+                <label>Username</label>
+            </div>
+
+            <div class="input-field">
+                <i class="material-icons prefix">class</i>
+                <input id="OldPass" type="password" value="@Model.User.Password" />
+                <label>Password</label>
+            </div>
+            <hr />
+
+            <div class="input-field">
+                <i class="material-icons prefix">event_note</i>
+                <input id="TypePass" type="password" />
+                <label>New Password</label>
+            </div>
+
+            <div class="input-field">
+                <i class="material-icons prefix">event_note</i>
+                <input id="ConfirmPass" type="password" />
+                <label>Confirm Password</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+        <a href="#!" class="modal-action modal-submit modal-post waves-effect waves-green btn-flat ">Agree</a>
     </div>
 </div>

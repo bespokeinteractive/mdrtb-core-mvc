@@ -11,6 +11,7 @@ using EtbSomalia.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -52,14 +53,21 @@ namespace EtbSomalia.Controllers
                     return View(model);
                 }
 
-                if(user.ToChange){
-                    //Redirect Page to Change Password, Before Contininuing.
-                }
-
                 if (!Cryto.Decrypt(user.Password).Equals(Input.User.Password)){
                     ModelState.AddModelError(string.Empty, "Login Failed. Invalid password.");
                     model.Message = "Login Failed. Invalid password.";
                     return View(model);
+                }
+
+                if (string.IsNullOrEmpty(model.NewPass)) {
+                    if (user.ToChange) { 
+                        model.ToChange = 1;
+                        return View(model);                    
+                    }
+                }
+                else {
+                    user.Password = Cryto.Encrypt(model.NewPass);
+                    user.UpdatePassword();
                 }
 
                 var claims = new List<Claim>
@@ -97,6 +105,27 @@ namespace EtbSomalia.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
+        }
+
+        [Authorize]
+        [Route("administrator/users")]
+        public IActionResult Users() {
+            List<Users> users = new List<Users>(new UserService(HttpContext).GetUsers());
+            return View(users);
+        }
+
+        [Authorize]
+        [Route("administrator/users/add")]
+        public IActionResult UsersAdd()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [Route("administrator/users/edit/{idnt}")]
+        public IActionResult UsersEdit(long idnt)
+        {
+            return View();
         }
     }
 }
