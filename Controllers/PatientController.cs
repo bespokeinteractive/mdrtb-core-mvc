@@ -123,10 +123,8 @@ namespace EtbSomalia.Controllers
             return Json(ps.SearchPatients(qString));
         }
 
-
         [HttpPost]
-        public IActionResult RegisterNewPatient()
-        {
+        public IActionResult RegisterNewPatient() {
             Patient patient = RegisterModel.Patient;
             patient.Person.DateOfBirth = DateTime.ParseExact(RegisterModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             patient.Save();

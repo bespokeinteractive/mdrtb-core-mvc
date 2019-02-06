@@ -9,20 +9,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EtbSomalia.Services
 {
-
     public class CoreService
     {
-        private int dbo { get; set; }
-        private string dba { get; set; }
+        private int Actor { get; set; }
+        private string Username { get; set; }
 
         public CoreService() {}
         public CoreService(HttpContext context) {
-            dbo = int.Parse(context.User.FindFirst(ClaimTypes.Dsa).Value);
-            dba = context.User.FindFirst(ClaimTypes.Dns).Value;
+            Actor = int.Parse(context.User.FindFirst(ClaimTypes.Actor).Value);
+            Username = context.User.FindFirst(ClaimTypes.UserData).Value;
         }
 
-        public List<SelectListItem> GetIEnumerable(string query)
-        {
+        public List<SelectListItem> GetIEnumerable(string query) {
             List<SelectListItem> ienumarable = new List<SelectListItem>();
             SqlServerConnection conn = new SqlServerConnection();
             SqlDataReader dr = conn.SqlServerConnect(query);
@@ -49,8 +47,7 @@ namespace EtbSomalia.Services
             }
         }
 
-        public string GetNextTbmuNumber(Facility facility, DateTime DateEnrolled)
-        {
+        public string GetNextTbmuNumber(Facility facility, DateTime DateEnrolled) {
             string prefix = GetFacilityPrefix(facility);
             long Identity = 0;
 
@@ -111,7 +108,7 @@ namespace EtbSomalia.Services
         }
 
         public List<SelectListItem> GetFacilitiesIEnumerable() {
-            return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' ORDER BY fc_name");
+            return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' AND fc_idnt IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ") ORDER BY fc_name");
         }
 
         public Regimen GetRegimen(Int64 idnt) {
@@ -335,7 +332,7 @@ namespace EtbSomalia.Services
         //Data Write
         public PatientProgram CreatePatientProgram(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();
-            pp.Id = conn.SqlServerUpdate("INSERT INTO PatientProgram (pp_tbmu, pp_patient, pp_facility, pp_progam, pp_category, pp_type, pp_confirmation, pp_enrolled_on, pp_created_by) output INSERTED.pp_idnt VALUES ('" + pp.TbmuNumber + "', " + pp.Patient.Id + ", " + pp.Facility.Id + ", " + pp.Program.Id + ", " + pp.Category.Id + ", " + pp.Type.Id + ", " + pp.Confirmation.Id + ", '" + pp.DateEnrolled.Date + "', " + dbo + ")");
+            pp.Id = conn.SqlServerUpdate("INSERT INTO PatientProgram (pp_tbmu, pp_patient, pp_facility, pp_progam, pp_category, pp_type, pp_confirmation, pp_enrolled_on, pp_created_by) output INSERTED.pp_idnt VALUES ('" + pp.TbmuNumber + "', " + pp.Patient.Id + ", " + pp.Facility.Id + ", " + pp.Program.Id + ", " + pp.Category.Id + ", " + pp.Type.Id + ", " + pp.Confirmation.Id + ", '" + pp.DateEnrolled.Date + "', " + Actor + ")");
 
             conn = new SqlServerConnection();
             conn.SqlServerUpdate("UPDATE PatientProgram SET pp_default=0 WHERE pp_patient=" + pp.Patient.Id + " AND pp_idnt<>" + pp.Id);
@@ -352,7 +349,7 @@ namespace EtbSomalia.Services
 
         public PatientRegimen SavePatientRegimen(PatientRegimen pr) {
             SqlServerConnection conn = new SqlServerConnection();
-            pr.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pr_idnt FROM PatientRegimens WHERE pr_idnt=" + pr.Id + ") BEGIN INSERT INTO PatientRegimens (pr_program, pr_regimen, pr_started_on, pr_added_by) output INSERTED.pr_idnt VALUES (" + pr.Program.Id + ", " + pr.Regimen.Id + ", '" + pr.StartedOn.Date + "', " + dbo + ") END ELSE BEGIN UPDATE PatientRegimens SET pr_regimen=" + pr.Regimen.Id + ", pr_started_on='" + pr.StartedOn.Date + "' output INSERTED.pr_idnt WHERE pr_idnt=" + pr.Id + " END");
+            pr.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pr_idnt FROM PatientRegimens WHERE pr_idnt=" + pr.Id + ") BEGIN INSERT INTO PatientRegimens (pr_program, pr_regimen, pr_started_on, pr_added_by) output INSERTED.pr_idnt VALUES (" + pr.Program.Id + ", " + pr.Regimen.Id + ", '" + pr.StartedOn.Date + "', " + Actor + ") END ELSE BEGIN UPDATE PatientRegimens SET pr_regimen=" + pr.Regimen.Id + ", pr_started_on='" + pr.StartedOn.Date + "' output INSERTED.pr_idnt WHERE pr_idnt=" + pr.Id + " END");
 
             conn = new SqlServerConnection();
             conn.SqlServerUpdate("UPDATE PatientRegimens SET pr_default=0 WHERE pr_program=" + pr.Program.Id + " AND pr_idnt<>" + pr.Id);
@@ -362,7 +359,7 @@ namespace EtbSomalia.Services
 
         public PatientExamination SavePatientExamination(PatientExamination px) {
             SqlServerConnection conn = new SqlServerConnection();
-            px.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pe_idnt FROM PatientExamination WHERE pe_idnt=" + px.Id + ") BEGIN INSERT INTO PatientExamination (pe_program, pe_visit, pe_labno, pe_weight, pe_height, pe_muac, pe_bmi, pe_sputum_exam, pe_sputum_date, pe_genexpert_exam, pe_genexpert_date, pe_hiv_exam, pe_hiv_date, pe_xray_exam, pe_xray_date, pe_created_by) output INSERTED.pe_idnt VALUES (" + px.Program.Id + ", " + px.Visit.Id + ", '" + px.LabNo + "', " + px.Weight + ", " + px.Height + ", " + px.MUAC + ", " + px.BMI + ", " + px.SputumSmear.Id + ", '" + px.SputumSmearDate + "', " + px.GeneXpert.Id + ", '" + px.GeneXpertDate + "', " + px.HivExam.Id + ", '" + px.HivExamDate + "', " + px.XrayExam.Id + ", '" + px.XrayExamDate + "', " + dbo + ") END ELSE BEGIN UPDATE PatientExamination SET pe_labno='" + px.LabNo + "' pe_weight=" + px.Weight + ", pe_height=" + px.Height + ", pe_muac=" + px.MUAC + ", pe_bmi=" + px.BMI + ", pe_sputum_exam=" + px.SputumSmear.Id + ", pe_sputum_date='" + px.SputumSmearDate + "', pe_genexpert_exam=" + px.GeneXpert.Id + ", pe_genexpert_date='" + px.GeneXpertDate + "', pe_hiv_exam=" + px.HivExam.Id + ", pe_hiv_date='" + px.HivExamDate + "', pe_xray_exam=" + px.XrayExam.Id + ", pe_xray_date='" + px.XrayExamDate + "' output INSERTED.pe_idnt WHERE pe_idnt=" + px.Id + " END");
+            px.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pe_idnt FROM PatientExamination WHERE pe_idnt=" + px.Id + ") BEGIN INSERT INTO PatientExamination (pe_program, pe_visit, pe_labno, pe_weight, pe_height, pe_muac, pe_bmi, pe_sputum_exam, pe_sputum_date, pe_genexpert_exam, pe_genexpert_date, pe_hiv_exam, pe_hiv_date, pe_xray_exam, pe_xray_date, pe_created_by) output INSERTED.pe_idnt VALUES (" + px.Program.Id + ", " + px.Visit.Id + ", '" + px.LabNo + "', " + px.Weight + ", " + px.Height + ", " + px.MUAC + ", " + px.BMI + ", " + px.SputumSmear.Id + ", '" + px.SputumSmearDate + "', " + px.GeneXpert.Id + ", '" + px.GeneXpertDate + "', " + px.HivExam.Id + ", '" + px.HivExamDate + "', " + px.XrayExam.Id + ", '" + px.XrayExamDate + "', " + Actor + ") END ELSE BEGIN UPDATE PatientExamination SET pe_labno='" + px.LabNo + "' pe_weight=" + px.Weight + ", pe_height=" + px.Height + ", pe_muac=" + px.MUAC + ", pe_bmi=" + px.BMI + ", pe_sputum_exam=" + px.SputumSmear.Id + ", pe_sputum_date='" + px.SputumSmearDate + "', pe_genexpert_exam=" + px.GeneXpert.Id + ", pe_genexpert_date='" + px.GeneXpertDate + "', pe_hiv_exam=" + px.HivExam.Id + ", pe_hiv_date='" + px.HivExamDate + "', pe_xray_exam=" + px.XrayExam.Id + ", pe_xray_date='" + px.XrayExamDate + "' output INSERTED.pe_idnt WHERE pe_idnt=" + px.Id + " END");
 
             return px;
         }

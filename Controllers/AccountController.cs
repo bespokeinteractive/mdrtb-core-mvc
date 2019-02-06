@@ -23,7 +23,7 @@ namespace EtbSomalia.Controllers
         public LoginModel Input { get; set; }
 
         [BindProperty]
-        public AccountAddEditUsersViewModel UserEdit { get; set; }
+        public AccountUsersAddEditViewModel UserEdit { get; set; }
 
         [TempData]
         public string ErrorMessage { get; set; }
@@ -116,26 +116,29 @@ namespace EtbSomalia.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrator, SuperUser")]
+        [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator/users")]
         public IActionResult Users() {
             List<Users> users = new List<Users>(new UserService(HttpContext).GetUsers());
             return View(users);
         }
 
-        [Authorize]
-        [Route("administrator/users/add")]
-        public IActionResult UsersAdd(AccountAddEditUsersViewModel model) {
+        [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator/users/{idnt}")]
+        public IActionResult UsersView(long idnt, AccountUsersViewModel model, UserService service) {
+            model.User = service.GetUser(idnt);
+            
             return View(model);
         }
 
-        [Authorize]
-        [Route("administrator/users/{idnt}")]
-        public IActionResult UsersView(long idnt, UserService service) {
-            return View(service.GetUser(idnt));
+        [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator/users/add")]
+        public IActionResult UsersAdd(AccountUsersAddEditViewModel model) {
+            return View(model);
         }
 
-        [Authorize]
+
+        [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator/users/edit/{idnt}")]
         public IActionResult UsersEdit(long idnt) {
             return View();
@@ -144,6 +147,20 @@ namespace EtbSomalia.Controllers
         [AllowAnonymous]
         public int CheckIfUserExists(int usr_idnt, string usr_name) {
             return new UserService().CheckIfUserExists(new Users { Id = usr_idnt, Username = usr_name });
+        }
+
+        [AllowAnonymous]
+        public string ResetPassword(long usr_idnt) {
+            new Users(usr_idnt).ResetPassword();
+            return "success";
+        }
+
+        [AllowAnonymous]
+        public string EnableAccount(long usr_idnt, int usr_opts)
+        {
+            bool opts = usr_opts != 0;
+            new Users(usr_idnt).EnableAccount(opts);
+            return "success";
         }
 
         [HttpPost]

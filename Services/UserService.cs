@@ -24,7 +24,7 @@ namespace EtbSomalia.Services
             Users user = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt WHERE usr_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_lastaccess, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt WHERE usr_idnt=" + idnt);
             if (dr.Read()) {
                 user = new Users {
                     Id = Convert.ToInt64(dr[0]),
@@ -35,8 +35,9 @@ namespace EtbSomalia.Services
                     Enabled = Convert.ToBoolean(dr[5]),
                     AdminLevel = Convert.ToInt32(dr[6]),
                     AccessLevel = dr[7].ToString(),
-                    Password = dr[8].ToString(),
-                    Role = new Roles(Convert.ToInt64(dr[9]), dr[10].ToString())
+                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                    Password = dr[9].ToString(),
+                    Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                 };
             }
 
@@ -47,7 +48,7 @@ namespace EtbSomalia.Services
             Users user = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt WHERE log_username='" + username + "'");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_lastaccess, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt WHERE log_username='" + username + "'");
             if (dr.Read()) {
                 user = new Users {
                     Id = Convert.ToInt64(dr[0]),
@@ -58,8 +59,9 @@ namespace EtbSomalia.Services
                     Enabled = Convert.ToBoolean(dr[5]),
                     AdminLevel = Convert.ToInt32(dr[6]),
                     AccessLevel = dr[7].ToString(),
-                    Password = dr[8].ToString(),
-                    Role = new Roles(Convert.ToInt64(dr[9]), dr[10].ToString())
+                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                    Password = dr[9].ToString(),
+                    Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                 };
             }
 
@@ -70,7 +72,7 @@ namespace EtbSomalia.Services
             List<Users> users = new List<Users>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt ORDER BY usr_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT log_user, log_username, usr_name, usr_email, log_tochange, log_enabled, log_admin_lvl, log_access_lvl, log_lastaccess, log_password, rl_idnt, rl_name FROM Login INNER JOIN Users ON log_user=usr_idnt INNER JOIN Roles ON log_admin_role=rl_idnt ORDER BY usr_name");
             if (dr.HasRows) {
                 while (dr.Read()) {
                     users.Add(new Users {
@@ -82,8 +84,9 @@ namespace EtbSomalia.Services
                         Enabled = Convert.ToBoolean(dr[5]),
                         AdminLevel = Convert.ToInt32(dr[6]),
                         AccessLevel = dr[7].ToString(),
-                        Password = dr[8].ToString(),
-                        Role = new Roles(Convert.ToInt64(dr[9]), dr[10].ToString())
+                        LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                        Password = dr[9].ToString(),
+                        Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                     });
                 }
             }
@@ -133,9 +136,15 @@ namespace EtbSomalia.Services
             return user;
         }
 
-        public void UpdateUserPassword(Users user) {
+        public void EnableAccount(Users user, bool opts = true) {
             SqlServerConnection conn = new SqlServerConnection();
-            conn.SqlServerUpdate("UPDATE Login SET log_tochange=0, log_password='" + user.Password + "' WHERE log_user=" + user.Id);
+            conn.SqlServerUpdate("UPDATE Login SET log_enabled='" + opts + "' WHERE log_user=" + user.Id);
+        }
+
+        public void UpdateUserPassword(Users user, int toChange = 0)
+        {
+            SqlServerConnection conn = new SqlServerConnection();
+            conn.SqlServerUpdate("UPDATE Login SET log_tochange=" + toChange + ", log_password='" + user.Password + "' WHERE log_user=" + user.Id);
         }
 
         public void UpdateLastAccess(Users user) {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EtbSomalia.ViewModel
 {
-    public class AccountAddEditUsersViewModel
+    public class AccountUsersAddEditViewModel
     {
         private readonly CoreService service = new CoreService();
         private readonly UserService users = new UserService();
@@ -22,7 +22,7 @@ namespace EtbSomalia.ViewModel
         public IEnumerable<SelectListItem> Regions { get; set; }
         public List<UsersFacility> Facilities { get; set; }
 
-        public AccountAddEditUsersViewModel() {
+        public AccountUsersAddEditViewModel() {
             User = new Users();
             Facility = "";
             Agency = 0;

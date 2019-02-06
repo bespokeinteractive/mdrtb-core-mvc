@@ -1,4 +1,5 @@
 ﻿using System;
+using EtbSomalia.Extensions;
 using EtbSomalia.Services;
 using Microsoft.AspNetCore.Http;
 
@@ -17,6 +18,8 @@ namespace EtbSomalia.Models
         public int AdminLevel { get; set; }
         public string AccessLevel { get; set; }
         public string Message { get; set; }
+        public string LastSeen { get; set; }
+
         public Roles Role { get; set; }
 
         public Users() {
@@ -31,6 +34,7 @@ namespace EtbSomalia.Models
             AdminLevel = 0;
             AccessLevel = "";
             Message = "";
+            LastSeen = "N/A";
 
             Role = new Roles();
         }
@@ -48,8 +52,17 @@ namespace EtbSomalia.Models
             return new UserService(context).SaveUser(this);
         }
 
-        public void UpdatePassword() {
-            new UserService().UpdateUserPassword(this);
+        public void ResetPassword() {
+            this.Password = new CrytoUtilsExtensions().Encrypt("pass");
+            this.UpdatePassword(1);
+        }
+
+        public void EnableAccount(bool opts = true) {
+            new UserService().EnableAccount(this, opts);
+        }
+
+        public void UpdatePassword(int changepw = 0) {
+            new UserService().UpdateUserPassword(this, changepw);
         }
 
         public void UpdateLastAccess() {

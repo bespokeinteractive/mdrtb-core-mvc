@@ -28,5 +28,6 @@
     <Content Remove="wwwroot\lib\data-tables\js\jquery.dataTables.js" />
     <Content Remove="wwwroot\lib\data-tables\js\jquery.js" />
     <Content Remove="wwwroot\lib\data-tables\data-tables-script.js" />
+    <Content Remove="ViewModel\AccountUsersViewModel.json" />
   </ItemGroup>
 </Project>

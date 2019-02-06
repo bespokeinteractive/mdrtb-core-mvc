@@ -35,7 +35,7 @@ namespace EtbSomalia.Services
             Patient patient = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person = ps_idnt INNER JOIN PersonAddress ON ps_idnt = pa_person WHERE pt_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_idnt=" + idnt);
             if (dr.Read()) {
                 patient = new Patient {
                     Id = Convert.ToInt64(dr[0])
@@ -181,11 +181,11 @@ namespace EtbSomalia.Services
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "",false) + " ORDER BY ps_name");
-            if (dr.HasRows)
-            {
-                while (dr.Read())
-                {
+            string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", false);
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
+            if (dr.HasRows) {
+                while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
                     ps.Patient.Id = Convert.ToInt64(dr[0]);
                     ps.Patient.Person.Name = dr[1].ToString();
