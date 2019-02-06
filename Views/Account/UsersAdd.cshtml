@@ -1,3 +1,84 @@
-﻿@{
+﻿@model EtbSomalia.ViewModel.AccountAddEditUsersViewModel;
+
+@{
     ViewData["Title"] = "Add User";
+    string region = "";
 }
+
+<script src="~/js/account-users-add-script.js"></script>
+
+<div>
+    @using (Html.BeginForm("AddNewUser", "Account", FormMethod.Post))
+    {
+        <ul style="background-color:white" id="projects-collection" class="collection z-depth-1">
+            <li class="collection-item avatar">
+                <i class="material-icons red accent-2 circle">person_add</i>
+                <h5 class="collection-header deep-orange-text">User Details</h5>
+                <span class="right"></span>
+            </li>
+
+            <li class="collection-item">
+                <div class="row" style="margin-bottom:0px">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        @Html.TextBoxFor(model => model.User.Name)
+                        <label for="icon_prefix">Full Name</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">email</i>
+                        @Html.TextBoxFor(model => model.User.Email)
+                        <label for="icon_prefix">Email</label>
+                    </div>
+
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">assignment_ind</i>
+                        @Html.TextBoxFor(model => model.User.Username)
+                        <label for="icon_prefix">Username</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col-md-6">
+                        <i class="material-icons prefix">question_answer</i>
+                        @Html.DropDownListFor(model => model.User.Role.Id, Model.Roles)
+                        <label for="message">User Role</label>
+                    </div>
+
+                    <div id="agencyroles" class="input-field col s6" style="display:none">
+                        <i class="material-icons prefix">supervisor_account</i>
+                        @Html.DropDownListFor(model => model.Agency, Model.Agencies)
+                        <label for="icon_prefix">Agency</label>
+                    </div>
+
+                    <div id="regionroles" class="input-field col s6" style="display:none">
+                        <i class="material-icons prefix">public</i>
+                        @Html.DropDownListFor(model => model.Region, Model.Regions)
+                        <label for="icon_prefix">Region</label>
+                    </div>
+                </div>
+
+                <div id="facilityroles" class="row" style="display:none; padding-left:45px; margin-top:-20px;">
+                    @foreach (var item in Model.Facilities)
+                    {
+                        if (!region.Equals(item.Region))
+                        {
+                            region = item.Region;
+                            <h5 class="col s12">@region</h5>
+                        }
+
+                        <div class="col s3">
+                            <input type="checkbox" class="filled-in facilities" id="filled-in-box-l@(item.Id)" data-idnt="@item.Id">
+                            <label for="filled-in-box-l@(item.Id)">@item.Name</label>
+                        </div>
+                    }
+                </div>
+
+                <div style="margin: 0 0 200px 45px">
+                    @Html.HiddenFor(model => model.Facility)
+                    <a class="btn btn-post waves-effect waves-light gradient-45deg-purple-deep-orange">Save</a>
+                </div>
+            </li>
+        </ul>
+    }
+</div>

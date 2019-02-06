@@ -10,15 +10,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace EtbSomalia.Services
 {
 
-    public class MdrtbCoreService
+    public class CoreService
     {
-        public int dbo { get; set; }
-        public string dba { get; set; }
+        private int dbo { get; set; }
+        private string dba { get; set; }
 
-        public MdrtbCoreService() {}
-        public MdrtbCoreService(HttpContext context) {
+        public CoreService() {}
+        public CoreService(HttpContext context) {
             dbo = int.Parse(context.User.FindFirst(ClaimTypes.Dsa).Value);
             dba = context.User.FindFirst(ClaimTypes.Dns).Value;
+        }
+
+        public List<SelectListItem> GetIEnumerable(string query)
+        {
+            List<SelectListItem> ienumarable = new List<SelectListItem>();
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect(query);
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    ienumarable.Add(new SelectListItem {
+                        Value = dr[0].ToString(),
+                        Text = dr[1].ToString()
+                    });
+                }
+            }
+
+            return ienumarable;
         }
 
         public string GetFacilityPrefix(Facility facility) {
@@ -93,26 +110,8 @@ namespace EtbSomalia.Services
             return answers;
         }
 
-        public List<SelectListItem> GetFacilitiesIEnumerable()
-        {
-            List<SelectListItem> facilities = new List<SelectListItem>();
-            SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' ORDER BY fc_name");
-            if (dr.HasRows)
-            {
-                while (dr.Read())
-                {
-                    SelectListItem option = new SelectListItem
-                    {
-                        Value = dr[0].ToString(),
-                        Text = dr[1].ToString()
-                    };
-
-                    facilities.Add(option);
-                }
-            }
-
-            return facilities;
+        public List<SelectListItem> GetFacilitiesIEnumerable() {
+            return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' ORDER BY fc_name");
         }
 
         public Regimen GetRegimen(Int64 idnt) {
@@ -317,6 +316,22 @@ namespace EtbSomalia.Services
 
             return exams;
         }
+
+        public List<SelectListItem> GetRolesIEnumerable() {
+            return GetIEnumerable("SELECT rl_idnt, rl_name FROM Roles");
+        }
+
+        public List<SelectListItem> GetRegionsIEnumerable() {
+            return GetIEnumerable("SELECT rg_idnt, rg_name FROM Regions");
+        }
+
+        public List<SelectListItem> GetAgenciesIEnumerable() {
+            return GetIEnumerable("SELECT ag_idnt, ag_name FROM Agency WHERE ag_idnt<>0 ORDER BY ag_name");
+        }
+
+
+
+
         //Data Write
         public PatientProgram CreatePatientProgram(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();

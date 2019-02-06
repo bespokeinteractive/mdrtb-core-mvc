@@ -1,6 +1,10 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+@{
     ViewData["Title"] = "Home";
     ViewData["Sample"] = "[100, 50, 20, 40, 80, 50, 80, 123, 108, 70, 35, 90]";
+
+
+    int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
 }
 
 <script>
@@ -53,13 +57,14 @@
     .collection-item .row {
         margin: 0;
     }
+
     .collection .collection-item {
         padding: 10px 0px;
     }
+
     li.collection-item.dismissable p {
         padding: 8px 0 5px 35px;
         cursor: pointer;
-        font-weight: bold;
         font-size: 1.2em;
     }
 </style>
@@ -435,16 +440,20 @@
                 </p>
                 <span class="task-cat cyan">MDRTB Patients</span>
             </li>
-            <li class="collection-item dismissable">
-                <input type="checkbox" id="task2" />
-                <label for="task2">
-                    Followup on Budget.
-                    <a href="#" class="secondary-content">
-                        <span class="ultra-small">Monday</span>
-                    </a>
-                </label>
-                <span class="task-cat red accent-2">Garowe MDR</span>
-            </li>
+
+            @if (role.Equals(1) || role.Equals(2))
+            {
+                <li class="collection-item dismissable">
+                    <p class="contacts" data-url="/administrator/users">
+                        User Manager
+                        <span href="#" class="secondary-content">
+                            <span class="ultra-small">View</span>
+                        </span>
+                    </p>
+                    <span class="task-cat red accent-2">Administrator/Users</span>
+                </li>
+            }
+
             <li class="collection-item dismissable">
                 <input type="checkbox" id="task3" checked="checked" />
                 <label for="task3">
@@ -455,6 +464,7 @@
                 </label>
                 <span class="task-cat teal accent-4">Abduwak</span>
             </li>
+
             <li class="collection-item dismissable">
                 <input type="checkbox" id="task4" checked="checked" disabled="disabled" />
                 <label for="task4">New Nurse</label>

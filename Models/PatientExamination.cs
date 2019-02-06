@@ -59,7 +59,7 @@ namespace EtbSomalia.Models
         }
 
         public PatientExamination Save(HttpContext context) {
-            MdrtbCoreService service = new MdrtbCoreService(context);
+            CoreService service = new CoreService(context);
             return service.SavePatientExamination(this); 
         }
     }

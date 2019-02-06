@@ -80,20 +80,20 @@ namespace EtbSomalia.Models
         }
 
         public PatientProgram Create(HttpContext Context) {
-            MdrtbCoreService core = new MdrtbCoreService(Context);
+            CoreService core = new CoreService(Context);
             TbmuNumber = core.GetNextTbmuNumber(Facility, DateEnrolled);
 
             return core.CreatePatientProgram(this);
         }
 
         public PatientProgram UpdateIntake(HttpContext Context) {
-            MdrtbCoreService core = new MdrtbCoreService(Context);
+            CoreService core = new CoreService(Context);
 
             return core.UpdateIntake(this);
         }
 
         public int GetVisitsCount() {
-            return new MdrtbCoreService().GetPatientExaminationVisitsCount(this);
+            return new CoreService().GetPatientExaminationVisitsCount(this);
         }
 
         public int GetDaysInProgram() {

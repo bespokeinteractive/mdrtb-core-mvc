@@ -21,13 +21,14 @@ namespace EtbSomalia.Controllers
     {
         [BindProperty]
         public LoginModel Input { get; set; }
-        public string ReturnLink { get; set; }
+
+        [BindProperty]
+        public AccountAddEditUsersViewModel UserEdit { get; set; }
 
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public async Task<IActionResult> Login(LoginModel model, string ReturnUrl = "/")
-        {
+        public async Task<IActionResult> Login(LoginModel model, string ReturnUrl = "/") {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             model.ReturnUrl = ReturnUrl;
@@ -70,12 +71,15 @@ namespace EtbSomalia.Controllers
                     user.UpdatePassword();
                 }
 
-                var claims = new List<Claim>
-                {
+                user.UpdateLastAccess();
+
+                var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, user.Name),
-                    new Claim(ClaimTypes.Dsa, user.Id.ToString()),
-                    new Claim(ClaimTypes.Dns, user.Username),
-                    new Claim(ClaimTypes.Role, "Administrator"),
+                    new Claim(ClaimTypes.Actor, user.Id.ToString()),
+                    new Claim(ClaimTypes.UserData, user.Username),
+                    new Claim(ClaimTypes.Role, user.Role.Name),
+                    new Claim(ClaimTypes.Locality, user.Role.Id.ToString()),
+                    new Claim(ClaimTypes.Thumbprint, user.AdminRole.ToString()),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(
@@ -107,7 +111,12 @@ namespace EtbSomalia.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        [Authorize]
+        public IActionResult AccessDenied(string ReturnUrl = "") {
+            ViewData["ReturnUrl"] = ReturnUrl;
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator, SuperUser")]
         [Route("administrator/users")]
         public IActionResult Users() {
             List<Users> users = new List<Users>(new UserService(HttpContext).GetUsers());
@@ -116,16 +125,43 @@ namespace EtbSomalia.Controllers
 
         [Authorize]
         [Route("administrator/users/add")]
-        public IActionResult UsersAdd()
-        {
-            return View();
+        public IActionResult UsersAdd(AccountAddEditUsersViewModel model) {
+            return View(model);
+        }
+
+        [Authorize]
+        [Route("administrator/users/{idnt}")]
+        public IActionResult UsersView(long idnt, UserService service) {
+            return View(service.GetUser(idnt));
         }
 
         [Authorize]
         [Route("administrator/users/edit/{idnt}")]
-        public IActionResult UsersEdit(long idnt)
-        {
+        public IActionResult UsersEdit(long idnt) {
             return View();
+        }
+
+        [AllowAnonymous]
+        public int CheckIfUserExists(int usr_idnt, string usr_name) {
+            return new UserService().CheckIfUserExists(new Users { Id = usr_idnt, Username = usr_name });
+        }
+
+        [HttpPost]
+        public IActionResult AddNewUser() {
+            Users user = UserEdit.User;
+
+            if (user.Role.Id.Equals(3))
+                user.AdminRole = UserEdit.Region;
+            else if (user.Role.Id.Equals(4))
+                user.AdminRole = UserEdit.Agency;
+            else
+                user.AdminRole = 0;
+
+            user.Save(HttpContext);
+
+            new UserService(HttpContext).UpdateUsersFacilities(user, UserEdit.Facility);
+
+            return LocalRedirect("/administrator/users/");
         }
     }
 }

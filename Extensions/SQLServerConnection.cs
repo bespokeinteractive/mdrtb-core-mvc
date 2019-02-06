@@ -26,7 +26,14 @@ namespace EtbSomalia.Extensions
                 SqlCommand command = new SqlCommand(SqlString, conn);
                 command.Connection.Open();
 
-                return Convert.ToInt64(command.ExecuteScalar());
+                if (SqlString.ToLower().Contains("output")) {
+                    return Convert.ToInt64(command.ExecuteScalar());
+                }
+                else {
+                    command.ExecuteNonQuery();
+                    return 0;
+                }
+
             }
             catch (Exception) {
                 return 0;

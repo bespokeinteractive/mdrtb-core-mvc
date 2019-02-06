@@ -16,6 +16,7 @@
     <Folder Include="ViewModel\" />
     <Folder Include="Views\Patient\" />
     <Folder Include="Views\Contact\" />
+    <Folder Include="DataModel\" />
   </ItemGroup>
 
   <ItemGroup>

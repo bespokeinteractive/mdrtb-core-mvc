@@ -48,8 +48,12 @@ namespace EtbSomalia.Models
             return new UserService(context).SaveUser(this);
         }
 
-        public Users UpdatePassword() {
-            return new UserService().UpdateUserPassword(this);
+        public void UpdatePassword() {
+            new UserService().UpdateUserPassword(this);
+        }
+
+        public void UpdateLastAccess() {
+            new UserService().UpdateLastAccess(this);
         }
     }
 }

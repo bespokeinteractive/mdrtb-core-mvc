@@ -12,13 +12,13 @@ namespace EtbSomalia.Services
 {
     public class PatientService
     {
-        public int dbo { get; set; }
-        public string dba { get; set; }
+        public int Actor { get; set; }
+        public string Username { get; set; }
 
         public PatientService() { }
         public PatientService(HttpContext context){
-            dbo = int.Parse(context.User.FindFirst(ClaimTypes.Dsa).Value);
-            dba = context.User.FindFirst(ClaimTypes.Dns).Value;
+            Actor = int.Parse(context.User.FindFirst(ClaimTypes.Actor).Value);
+            Username = context.User.FindFirst(ClaimTypes.UserData).Value;
         }
 
         public List<SelectListItem> InitializeGender()
@@ -412,7 +412,7 @@ namespace EtbSomalia.Services
         public Contacts RegisterContact(Contacts ctx)
         {
             SqlServerConnection conn = new SqlServerConnection();
-            ctx.Id = conn.SqlServerUpdate("INSERT INTO Contacts (ct_person, ct_index, ct_exposed_from, ct_identifier, ct_location, ct_relationship, ct_proximity, ct_desease_after, ct_prev_treated, ct_next_screening, ct_added_by) output INSERTED.ct_idnt VALUES (" + ctx.Person.Id + ", " + ctx.Index.Id + ", '" + ctx.ExposedOn.Date + "', '" + ctx.Identifier + "', " + ctx.Location.Id + ", " + ctx.Relation.Id + ", " + ctx.Proximity.Id + ", " + ctx.DiseaseAfter.Id + ", " + ctx.PrevouslyTreated.Id + ", '" + ctx.NextVisit + "', " + dbo + ")");
+            ctx.Id = conn.SqlServerUpdate("INSERT INTO Contacts (ct_person, ct_index, ct_exposed_from, ct_identifier, ct_location, ct_relationship, ct_proximity, ct_desease_after, ct_prev_treated, ct_next_screening, ct_added_by) output INSERTED.ct_idnt VALUES (" + ctx.Person.Id + ", " + ctx.Index.Id + ", '" + ctx.ExposedOn.Date + "', '" + ctx.Identifier + "', " + ctx.Location.Id + ", " + ctx.Relation.Id + ", " + ctx.Proximity.Id + ", " + ctx.DiseaseAfter.Id + ", " + ctx.PrevouslyTreated.Id + ", '" + ctx.NextVisit + "', " + Actor + ")");
 
             return ctx;
         }
@@ -420,7 +420,7 @@ namespace EtbSomalia.Services
         public ContactsExamination SaveContactsExamination(ContactsExamination cx)
         {
             SqlServerConnection conn = new SqlServerConnection();
-            cx.Id = conn.SqlServerUpdate("INSERT INTO ContactsExaminations (ce_contact, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, ce_ltbi, ce_sputum_smear, ce_genxpert, ce_xray_exam, ce_preventive_regimen, ce_next_screening, ce_added_by) output INSERTED.ce_idnt VALUES (" + cx.Contact.Id + ", '" + cx.Cough + "', '" + cx.Fever + "', '" + cx.WeightLoss + "', '" + cx.NightSweat + "', " + cx.LTBI.Id + ", " + cx.SputumSmear.Id + ", " + cx.GeneXpert.Id + ", " + cx.XrayExam.Id + ", '" + cx.PreventiveTherapy + "', '" + cx.NextScreening.Date + "', " + dbo + ")");
+            cx.Id = conn.SqlServerUpdate("INSERT INTO ContactsExaminations (ce_contact, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, ce_ltbi, ce_sputum_smear, ce_genxpert, ce_xray_exam, ce_preventive_regimen, ce_next_screening, ce_added_by) output INSERTED.ce_idnt VALUES (" + cx.Contact.Id + ", '" + cx.Cough + "', '" + cx.Fever + "', '" + cx.WeightLoss + "', '" + cx.NightSweat + "', " + cx.LTBI.Id + ", " + cx.SputumSmear.Id + ", " + cx.GeneXpert.Id + ", " + cx.XrayExam.Id + ", '" + cx.PreventiveTherapy + "', '" + cx.NextScreening.Date + "', " + Actor + ")");
 
             return cx;
         }

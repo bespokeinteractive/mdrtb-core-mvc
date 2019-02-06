@@ -23,7 +23,7 @@ namespace EtbSomalia.Controllers
         [Route("registration/add")]
         public IActionResult Register(PatientRegisterViewModel model, ConceptService cs)
         {
-            MdrtbCoreService service = new MdrtbCoreService(HttpContext);
+            CoreService service = new CoreService(HttpContext);
             model.Facilities = service.GetFacilitiesIEnumerable();
 
             model.TBCategory = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_CATEGORY));
@@ -37,7 +37,7 @@ namespace EtbSomalia.Controllers
         [Route("registration/intake/{idnt}")]
         public IActionResult Intake(long idnt, PatientIntakeViewModel model, PatientService ps, ConceptService cs)
         {
-            MdrtbCoreService core = new MdrtbCoreService(HttpContext);
+            CoreService core = new CoreService(HttpContext);
             model.Program = ps.GetPatientProgram(idnt);
             if (!model.Program.DotsBy.Id.Equals(0)) {
                 return LocalRedirect("/patients/profile/" + model.Program.Patient.Id);
@@ -88,7 +88,7 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/profile/{idnt}")]
-        public IActionResult Profile(long idnt, PatientProfileViewModel model, PatientService ps, MdrtbCoreService core, long program = 0) {
+        public IActionResult Profile(long idnt, PatientProfileViewModel model, PatientService ps, CoreService core, long program = 0) {
             model.Patient = ps.GetPatient(idnt);
 
             if (program.Equals(0)) {
