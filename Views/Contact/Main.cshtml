@@ -73,6 +73,32 @@
         height: 0px;
         line-height: 0px;
     }
+    a {
+        cursor: pointer;
+    }
+    .collection .collection-item.avatar {
+        width: 100%;
+    }
+    .collection .collection-item.avatar:not(.circle-clipper) > .notes, 
+    .collection .collection-item.avatar :not(.circle-clipper) > .notes {
+        position: absolute;
+        width: 42px;
+        height: 42px;
+        overflow: hidden;
+        left: 15px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    div.dtls span {
+        display: inline-block;
+        width: 120px;
+    }
+    #task-card-1 li {
+        width: 100%;
+    }
+    label {
+        color: black;
+    }
 </style>
 
 <script type="text/javascript">
@@ -92,14 +118,14 @@
 
 <div class="rows">
     <!--Navigation Column-->
-    <div class="col-md-4" style="padding-right:5px;">
+    <div class="col-md-3" style="padding-right:5px;">
         <div id="profile-card" class="card">
             <div class="card-image waves-effect waves-block waves-light">
-                <img class="activator" src="~/images/gallary/11.png" alt="user bg">
+                <img class="activator" src="~/images/gallary/14.png" alt="user bg">
             </div>
 
             <div class="card-content">
-                <img src="~/images/avatar/avatar-10.png" alt="" class="circle responsive-img activator card-profile-image grey lighten-3 padding-2">
+                <img src="~/images/avatar/avatar-@(Model.Contact.Person.Gender == "Male"?"10":"14").png" alt="" class="circle responsive-img activator card-profile-image grey lighten-3 padding-2">
                 <a class="btn-floating activator btn-move-up waves-effect waves-light red accent-2 z-depth-5 right">
                     <i class="material-icons">edit</i>
                 </a>
@@ -118,36 +144,99 @@
 
                 <p>
                     <i class="material-icons">event</i>
-                    <span>@DateTime.Now.ToString("dd/MM/yyyy")</span>
+                    <span>@Model.Contact.GetLastScreening().ToString("dd/MM/yyyy")</span>
                 </p>
-
-                <p style="display:none;">
-                    <i class="material-icons">turned_in</i>
-                    <span>$ @string.Format("{0:N}", 0)</span>
-                </p>
-            </div>
-
-            <div class="card-reveal">
-                <span class="card-title grey-text text-darken-4 truncate">
-                    N/A
-                    <i class="material-icons right">close</i>
-                </span>
-                <p>Here you can edit details about this customer</p>
-
             </div>
         </div>
+
+        <ul id="profile-page-about-details" class="collection z-depth-1" style="margin-top:-10px">
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12 blue-text">
+                        <i class="material-icons left">update</i><a class="blue-text update-screening">Update Screening</a>
+                    </div>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div class="row" style="margin-bottom: 0px;">
+                    <div class="col s12 blue-text">
+                        <i class="material-icons left">transfer_within_a_station</i><a class="blue-text confirm-infection">Confirm Infection</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 
     <!-- Main Column -->
-    <div class="col-md-8" style="padding: 0; margin-top: 7px; margin-bottom: 0px;">
+    <div class="col-md-9" style="padding: 0; margin-top: 7px; margin-bottom: 0px;">
         <nav class="navbar nav-extended">
             <div class="nav-content preview" style="border: 1px solid rgba(0,0,0,0.1); margin-top: -5px;">
                 <ul class="tabs">
                     <li class="tab summ"><a href="#summary" class="active">DETAILS</a></li>
+                    <li class="tab scrn"><a href="#screens" class="active">SCREENS</a></li>
                 </ul>
 
                 <!-- SUMMARY TAB -->
                 <div id="summary" class="body">
+                    <ul id="profile-page-about-feed" class="collection z-depth-1" style="margin:0">
+                        <li class="collection-item avatar">
+                            <img src="../../images/notes.png" width="42" alt="" class="notes">
+                            <span class="title bold-text">PROGRAMME ENROLLMENT</span>
+                            <span class="ultra-small deep-orange-text right">(Next Screening: @Model.Contact.NextVisit.ToString("dd/MM/yyyy"))</span>
+                            <p></p>
+
+                            <div class="col-md-5 dtls" style="padding:0;">
+                                <span class="bold-text blue-text">IDENTITY</span>@Model.Contact.Identifier<br>
+                                <span class="bold-text blue-text">PREVIOUS</span>@Model.Contact.PrevouslyTreated.Name<br>
+                                <span class="bold-text blue-text">RISK FACTOR</span>@Model.Contact.GetRiskFactor()<br>
+                                <span class="bold-text blue-text">POST EXPOSURE</span>@Model.Contact.DiseaseAfter.Name<br>
+                            </div>
+
+                            <div class="col-md-7 dtls">
+                                <span class="bold-text blue-text">INDEX CASE: </span>@Model.Contact.Index.Patient.Person.Name.ToUpper()<br>
+                                <span class="bold-text blue-text">LOCATION: </span>@Model.Contact.Location.Name<br>
+                                <span class="bold-text blue-text">RELATION: </span>@Model.Contact.Relation.Name<br>
+                                <span class="bold-text blue-text">PROXIMITY: </span>@Model.Contact.Proximity.Name<br>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div>
+                        <div class="col-md-4 zero-margin">
+                            <ul id="task-card-1" class="collection with-header z-depth-1">
+                                <li class="collection-header teal accent-4" style="width:100%">
+                                    <h4 class="task-card-title white-text">Symptoms </h4>
+                                </li>
+                                <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                    <input type="checkbox" id="task1" checked>
+                                    <label for="task1" class="black-text" style="text-decoration: none;">
+                                        Coughs
+                                    </label>
+                                </li>
+                                <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                    <input type="checkbox" id="task2">
+                                    <label for="task2" style="text-decoration: none;">
+                                        Fever
+                                    </label>
+                                </li>
+                                <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                    <input type="checkbox" id="task3">
+                                    <label for="task3" style="text-decoration: none;">
+                                        Weight Loss
+                                    </label>
+                                </li>
+                                <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                    <input type="checkbox" id="task4">
+                                    <label for="task4" style="text-decoration: none;">
+                                        Night Sweats
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="screens" class="body">
                     Loading...
                 </div>
             </div>

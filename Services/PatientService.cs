@@ -382,6 +382,16 @@ namespace EtbSomalia.Services
             return contacts;
         }
 
+        public DateTime GetContactsLastScreening(Contacts contact) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT MAX(ce_added_on)x FROM ContactsExaminations WHERE ce_contact=" + contact.Id);
+            if (dr.Read()) {
+                return Convert.ToDateTime(dr[0]);
+            }
+
+            return new DateTime(1900,1,1);
+        }
+
         public PersonAddress GetPersonAddress(Person person)
         {
             PersonAddress address = null;

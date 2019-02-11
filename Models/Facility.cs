@@ -1,4 +1,7 @@
 ﻿using System;
+using EtbSomalia.Services;
+using Microsoft.AspNetCore.Http;
+
 namespace EtbSomalia.Models
 {
     public class Facility
@@ -9,6 +12,8 @@ namespace EtbSomalia.Models
         public string Prefix { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int Count { get; set; }
+        public DateTime LastRecord { get; set; }
         public Region Region { get; set; }
         public Agency Agency { get; set; }
 
@@ -19,13 +24,23 @@ namespace EtbSomalia.Models
             Prefix = "";
             Name = "";
             Description = "";
+            Count = 0;
+            LastRecord = new DateTime(1900, 1, 1);
 
             Region = new Region();
             Agency = new Agency();
         }
 
-        public Facility(Int64 idx) : this() {
-            Id = idx;
+        public Facility(long idnt) : this() {
+            Id = idnt;
+        }
+
+        public Facility Save(HttpContext context) {
+            return new CoreService(context).SaveFacility(this);
+        }
+
+        public void Delete() {
+            new CoreService().DeleteFacility(this);
         }
     }
 }

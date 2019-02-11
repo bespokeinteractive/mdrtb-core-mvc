@@ -12,5 +12,14 @@ namespace EtbSomalia.Models
             Name = "";
             Description = "";
         }
+
+        public Agency(long idnt) : this() {
+            Id = idnt;
+        }
+
+        public Agency(long idnt, string name) : this() {
+            Id = idnt;
+            Name = name;
+        }
     }
 }

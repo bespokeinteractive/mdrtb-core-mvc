@@ -68,6 +68,10 @@ namespace EtbSomalia.Models
             return Person.GetAgeInYears();
         }
 
+        public DateTime GetLastScreening() {
+            return new PatientService().GetContactsLastScreening(this);
+        }
+
         public void GenerateIdentifier()
         {
             Random random = new Random();

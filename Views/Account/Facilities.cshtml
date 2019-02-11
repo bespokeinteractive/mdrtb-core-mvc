@@ -1,0 +1,165 @@
+﻿@model EtbSomalia.ViewModel.AccountFacilitiesViewModel;
+
+@{
+    ViewData["Title"] = "Facilities";
+    DateTime init = new DateTime(1900, 1, 1);
+}
+
+<script src="~/lib/data-tables/js/jquery.dataTables.min.js"></script>
+<script src="~/js/account-facility-script.js"></script>
+
+<link rel="stylesheet" href="~/lib/data-tables/css/jquery.dataTables.min.css" />
+<style>
+    #queue-table_length {
+        display: none;
+    }
+
+    #queue-table_filter {
+        text-align: left;
+        margin-top: 10px;
+    }
+    #queue-table_filter i {
+        cursor: pointer;
+        margin: 13px 30px 0;
+        float: right;
+    }
+    #queue-table_filter label input {
+        padding: 0px;
+        height: 1.9rem;
+        margin: 0;
+    }
+    #queue-table,
+    #queue-table th,
+    #queue-table td {
+        border-radius: 0px;
+    }
+    #queue-table tbody tr {
+        cursor: pointer;
+    }
+    #queue-title {
+        display: inline-block;
+        margin-bottom: -60px;
+        float: left;
+        margin-top: 15px;
+    }
+    i.medium {
+        font-size: 2.5rem;
+        z-index: 1000;
+    }
+    #queue-table_filter label {
+        float: right;
+    }
+    .modal-content {
+        border: 0px solid;
+        border-radius: 0;
+        box-shadow: none;
+    }
+</style>
+
+
+<div class="col s12">
+    <div id="queue-title">
+        <h4 class="zero-margin deep-orange-text">FACILITIES MANAGER</h4>
+    </div>
+    <table id="queue-table" class="responsive-table display stripped" cellspacing="0">
+        <thead class="deep-orange white-text">
+            <tr>
+                <th>CODE</th>
+                <th>NAME</th>
+                <th>REGION</th>
+                <th>AGENCY</th>
+                <th>RECORDS</th>
+                <th>UPDATED</th>
+                <th>DESCRIPTION</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var fac in Model.Facilities)
+            {
+                <tr>
+                    <td>@fac.Prefix</td>
+                    <td><a class="blue-text">@fac.Name.ToUpper()</a></td>
+                    <td>@fac.Region.Name.ToUpper()</td>
+                    <td>@fac.Agency.Name.ToUpper()</td>
+                    <td class="center-align">@fac.Count</td>
+                    <td>@(fac.LastRecord.Equals(init) ? "Never" : fac.LastRecord.ToString("dd/MM/yyyy")) </td>
+                    <td>@fac.Description</td>
+                    <td>
+                        <i class="material-icons blue-text" data-idnt="@fac.Id">border_color</i>
+                        <i class="material-icons red-text" data-idnt="@fac.Id">delete_forever</i>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@using (Html.BeginForm("AddEditFacility", "Account", FormMethod.Post))
+{
+    <div id="add-edit-modal" class="modal modal-fixed-footer" style="width: 500px; min-height: 580px;">
+        <div class="modal-content">
+            <h4>Add Facilities</h4>
+            <p>Specify the below Parameters for the Facility</p>
+            <div>
+                <div class="input-field">
+                    <i class="material-icons prefix">local_gas_station</i>
+                    @Html.TextBoxFor(model => model.Facility.Prefix)
+                    <label>Prefix</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">class</i>
+                    @Html.TextBoxFor(model => model.Facility.Name)
+                    <label>Facility Name</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">public</i>
+                    @Html.DropDownListFor(model => model.Facility.Region.Id, Model.Regions)
+                    <label for="gender">Region</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">supervisor_account</i>
+                    @Html.DropDownListFor(model => model.Facility.Agency.Id, Model.Agencies)
+                    <label for="gender">Agency</label>
+                </div>
+
+                <div class="input-field">
+                    <i class="material-icons prefix">perm_contact_calendar</i>
+                    @Html.TextAreaFor(model => model.Facility.Description, new { @class = "materialize-textarea" })
+                    <label for="message">Description</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            @Html.HiddenFor(model => model.Facility.Id)
+            <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+            <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>
+        </div>
+    </div>
+}
+
+<div id="confirm-delete-modal" class="modal" style="height:200px">
+    <div class="modal-content">
+        <h4>Confirm Delete</h4>
+        <p class="records">Confirm Deleting XX</p>
+    </div>
+    <div class="modal-footer">
+        <a class="btn btn-delete waves-effect waves-green btn-flats">Agree</a>
+    </div>
+</div>

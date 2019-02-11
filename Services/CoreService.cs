@@ -71,11 +71,13 @@ namespace EtbSomalia.Services
                 return "04";
         }
 
+
+        //FACILITIES
         public Facility GetFacility(long idnt) {
             Facility facility = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT fc_idnt, fc_void, fc_status, fc_prefix, fc_name, fc_description, fc_region, rg_name, fc_agency, ag_name, ag_description FROM Facilities INNER JOIN Regions ON fc_region=rg_idnt INNER JOIN Agency ON fc_agency=ag_idnt WHERE fc_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT fc_idnt, fc_void, fc_status, fc_prefix, fc_name, fc_description, ISNULL(pp_last_record,'1900-01-01') fc_last, ISNULL(pp_count,0) fc_count, rg_idnt, rg_name, ag_idnt, ag_name FROM Facilities INNER JOIN Agency ON fc_agency=ag_idnt INNER JOIN Regions ON rg_idnt=fc_region LEFT OUTER JOIN vFacilitiesCount ON fc_idnt=pp_facility WHERE fc_idnt=" + idnt);
             if (dr.Read()) {
                 facility = new Facility {
                     Id = Convert.ToInt64(dr[0]),
@@ -83,32 +85,73 @@ namespace EtbSomalia.Services
                     Status = dr[2].ToString(),
                     Prefix = dr[3].ToString(),
                     Name = dr[4].ToString(),
-                    Description = dr[5].ToString()
-                };
-
-                facility.Region = new Region {
-                    Id = Convert.ToInt64(dr[6]),
-                    Name = dr[7].ToString(),
-                };
-
-                facility.Agency = new Agency {
-                    Id = Convert.ToInt64(dr[8]),
-                    Name = dr[9].ToString(),
-                    Description = dr[10].ToString(),
+                    Description = dr[5].ToString(),
+                    LastRecord = Convert.ToDateTime(dr[6]),
+                    Count = Convert.ToInt32(dr[7]),
+                    Region = new Region (Convert.ToInt64(dr[8]), dr[9].ToString()),
+                    Agency = new Agency (Convert.ToInt64(dr[10]), dr[11].ToString()),
                 };
             }
 
             return facility;
         }
 
-        public List<Concept> GetFacilities() {
-            List<Concept> answers = new List<Concept>();
+        public int CheckIfFacilityExists(Facility facility) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT COUNT(*) FROM Facilities WHERE fc_idnt<>" + facility.Id + " AND (fc_prefix LIKE '" + facility.Prefix + "' OR fc_name LIKE '" + facility.Name + "')");
+            if (dr.Read())
+            {
+                return Convert.ToInt32(dr[0]);
+            }
 
-            return answers;
+            return 0;
+        }
+
+        public List<Facility> GetFacilities(string filter = "", string agency = "", string region = "", bool includeVoided = true) {
+            List<Facility> facilities = new List<Facility>();
+            SqlServerConnection conn = new SqlServerConnection();
+
+            string query = conn.GetQueryString(filter, "fc_status+'-'+fc_prefix+'-'+fc_name+'-'+fc_description+'-'+rg_name+'-'+ag_name", "fc_idnt>0");
+            if (!string.IsNullOrWhiteSpace(agency))
+                query += " AND fc_agency IN (" + agency + ")";
+            if (!string.IsNullOrWhiteSpace(region))
+                query += " AND fc_region IN (" + region + ")";
+            if (!includeVoided)
+                query += " AND fc_void=0";
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT fc_idnt, fc_void, fc_status, fc_prefix, fc_name, fc_description, ISNULL(pp_last_record,'1900-01-01') fc_last, ISNULL(pp_count,0) fc_count, rg_idnt, rg_name, ag_idnt, ag_name FROM Facilities INNER JOIN Agency ON fc_agency=ag_idnt INNER JOIN Regions ON rg_idnt=fc_region LEFT OUTER JOIN vFacilitiesCount ON fc_idnt=pp_facility " + query + " ORDER BY rg_idnt, fc_prefix, fc_name");
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    facilities.Add(new Facility {
+                        Id = Convert.ToInt64(dr[0]),
+                        Void = Convert.ToBoolean(dr[1]),
+                        Status = dr[2].ToString(),
+                        Prefix = dr[3].ToString(),
+                        Name = dr[4].ToString(),
+                        Description = dr[5].ToString(),
+                        LastRecord = Convert.ToDateTime(dr[6]),
+                        Count = Convert.ToInt32(dr[7]),
+                        Region = new Region(Convert.ToInt64(dr[8]), dr[9].ToString()),
+                        Agency = new Agency(Convert.ToInt64(dr[10]), dr[11].ToString()),
+                    });
+                }
+            }
+
+            return facilities;
         }
 
         public List<SelectListItem> GetFacilitiesIEnumerable() {
             return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' AND fc_idnt IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ") ORDER BY fc_name");
+        }
+
+        //AGENCIES
+        public List<SelectListItem> GetAgenciesIEnumerable() {
+            return GetIEnumerable("SELECT ag_idnt, ag_name FROM Agency WHERE ag_idnt<>0 ORDER BY ag_name");
+        }
+
+        //REGIONS
+        public List<SelectListItem> GetRegionsIEnumerable() {
+            return GetIEnumerable("SELECT rg_idnt, rg_name FROM Regions");
         }
 
         public Regimen GetRegimen(Int64 idnt) {
@@ -318,16 +361,6 @@ namespace EtbSomalia.Services
             return GetIEnumerable("SELECT rl_idnt, rl_name FROM Roles");
         }
 
-        public List<SelectListItem> GetRegionsIEnumerable() {
-            return GetIEnumerable("SELECT rg_idnt, rg_name FROM Regions");
-        }
-
-        public List<SelectListItem> GetAgenciesIEnumerable() {
-            return GetIEnumerable("SELECT ag_idnt, ag_name FROM Agency WHERE ag_idnt<>0 ORDER BY ag_name");
-        }
-
-
-
 
         //Data Write
         public PatientProgram CreatePatientProgram(PatientProgram pp) {
@@ -362,6 +395,18 @@ namespace EtbSomalia.Services
             px.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pe_idnt FROM PatientExamination WHERE pe_idnt=" + px.Id + ") BEGIN INSERT INTO PatientExamination (pe_program, pe_visit, pe_labno, pe_weight, pe_height, pe_muac, pe_bmi, pe_sputum_exam, pe_sputum_date, pe_genexpert_exam, pe_genexpert_date, pe_hiv_exam, pe_hiv_date, pe_xray_exam, pe_xray_date, pe_created_by) output INSERTED.pe_idnt VALUES (" + px.Program.Id + ", " + px.Visit.Id + ", '" + px.LabNo + "', " + px.Weight + ", " + px.Height + ", " + px.MUAC + ", " + px.BMI + ", " + px.SputumSmear.Id + ", '" + px.SputumSmearDate + "', " + px.GeneXpert.Id + ", '" + px.GeneXpertDate + "', " + px.HivExam.Id + ", '" + px.HivExamDate + "', " + px.XrayExam.Id + ", '" + px.XrayExamDate + "', " + Actor + ") END ELSE BEGIN UPDATE PatientExamination SET pe_labno='" + px.LabNo + "' pe_weight=" + px.Weight + ", pe_height=" + px.Height + ", pe_muac=" + px.MUAC + ", pe_bmi=" + px.BMI + ", pe_sputum_exam=" + px.SputumSmear.Id + ", pe_sputum_date='" + px.SputumSmearDate + "', pe_genexpert_exam=" + px.GeneXpert.Id + ", pe_genexpert_date='" + px.GeneXpertDate + "', pe_hiv_exam=" + px.HivExam.Id + ", pe_hiv_date='" + px.HivExamDate + "', pe_xray_exam=" + px.XrayExam.Id + ", pe_xray_date='" + px.XrayExamDate + "' output INSERTED.pe_idnt WHERE pe_idnt=" + px.Id + " END");
 
             return px;
+        }
+
+        public Facility SaveFacility(Facility fac) {
+            SqlServerConnection conn = new SqlServerConnection();
+            fac.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + fac.Id + ", @rgns INT=" + fac.Region.Id + ", @agnt INT=" + fac.Agency.Id + ", @prfx NVARCHAR(50)='" + fac.Prefix + "', @name NVARCHAR(250)='" + fac.Name + "', @desc NVARCHAR(MAX)='" + fac.Description + "'; IF NOT EXISTS (SELECT fc_idnt FROM Facilities WHERE fc_idnt=@idnt) BEGIN INSERT INTO Facilities (fc_region, fc_agency, fc_prefix, fc_name, fc_description) output INSERTED.fc_idnt VALUES (@rgns, @agnt, @prfx, @name, @desc) END ELSE BEGIN UPDATE Facilities SET fc_region=@rgns, fc_agency=@agnt, fc_prefix=@prfx, fc_name=@name, fc_description=@desc output INSERTED.fc_idnt WHERE fc_idnt=@idnt END");
+
+            return fac;
+        }
+
+        public void DeleteFacility(Facility fac) {
+            SqlServerConnection conn = new SqlServerConnection();
+            fac.Id = conn.SqlServerUpdate("DELETE FROM Facilities WHERE fc_idnt=" + fac.Id);
         }
     }
 }

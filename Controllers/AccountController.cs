@@ -25,6 +25,9 @@ namespace EtbSomalia.Controllers
         [BindProperty]
         public AccountUsersAddEditViewModel UserEdit { get; set; }
 
+        [BindProperty]
+        public AccountFacilitiesViewModel FacilityEdit { get; set; }
+
         [TempData]
         public string ErrorMessage { get; set; }
 
@@ -117,6 +120,12 @@ namespace EtbSomalia.Controllers
         }
 
         [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator")]
+        public IActionResult Admin() {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator/users")]
         public IActionResult Users() {
             List<Users> users = new List<Users>(new UserService(HttpContext).GetUsers());
@@ -144,9 +153,25 @@ namespace EtbSomalia.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator/facilities")]
+        public IActionResult Facilities(AccountFacilitiesViewModel model, CoreService service) {
+            model.Facilities = service.GetFacilities();
+            model.Agencies = service.GetAgenciesIEnumerable();
+            model.Regions = service.GetRegionsIEnumerable();
+
+            return View(model);
+        }
+
+        /* Data Readers */
         [AllowAnonymous]
         public int CheckIfUserExists(int usr_idnt, string usr_name) {
             return new UserService().CheckIfUserExists(new Users { Id = usr_idnt, Username = usr_name });
+        }
+
+        [AllowAnonymous]
+        public int CheckIfFacilityExists(int fac_idnt, string fac_prefix, string fac_name) {
+            return new CoreService().CheckIfFacilityExists(new Facility { Id = fac_idnt, Name = fac_name, Prefix = fac_prefix });
         }
 
         [AllowAnonymous]
@@ -156,13 +181,25 @@ namespace EtbSomalia.Controllers
         }
 
         [AllowAnonymous]
-        public string EnableAccount(long usr_idnt, int usr_opts)
-        {
+        public string EnableAccount(long usr_idnt, int usr_opts) {
             bool opts = usr_opts != 0;
             new Users(usr_idnt).EnableAccount(opts);
             return "success";
         }
 
+        [AllowAnonymous]
+        public JsonResult GetFacility(long idnt) {
+            return Json(new CoreService().GetFacility(idnt));
+        }
+
+        [AllowAnonymous]
+        public string DeleteFacility(long idnt) {
+            new Facility(idnt).Delete();
+            return "success";
+        }
+
+
+        /* HttpPost */
         [HttpPost]
         public IActionResult AddNewUser() {
             Users user = UserEdit.User;
@@ -179,6 +216,16 @@ namespace EtbSomalia.Controllers
             new UserService(HttpContext).UpdateUsersFacilities(user, UserEdit.Facility);
 
             return LocalRedirect("/administrator/users/");
+        }
+
+        [HttpPost]
+        public IActionResult AddEditFacility() {
+            Facility facility = FacilityEdit.Facility;
+            if (string.IsNullOrWhiteSpace(facility.Description))
+                facility.Description = "N/A";
+            facility.Save(HttpContext);
+
+            return LocalRedirect("/administrator/facilities");
         }
     }
 }
