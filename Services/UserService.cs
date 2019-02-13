@@ -35,7 +35,7 @@ namespace EtbSomalia.Services
                     Enabled = Convert.ToBoolean(dr[5]),
                     AdminLevel = Convert.ToInt32(dr[6]),
                     AccessLevel = dr[7].ToString(),
-                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy HH:mm"),
                     Password = dr[9].ToString(),
                     Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                 };
@@ -59,7 +59,7 @@ namespace EtbSomalia.Services
                     Enabled = Convert.ToBoolean(dr[5]),
                     AdminLevel = Convert.ToInt32(dr[6]),
                     AccessLevel = dr[7].ToString(),
-                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                    LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy HH:mm"),
                     Password = dr[9].ToString(),
                     Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                 };
@@ -84,7 +84,7 @@ namespace EtbSomalia.Services
                         Enabled = Convert.ToBoolean(dr[5]),
                         AdminLevel = Convert.ToInt32(dr[6]),
                         AccessLevel = dr[7].ToString(),
-                        LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy hh:mm"),
+                        LastSeen = Convert.ToDateTime(dr[8]).ToString("dd/MM/yyyy HH:mm"),
                         Password = dr[9].ToString(),
                         Role = new Roles(Convert.ToInt64(dr[10]), dr[11].ToString())
                     });
@@ -128,7 +128,7 @@ namespace EtbSomalia.Services
         /*Data Writers*/
         public Users SaveUser(Users user) {
             SqlServerConnection conn = new SqlServerConnection();
-            user.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + user.Id + ", @name NVARCHAR(255)='" + user.Name + "', @email NVARCHAR(255)='" + user.Email + "'; IF NOT EXISTS (SELECT usr_idnt FROM Users WHERE usr_idnt=@idnt) BEGIN INSERT INTO Users (usr_name, usr_email) output INSERTED.usr_idnt VALUES (@name, @email) END ELSE BEGIN UPDATE Users SET usr_name=@name, usr_email=@email output INSERTED.usr_idnt WHERE usr_idnt=@idnt END");
+            user.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + user.Id + ", @name NVARCHAR(255)='" + user.Name + "', @email NVARCHAR(255)='" + user.Email + "', @user INT=" + Actor + "; IF NOT EXISTS (SELECT usr_idnt FROM Users WHERE usr_idnt=@idnt) BEGIN INSERT INTO Users (usr_name, usr_email, usr_created_by) output INSERTED.usr_idnt VALUES (@name, @email, @user) END ELSE BEGIN UPDATE Users SET usr_name=@name, usr_email=@email output INSERTED.usr_idnt WHERE usr_idnt=@idnt END");
 
             conn = new SqlServerConnection();
             conn.SqlServerUpdate("DECLARE @idnt INT=" + user.Id + ", @username NVARCHAR(255)='" + user.Username + "', @role INT=" + user.Role.Id + ", @level INT=" + user.AdminRole + "; IF NOT EXISTS (SELECT log_user FROM Login WHERE log_user=@idnt) BEGIN INSERT INTO Login (log_user, log_username, log_admin_role, log_admin_lvl) VALUES (@idnt, @username, @role, @level) END ELSE BEGIN UPDATE Login SET log_username=@username, log_admin_role=@role, log_admin_lvl=@level WHERE log_user=@idnt END");

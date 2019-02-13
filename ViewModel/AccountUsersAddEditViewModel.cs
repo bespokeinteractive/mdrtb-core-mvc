@@ -10,7 +10,6 @@ namespace EtbSomalia.ViewModel
     public class AccountUsersAddEditViewModel
     {
         private readonly CoreService service = new CoreService();
-        private readonly UserService users = new UserService();
 
         public Users User { get; set; }
         public string Facility { get; set; }
@@ -31,7 +30,6 @@ namespace EtbSomalia.ViewModel
             Roles = service.GetRolesIEnumerable();
             Agencies = service.GetAgenciesIEnumerable();
             Regions = service.GetRegionsIEnumerable();
-            Facilities = users.GetUsersFacilitiesAll(User);
         }
     }
 }

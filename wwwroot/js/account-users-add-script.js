@@ -24,7 +24,7 @@ jq(function() {
             jq('#regionroles').hide();
             jq('#facilityroles').hide();
         }
-    });
+    }).change();
 
     jq('input.facilities').change(function(){
         var itm = jq(this).data('idnt')
@@ -65,7 +65,7 @@ jq(function() {
             dataType: "text",
             url: '/Account/CheckIfUserExists',
             data: {
-                "usr_idnt": 0,
+                "usr_idnt": idnt,
                 "usr_name": jq('#User_Username').val(),
             },
             success: function(results) {
@@ -82,6 +82,14 @@ jq(function() {
                 Materialize.toast('<span>' + thrownError + '</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
             }
         });
+    });
 
+    jq('input[type=checkbox].facilities').each(function () {
+        var itm = jq(this).data('idnt')
+        if (jq(this).is(':checked')){
+            fac.push(itm);
+        }
+
+        jq('#Facility').val(fac.toString())
     });
 });

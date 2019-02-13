@@ -19,8 +19,10 @@ namespace EtbSomalia.Models
         public string AccessLevel { get; set; }
         public string Message { get; set; }
         public string LastSeen { get; set; }
+        public DateTime AddedOn { get; set; }
 
         public Roles Role { get; set; }
+        public Users AddedBy { get; set; }
 
         public Users() {
             Id = 0;
@@ -35,6 +37,7 @@ namespace EtbSomalia.Models
             AccessLevel = "";
             Message = "";
             LastSeen = "N/A";
+            AddedOn = DateTime.Now;
 
             Role = new Roles();
         }

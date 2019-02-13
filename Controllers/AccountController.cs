@@ -143,14 +143,18 @@ namespace EtbSomalia.Controllers
         [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator/users/add")]
         public IActionResult UsersAdd(AccountUsersAddEditViewModel model) {
+            model.Facilities = new UserService().GetUsersFacilitiesAll(new Users());
             return View(model);
         }
 
 
         [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator/users/edit/{idnt}")]
-        public IActionResult UsersEdit(long idnt) {
-            return View();
+        public IActionResult UsersEdit(long idnt, AccountUsersAddEditViewModel model, UserService service) {
+            model.User = service.GetUser(idnt);
+            model.Facilities = service.GetUsersFacilitiesAll(model.User);
+
+            return View(model);
         }
 
         [Authorize(Roles = "Administrator, Super User")]
@@ -201,7 +205,7 @@ namespace EtbSomalia.Controllers
 
         /* HttpPost */
         [HttpPost]
-        public IActionResult AddNewUser() {
+        public IActionResult AddEditUser() {
             Users user = UserEdit.User;
 
             if (user.Role.Id.Equals(3))
