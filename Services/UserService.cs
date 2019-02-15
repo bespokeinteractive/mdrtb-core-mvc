@@ -124,7 +124,6 @@ namespace EtbSomalia.Services
             return facilities;
         }
 
-
         /*Data Writers*/
         public Users SaveUser(Users user) {
             SqlServerConnection conn = new SqlServerConnection();

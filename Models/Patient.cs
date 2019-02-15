@@ -1,20 +1,27 @@
 ﻿using System;
 using EtbSomalia.Extensions;
+using EtbSomalia.Services;
 
 namespace EtbSomalia.Models
 {
     public class Patient
     {
         public long Id { get; set; }
+        public string Uuid { get; set; }
         public Person Person { get; set; }
 
         public Patient() {
             Id = 0;
+            Uuid = "";
             Person = new Person();
         }
 
         public Patient(long idnt) : this() {
             Id = idnt;
+        }
+
+        public Patient(string uuid) : this() {
+            Uuid = uuid;
         }
 
         public string GetName() {
@@ -27,6 +34,11 @@ namespace EtbSomalia.Models
 
         public int GetAgeInYears() {
             return Person.GetAgeInYears();
+        }
+
+        public string GetUuid() {
+            Uuid = new PatientService().GetPatientUuid(this.Id);
+            return Uuid;
         }
 
         public Patient Save(){

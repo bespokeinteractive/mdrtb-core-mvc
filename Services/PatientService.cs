@@ -21,8 +21,7 @@ namespace EtbSomalia.Services
             Username = context.User.FindFirst(ClaimTypes.UserData).Value;
         }
 
-        public List<SelectListItem> InitializeGender()
-        {
+        public List<SelectListItem> InitializeGender() {
             List<SelectListItem> gender = new List<SelectListItem> {
                 new SelectListItem("Male", "male"),
                 new SelectListItem("Female", "female")
@@ -31,38 +30,83 @@ namespace EtbSomalia.Services
             return gender;
         }
 
-        public Patient GetPatient(long idnt){
+        public Patient GetPatient(long idnt) {
             Patient patient = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_idnt=" + idnt);
             if (dr.Read()) {
                 patient = new Patient {
-                    Id = Convert.ToInt64(dr[0])
+                    Id = Convert.ToInt64(dr[0]),
+                    Uuid = dr[1].ToString()
                 };
 
                 patient.Person = new Person { 
-                    Id = Convert.ToInt64(dr[1]),
-                    Name = dr[2].ToString(),
-                    Gender = dr[3].ToString().FirstCharToUpper(),
-                    DateOfBirth = Convert.ToDateTime(dr[4]),
-                    AgeEstimate = Convert.ToBoolean(dr[5])
+                    Id = Convert.ToInt64(dr[2]),
+                    Name = dr[3].ToString(),
+                    Gender = dr[4].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[5]),
+                    AgeEstimate = Convert.ToBoolean(dr[6])
                 };
 
                 patient.Person.Address = new PersonAddress { 
-                    Id = Convert.ToInt64(dr[6]),
-                    Default = Convert.ToBoolean(dr[7]),
-                    Mobile = dr[8].ToString(),
-                    Telephone = dr[9].ToString(),
-                    Address = dr[10].ToString(),
-                    PostalCode = dr[11].ToString(),
-                    Village = dr[12].ToString(),
-                    State = dr[13].ToString(),
-                    County = dr[14].ToString()
+                    Id = Convert.ToInt64(dr[7]),
+                    Default = Convert.ToBoolean(dr[8]),
+                    Mobile = dr[9].ToString(),
+                    Telephone = dr[10].ToString(),
+                    Address = dr[11].ToString(),
+                    PostalCode = dr[12].ToString(),
+                    Village = dr[13].ToString(),
+                    State = dr[14].ToString(),
+                    County = dr[15].ToString()
                 };
             }
 
             return patient;
+        }
+
+        public Patient GetPatient(string uuid) {
+            Patient patient = null;
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_uuid COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '" + uuid + "'");
+            if (dr.Read()) {
+                patient = new Patient {
+                    Id = Convert.ToInt64(dr[0]),
+                    Uuid = dr[1].ToString()
+                };
+
+                patient.Person = new Person {
+                    Id = Convert.ToInt64(dr[2]),
+                    Name = dr[3].ToString(),
+                    Gender = dr[4].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[5]),
+                    AgeEstimate = Convert.ToBoolean(dr[6])
+                };
+
+                patient.Person.Address = new PersonAddress {
+                    Id = Convert.ToInt64(dr[7]),
+                    Default = Convert.ToBoolean(dr[8]),
+                    Mobile = dr[9].ToString(),
+                    Telephone = dr[10].ToString(),
+                    Address = dr[11].ToString(),
+                    PostalCode = dr[12].ToString(),
+                    Village = dr[13].ToString(),
+                    State = dr[14].ToString(),
+                    County = dr[15].ToString()
+                };
+            }
+
+            return patient;
+        }
+
+        public string GetPatientUuid(long idnt) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_uuid FROM patient WHERE pt_idnt=" + idnt);
+            if (dr.Read())
+                return dr[0].ToString();
+
+            return "";
         }
 
         public PatientProgram GetPatientProgram(long idnt) {
@@ -110,8 +154,7 @@ namespace EtbSomalia.Services
             return program;
         }
 
-        public PatientProgram GetPatientProgram(Patient patient)
-        {
+        public PatientProgram GetPatientProgram(Patient patient) {
             PatientProgram program = null;
 
             SqlServerConnection conn = new SqlServerConnection();
@@ -176,27 +219,27 @@ namespace EtbSomalia.Services
             return vitals;
         }
 
-        public List<PatientSearch> SearchPatients(string filter)
-        {
+        public List<PatientSearch> SearchPatients(string filter) {
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", false);
+            string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
             if (dr.HasRows) {
                 while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
                     ps.Patient.Id = Convert.ToInt64(dr[0]);
-                    ps.Patient.Person.Name = dr[1].ToString();
-                    ps.Patient.Person.Gender = dr[2].ToString().FirstCharToUpper();
-                    ps.Patient.Person.DateOfBirth = Convert.ToDateTime(dr[3]);
+                    ps.Patient.Uuid = dr[1].ToString();
+                    ps.Patient.Person.Name = dr[2].ToString();
+                    ps.Patient.Person.Gender = dr[3].ToString().FirstCharToUpper();
+                    ps.Patient.Person.DateOfBirth = Convert.ToDateTime(dr[4]);
 
-                    ps.Program.Id = Convert.ToInt64(dr[4]);
-                    ps.Program.TbmuNumber = dr[5].ToString();
+                    ps.Program.Id = Convert.ToInt64(dr[5]);
+                    ps.Program.TbmuNumber = dr[6].ToString();
 
-                    ps.Status = dr[6].ToString();
-                    ps.Facility = dr[7].ToString();
+                    ps.Status = dr[7].ToString();
+                    ps.Facility = dr[8].ToString();
 
                     ps.age = ps.Patient.GetAge();
 
@@ -207,8 +250,7 @@ namespace EtbSomalia.Services
             return search;
         }
 
-        public Contacts GetContact(long idnt)
-        {
+        public Contacts GetContact(long idnt) {
             Contacts contact = null;
 
             SqlServerConnection conn = new SqlServerConnection();
@@ -262,12 +304,11 @@ namespace EtbSomalia.Services
             return contact;
         }
 
-        public List<Contacts> GetContacts()
-        {
+        public List<Contacts> GetContacts() {
             List<Contacts> contacts = new List<Contacts>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_idnt, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id ORDER BY ct_identifier, p.ps_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id ORDER BY ct_identifier, p.ps_name");
             if (dr.HasRows)
             {
                 while (dr.Read())
@@ -299,16 +340,14 @@ namespace EtbSomalia.Services
                     contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[20]), dr[21].ToString());
                     contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[22]), dr[23].ToString());
 
-                    contact.Index = new PatientProgram
-                    {
+                    contact.Index = new PatientProgram {
                         Id = Convert.ToInt64(dr[24]),
                         TbmuNumber = dr[25].ToString(),
                         DateEnrolled = Convert.ToDateTime(dr[26]),
-                        Patient = new Patient(Convert.ToInt64(dr[27]))
+                        Patient = new Patient(dr[27].ToString())
                     };
 
-                    contact.Index.Patient.Person = new Person
-                    {
+                    contact.Index.Patient.Person = new Person {
                         Id = Convert.ToInt64(dr[28]),
                         Name = dr[29].ToString(),
                         Gender = dr[30].ToString().FirstCharToUpper(),

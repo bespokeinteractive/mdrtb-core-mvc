@@ -120,12 +120,14 @@
 
                     <div class="input-field col s4">
                         <i class="material-icons prefix">exit_to_app</i>
-                        @if (Model.Patient.GetAgeInYears() <= 5) {
+                        @if (Model.Patient.GetAgeInYears() <= 5)
+                        {
                             @Html.TextBoxFor(model => model.Examination.MUAC, new { type = "number", min = "0", step = "1" })
                             @Html.HiddenFor(model => model.Examination.BMI)
                             <label for="icon_prefix">MUAC</label>
                         }
-                        else {
+                        else
+                        {
                             @Html.TextBoxFor(model => model.Examination.BMI, new { type = "number", min = "0", step = "1" })
                             @Html.HiddenFor(model => model.Examination.MUAC)
                             <label for="icon_prefix">BMI</label>
@@ -294,6 +296,8 @@
         </li>
     </ul>
 
+    @Html.HiddenFor(model => model.Program.Patient.Id)
+    @Html.HiddenFor(model => model.Program.Patient.Uuid)
     @Html.HiddenFor(model => model.Program.Id)
     @Html.HiddenFor(model => model.Regimen.Id)
     @Html.HiddenFor(model => model.Examination.Id)

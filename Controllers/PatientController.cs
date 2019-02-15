@@ -39,8 +39,10 @@ namespace EtbSomalia.Controllers
         {
             CoreService core = new CoreService(HttpContext);
             model.Program = ps.GetPatientProgram(idnt);
+            model.Program.Patient.GetUuid();
+
             if (!model.Program.DotsBy.Id.Equals(0)) {
-                return LocalRedirect("/patients/profile/" + model.Program.Patient.Id);
+                return LocalRedirect("/patients/profile/" + model.Program.Patient.Uuid);
             }
 
             //Other Fields
@@ -87,9 +89,9 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
-        [Route("patients/profile/{idnt}")]
-        public IActionResult Profile(long idnt, PatientProfileViewModel model, PatientService ps, CoreService core, long program = 0) {
-            model.Patient = ps.GetPatient(idnt);
+        [Route("patients/profile/{uuid}")]
+        public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, CoreService core, long program = 0) {
+            model.Patient = ps.GetPatient(uuid);
 
             if (program.Equals(0)) {
                 model.Program = ps.GetPatientProgram(model.Patient);
@@ -119,8 +121,7 @@ namespace EtbSomalia.Controllers
 
         [AllowAnonymous]
         public JsonResult SearchPatient(string qString) {
-            PatientService ps = new PatientService(HttpContext);
-            return Json(ps.SearchPatients(qString));
+            return Json(new PatientService(HttpContext).SearchPatients(qString));
         }
 
         [HttpPost]
@@ -169,7 +170,7 @@ namespace EtbSomalia.Controllers
             px.XrayExamDate = DateTime.Parse(IntakeModel.XrayExamDate);
             px.Save(HttpContext);
 
-            return LocalRedirect("/patients/profile/" + pp.Patient.Id);
+            return LocalRedirect("/patients/profile/" + pp.Patient.Uuid);
         }
 
 
