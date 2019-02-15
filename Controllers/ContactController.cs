@@ -43,10 +43,10 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
-        [Route("contacts/{idnt}")]
-        public IActionResult Main(long idnt, ContactMainViewModel model)
+        [Route("contacts/{uuid}")]
+        public IActionResult Main(string uuid, ContactMainViewModel model)
         {
-            model.Contact = new PatientService(HttpContext).GetContact(idnt);
+            model.Contact = new PatientService(HttpContext).GetContact(uuid);
             model.Contact.Person.Address = model.Contact.Person.GetPersonAddress();
             return View(model);
         }

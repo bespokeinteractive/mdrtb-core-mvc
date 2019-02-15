@@ -7,6 +7,7 @@ namespace EtbSomalia.Models
     public class Contacts
     {
         public long Id { get; set; }
+        public string Uuid { get; set; }
         public string Identifier { get; set; }
 
         public Patient Patient { get; set; }
@@ -29,6 +30,7 @@ namespace EtbSomalia.Models
 
         public Contacts() {
             Id = 0;
+            Uuid = "";
             Identifier = "";
             Person = new Person();
             Index = new PatientProgram();
@@ -44,6 +46,14 @@ namespace EtbSomalia.Models
             ExposedOn = DateTime.Now;
             AddedOn = DateTime.Now;
             AddedBy = new Users();
+        }
+
+        public Contacts(long idnt) : this() {
+            Id = idnt;
+        }
+
+        public Contacts(string uuid) : this() {
+            Uuid = uuid;
         }
 
         public string GetName() {

@@ -254,50 +254,97 @@ namespace EtbSomalia.Services
             Contacts contact = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_idnt, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id WHERE ct_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id WHERE ct_idnt=" + idnt);
             if (dr.Read())
             {
-                contact = new Contacts
-                {
+                contact = new Contacts {
                     Id = Convert.ToInt64(dr[0]),
-                    Identifier = dr[1].ToString(),
-                    Notes = dr[2].ToString(),
-                    ExposedOn = Convert.ToDateTime(dr[3]),
-                    AddedOn = Convert.ToDateTime(dr[4]),
-                    AddedBy = new Users(Convert.ToInt64(dr[5])),
-                    Patient = new Patient(Convert.ToInt64(dr[6])),
-                    NextVisit = Convert.ToDateTime(dr[7])
+                    Uuid = dr[1].ToString(),
+                    Identifier = dr[2].ToString(),
+                    Notes = dr[3].ToString(),
+                    ExposedOn = Convert.ToDateTime(dr[4]),
+                    AddedOn = Convert.ToDateTime(dr[5]),
+                    AddedBy = new Users(Convert.ToInt64(dr[6])),
+                    Patient = new Patient(Convert.ToInt64(dr[7])),
+                    NextVisit = Convert.ToDateTime(dr[8])
                 };
 
-                contact.Person = new Person
-                {
-                    Id = Convert.ToInt64(dr[8]),
-                    Name = dr[9].ToString(),
-                    Gender = dr[10].ToString().FirstCharToUpper(),
-                    DateOfBirth = Convert.ToDateTime(dr[11])
+                contact.Person = new Person {
+                    Id = Convert.ToInt64(dr[9]),
+                    Name = dr[10].ToString(),
+                    Gender = dr[11].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[12])
                 };
 
-                contact.Status = new Concept(Convert.ToInt64(dr[12]), dr[13].ToString());
-                contact.Location = new Concept(Convert.ToInt64(dr[14]), dr[15].ToString());
-                contact.Relation = new Concept(Convert.ToInt64(dr[16]), dr[17].ToString());
-                contact.Proximity = new Concept(Convert.ToInt64(dr[18]), dr[19].ToString());
-                contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[20]), dr[21].ToString());
-                contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[22]), dr[23].ToString());
+                contact.Status = new Concept(Convert.ToInt64(dr[13]), dr[14].ToString());
+                contact.Location = new Concept(Convert.ToInt64(dr[15]), dr[16].ToString());
+                contact.Relation = new Concept(Convert.ToInt64(dr[17]), dr[18].ToString());
+                contact.Proximity = new Concept(Convert.ToInt64(dr[19]), dr[20].ToString());
+                contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[21]), dr[22].ToString());
+                contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[23]), dr[24].ToString());
 
-                contact.Index = new PatientProgram
-                {
-                    Id = Convert.ToInt64(dr[24]),
-                    TbmuNumber = dr[25].ToString(),
-                    DateEnrolled = Convert.ToDateTime(dr[26]),
-                    Patient = new Patient(Convert.ToInt64(dr[27]))
+                contact.Index = new PatientProgram {
+                    Id = Convert.ToInt64(dr[25]),
+                    TbmuNumber = dr[26].ToString(),
+                    DateEnrolled = Convert.ToDateTime(dr[27]),
+                    Patient = new Patient(dr[28].ToString())
                 };
 
-                contact.Index.Patient.Person = new Person
-                {
-                    Id = Convert.ToInt64(dr[28]),
-                    Name = dr[29].ToString(),
-                    Gender = dr[30].ToString().FirstCharToUpper(),
-                    DateOfBirth = Convert.ToDateTime(dr[31]),
+                contact.Index.Patient.Person = new Person {
+                    Id = Convert.ToInt64(dr[29]),
+                    Name = dr[30].ToString(),
+                    Gender = dr[31].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[32]),
+                };
+            }
+
+            return contact;
+        }
+
+        public Contacts GetContact(string uuid) {
+            Contacts contact = null;
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id WHERE ct_uuid COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '" + uuid + "'");
+            if (dr.Read()) {
+                contact = new Contacts {
+                    Id = Convert.ToInt64(dr[0]),
+                    Uuid = dr[1].ToString(),
+                    Identifier = dr[2].ToString(),
+                    Notes = dr[3].ToString(),
+                    ExposedOn = Convert.ToDateTime(dr[4]),
+                    AddedOn = Convert.ToDateTime(dr[5]),
+                    AddedBy = new Users(Convert.ToInt64(dr[6])),
+                    Patient = new Patient(Convert.ToInt64(dr[7])),
+                    NextVisit = Convert.ToDateTime(dr[8])
+                };
+
+                contact.Person = new Person {
+                    Id = Convert.ToInt64(dr[9]),
+                    Name = dr[10].ToString(),
+                    Gender = dr[11].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[12])
+                };
+
+                contact.Status = new Concept(Convert.ToInt64(dr[13]), dr[14].ToString());
+                contact.Location = new Concept(Convert.ToInt64(dr[15]), dr[16].ToString());
+                contact.Relation = new Concept(Convert.ToInt64(dr[17]), dr[18].ToString());
+                contact.Proximity = new Concept(Convert.ToInt64(dr[19]), dr[20].ToString());
+                contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[21]), dr[22].ToString());
+                contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[23]), dr[24].ToString());
+
+                contact.Index = new PatientProgram {
+                    Id = Convert.ToInt64(dr[25]),
+                    TbmuNumber = dr[26].ToString(),
+                    DateEnrolled = Convert.ToDateTime(dr[27]),
+                    Patient = new Patient(dr[28].ToString())
+                };
+
+                contact.Index.Patient.Person = new Person {
+                    Id = Convert.ToInt64(dr[29]),
+                    Name = dr[30].ToString(),
+                    Gender = dr[31].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[32]),
                 };
             }
 
@@ -308,50 +355,49 @@ namespace EtbSomalia.Services
             List<Contacts> contacts = new List<Contacts>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id ORDER BY ct_identifier, p.ps_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id ORDER BY ct_identifier, p.ps_name");
             if (dr.HasRows)
             {
                 while (dr.Read())
                 {
-                    Contacts contact = new Contacts
-                    {
+                    Contacts contact = new Contacts {
                         Id = Convert.ToInt64(dr[0]),
-                        Identifier = dr[1].ToString(),
-                        Notes = dr[2].ToString(),
-                        ExposedOn = Convert.ToDateTime(dr[3]),
-                        AddedOn = Convert.ToDateTime(dr[4]),
-                        AddedBy = new Users(Convert.ToInt64(dr[5])),
-                        Patient = new Patient(Convert.ToInt64(dr[6])),
-                        NextVisit = Convert.ToDateTime(dr[7])
+                        Uuid = dr[1].ToString(),
+                        Identifier = dr[2].ToString(),
+                        Notes = dr[3].ToString(),
+                        ExposedOn = Convert.ToDateTime(dr[4]),
+                        AddedOn = Convert.ToDateTime(dr[5]),
+                        AddedBy = new Users(Convert.ToInt64(dr[6])),
+                        Patient = new Patient(Convert.ToInt64(dr[7])),
+                        NextVisit = Convert.ToDateTime(dr[8])
                     };
 
-                    contact.Person = new Person
-                    {
-                        Id = Convert.ToInt64(dr[8]),
-                        Name = dr[9].ToString(),
-                        Gender = dr[10].ToString().FirstCharToUpper(),
-                        DateOfBirth = Convert.ToDateTime(dr[11])
+                    contact.Person = new Person {
+                        Id = Convert.ToInt64(dr[9]),
+                        Name = dr[10].ToString(),
+                        Gender = dr[11].ToString().FirstCharToUpper(),
+                        DateOfBirth = Convert.ToDateTime(dr[12])
                     };
 
-                    contact.Status = new Concept(Convert.ToInt64(dr[12]), dr[13].ToString());
-                    contact.Location = new Concept(Convert.ToInt64(dr[14]), dr[15].ToString());
-                    contact.Relation = new Concept(Convert.ToInt64(dr[16]), dr[17].ToString());
-                    contact.Proximity = new Concept(Convert.ToInt64(dr[18]), dr[19].ToString());
-                    contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[20]), dr[21].ToString());
-                    contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[22]), dr[23].ToString());
+                    contact.Status = new Concept(Convert.ToInt64(dr[13]), dr[14].ToString());
+                    contact.Location = new Concept(Convert.ToInt64(dr[15]), dr[16].ToString());
+                    contact.Relation = new Concept(Convert.ToInt64(dr[17]), dr[18].ToString());
+                    contact.Proximity = new Concept(Convert.ToInt64(dr[19]), dr[20].ToString());
+                    contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[21]), dr[22].ToString());
+                    contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[23]), dr[24].ToString());
 
                     contact.Index = new PatientProgram {
-                        Id = Convert.ToInt64(dr[24]),
-                        TbmuNumber = dr[25].ToString(),
-                        DateEnrolled = Convert.ToDateTime(dr[26]),
-                        Patient = new Patient(dr[27].ToString())
+                        Id = Convert.ToInt64(dr[25]),
+                        TbmuNumber = dr[26].ToString(),
+                        DateEnrolled = Convert.ToDateTime(dr[27]),
+                        Patient = new Patient(dr[28].ToString())
                     };
 
                     contact.Index.Patient.Person = new Person {
-                        Id = Convert.ToInt64(dr[28]),
-                        Name = dr[29].ToString(),
-                        Gender = dr[30].ToString().FirstCharToUpper(),
-                        DateOfBirth = Convert.ToDateTime(dr[31]),
+                        Id = Convert.ToInt64(dr[29]),
+                        Name = dr[30].ToString(),
+                        Gender = dr[31].ToString().FirstCharToUpper(),
+                        DateOfBirth = Convert.ToDateTime(dr[32]),
                     };
 
                     contacts.Add(contact);
@@ -366,7 +412,7 @@ namespace EtbSomalia.Services
             List<Contacts> contacts = new List<Contacts>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_idnt, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id WHERE pt_idnt=" + patient.Id + " ORDER BY ct_identifier, p.ps_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id WHERE pt_idnt=" + patient.Id + " ORDER BY ct_identifier, p.ps_name");
             if (dr.HasRows)
             {
                 while (dr.Read())
@@ -374,44 +420,43 @@ namespace EtbSomalia.Services
                     Contacts contact = new Contacts
                     {
                         Id = Convert.ToInt64(dr[0]),
-                        Identifier = dr[1].ToString(),
-                        Notes = dr[2].ToString(),
-                        ExposedOn = Convert.ToDateTime(dr[3]),
-                        AddedOn = Convert.ToDateTime(dr[4]),
-                        AddedBy = new Users(Convert.ToInt64(dr[5])),
-                        Patient = new Patient(Convert.ToInt64(dr[6])),
-                        NextVisit = Convert.ToDateTime(dr[7])
+                        Uuid = dr[1].ToString(),
+                        Identifier = dr[2].ToString(),
+                        Notes = dr[3].ToString(),
+                        ExposedOn = Convert.ToDateTime(dr[4]),
+                        AddedOn = Convert.ToDateTime(dr[5]),
+                        AddedBy = new Users(Convert.ToInt64(dr[6])),
+                        Patient = new Patient(Convert.ToInt64(dr[7])),
+                        NextVisit = Convert.ToDateTime(dr[8])
                     };
 
                     contact.Person = new Person
                     {
-                        Id = Convert.ToInt64(dr[8]),
-                        Name = dr[9].ToString(),
-                        Gender = dr[10].ToString().FirstCharToUpper(),
-                        DateOfBirth = Convert.ToDateTime(dr[11])
+                        Id = Convert.ToInt64(dr[9]),
+                        Name = dr[10].ToString(),
+                        Gender = dr[11].ToString().FirstCharToUpper(),
+                        DateOfBirth = Convert.ToDateTime(dr[12])
                     };
 
-                    contact.Status = new Concept(Convert.ToInt64(dr[12]), dr[13].ToString());
-                    contact.Location = new Concept(Convert.ToInt64(dr[14]), dr[15].ToString());
-                    contact.Relation = new Concept(Convert.ToInt64(dr[16]), dr[17].ToString());
-                    contact.Proximity = new Concept(Convert.ToInt64(dr[18]), dr[19].ToString());
-                    contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[20]), dr[21].ToString());
-                    contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[22]), dr[23].ToString());
+                    contact.Status = new Concept(Convert.ToInt64(dr[13]), dr[14].ToString());
+                    contact.Location = new Concept(Convert.ToInt64(dr[15]), dr[16].ToString());
+                    contact.Relation = new Concept(Convert.ToInt64(dr[17]), dr[18].ToString());
+                    contact.Proximity = new Concept(Convert.ToInt64(dr[19]), dr[20].ToString());
+                    contact.DiseaseAfter = new Concept(Convert.ToInt64(dr[21]), dr[22].ToString());
+                    contact.PrevouslyTreated = new Concept(Convert.ToInt64(dr[23]), dr[24].ToString());
 
-                    contact.Index = new PatientProgram
-                    {
-                        Id = Convert.ToInt64(dr[24]),
-                        TbmuNumber = dr[25].ToString(),
-                        DateEnrolled = Convert.ToDateTime(dr[26]),
-                        Patient = new Patient(Convert.ToInt64(dr[27]))
+                    contact.Index = new PatientProgram {
+                        Id = Convert.ToInt64(dr[25]),
+                        TbmuNumber = dr[26].ToString(),
+                        DateEnrolled = Convert.ToDateTime(dr[27]),
+                        Patient = new Patient(dr[28].ToString())
                     };
 
-                    contact.Index.Patient.Person = new Person
-                    {
-                        Id = Convert.ToInt64(dr[28]),
-                        Name = dr[29].ToString(),
-                        Gender = dr[30].ToString().FirstCharToUpper(),
-                        DateOfBirth = Convert.ToDateTime(dr[31]),
+                    contact.Index.Patient.Person = new Person {
+                        Id = Convert.ToInt64(dr[29]),
+                        Name = dr[30].ToString(),
+                        Gender = dr[31].ToString().FirstCharToUpper(),
+                        DateOfBirth = Convert.ToDateTime(dr[32]),
                     };
 
                     contacts.Add(contact);
