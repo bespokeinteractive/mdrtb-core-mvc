@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Mail;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -180,7 +181,7 @@ namespace EtbSomalia.Controllers
 
         [AllowAnonymous]
         public string ResetPassword(long usr_idnt) {
-            new Users(usr_idnt).ResetPassword();
+            new UserService().GetUser(usr_idnt).ResetPassword();
             return "success";
         }
 
@@ -207,6 +208,7 @@ namespace EtbSomalia.Controllers
         [HttpPost]
         public IActionResult AddEditUser() {
             Users user = UserEdit.User;
+            Boolean isNew = false || user.Id.Equals(0);
 
             if (user.Role.Id.Equals(3))
                 user.AdminRole = UserEdit.Region;
@@ -218,6 +220,24 @@ namespace EtbSomalia.Controllers
             user.Save(HttpContext);
 
             new UserService(HttpContext).UpdateUsersFacilities(user, UserEdit.Facility);
+
+            if (isNew) {
+                MailSendExtensions mail = new MailSendExtensions();
+                mail.SendTo.Add(new MailAddress(user.Email, user.Name));
+
+                string message = "Dear " + user.Name + System.Environment.NewLine + System.Environment.NewLine;
+                message += "A new Account has been created for you on EtbSomalia System. Your login credentials are as below" + System.Environment.NewLine;
+                message += "URL: http://etbsomalia.worldvision.or.ke" + System.Environment.NewLine;
+                message += "Username: " + user.Username + System.Environment.NewLine;
+                message += "Password: pass" + System.Environment.NewLine + System.Environment.NewLine;
+                message += "You will be prompted to change the password after the first login. Provide a password of your liking." + System.Environment.NewLine + System.Environment.NewLine;
+                message += "Regards," + System.Environment.NewLine;
+                message += "System Admin" + System.Environment.NewLine + System.Environment.NewLine;
+                message += "P.S. This is a system generated Email. Do not respond to it.";
+
+                mail.Message = message;
+                mail.Send();
+            }
 
             return LocalRedirect("/administrator/users/");
         }

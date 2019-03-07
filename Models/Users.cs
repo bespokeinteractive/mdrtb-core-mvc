@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mail;
 using EtbSomalia.Extensions;
 using EtbSomalia.Services;
 using Microsoft.AspNetCore.Http;
@@ -58,6 +59,24 @@ namespace EtbSomalia.Models
         public void ResetPassword() {
             this.Password = new CrytoUtilsExtensions().Encrypt("pass");
             this.UpdatePassword(1);
+
+            if (!string.IsNullOrEmpty(Email)) {
+                MailSendExtensions mail = new MailSendExtensions();
+                mail.SendTo.Add(new MailAddress(Email, Name));
+                
+                string message = "Dear " + Name + System.Environment.NewLine + System.Environment.NewLine;
+                message += "The password for your Account on EtbSomalia System has been reset. Your login credentials are as below" + System.Environment.NewLine;
+                message += "URL: http://etbsomalia.worldvision.or.ke" + System.Environment.NewLine;
+                message += "Username: " + Username + System.Environment.NewLine;
+                message += "Password: pass" + System.Environment.NewLine + System.Environment.NewLine;
+                message += "You will be prompted to change the password after the first login. Provide a password of your liking." + System.Environment.NewLine + System.Environment.NewLine;
+                message += "Regards," + System.Environment.NewLine;
+                message += "System Admin" + System.Environment.NewLine + System.Environment.NewLine;
+                message += "P.S. This is a system generated Email. Do not respond to it.";
+                
+                mail.Message = message;
+                mail.Send();
+            }
         }
 
         public void EnableAccount(bool opts = true) {

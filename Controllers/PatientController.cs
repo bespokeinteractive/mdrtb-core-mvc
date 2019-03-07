@@ -119,6 +119,19 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
+        [Route("patients/recent")]
+        public IActionResult RecentlyAdded() {
+            return View();
+        }
+
+        [Route("patients/register/{type}")]
+        public IActionResult RegisterView(string type, RegisterViewModel model) {
+            model.Type = type;
+
+            return View(model);
+        }
+
+
         [AllowAnonymous]
         public JsonResult SearchPatient(string qString) {
             return Json(new PatientService(HttpContext).SearchPatients(qString));
