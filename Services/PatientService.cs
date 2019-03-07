@@ -219,13 +219,17 @@ namespace EtbSomalia.Services
             return vitals;
         }
 
-        public List<PatientSearch> SearchPatients(string filter) {
+        public List<PatientSearch> SearchPatients(string filter, string start = "", string stop = "") {
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
             string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
+            if (!string.IsNullOrEmpty(start)) {
+                query += " AND pp_enrolled_on BETWEEN '" + DateTime.Parse(start) + "' AND '" + DateTime.Parse(stop) + "'";
+            }
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
             if (dr.HasRows) {
                 while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
@@ -241,7 +245,8 @@ namespace EtbSomalia.Services
                     ps.Status = dr[7].ToString();
                     ps.Facility = dr[8].ToString();
 
-                    ps.age = ps.Patient.GetAge();
+                    ps.Age = ps.Patient.GetAge();
+                    ps.AddedOn = Convert.ToDateTime(dr[9]).ToString("dd/MM/yyyy");
 
                     search.Add(ps);
                 }

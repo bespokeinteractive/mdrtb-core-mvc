@@ -224,6 +224,7 @@ namespace EtbSomalia.Controllers
             if (isNew) {
                 MailSendExtensions mail = new MailSendExtensions();
                 mail.SendTo.Add(new MailAddress(user.Email, user.Name));
+                mail.Subject = "Account created on EtbSomalia";
 
                 string message = "Dear " + user.Name + System.Environment.NewLine + System.Environment.NewLine;
                 message += "A new Account has been created for you on EtbSomalia System. Your login credentials are as below" + System.Environment.NewLine;

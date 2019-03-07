@@ -63,6 +63,7 @@ namespace EtbSomalia.Models
             if (!string.IsNullOrEmpty(Email)) {
                 MailSendExtensions mail = new MailSendExtensions();
                 mail.SendTo.Add(new MailAddress(Email, Name));
+                mail.Subject = "EtbSomalia Password has been Reset";
                 
                 string message = "Dear " + Name + System.Environment.NewLine + System.Environment.NewLine;
                 message += "The password for your Account on EtbSomalia System has been reset. Your login credentials are as below" + System.Environment.NewLine;

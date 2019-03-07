@@ -120,8 +120,8 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/recent")]
-        public IActionResult RecentlyAdded() {
-            return View();
+        public IActionResult RecentlyAdded(RegisterViewModel model) {
+            return View(model);
         }
 
         [Route("patients/register/{type}")]

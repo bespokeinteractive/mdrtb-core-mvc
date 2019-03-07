@@ -1,3 +1,175 @@
-﻿@{
+﻿@model EtbSomalia.ViewModel.RegisterViewModel;
+
+@{
     ViewData["Title"] = "Recently Added";
 }
+
+<style>
+    a {
+        cursor: pointer !important;
+    }
+    a.btn,a.btn:hover {
+        text-decoration: none;
+    }
+    nav .input-field input:focus, nav .input-field input[type=text]:valid, nav .input-field input[type=password]:valid, nav .input-field input[type=email]:valid, nav .input-field input[type=url]:valid, nav .input-field input[type=date]:valid {
+        border-bottom: 1px solid #9e9e9e;
+    }
+    td {
+        padding: 5px;
+    }
+    a.material-icons.tiny-box {
+        display: inline-block;
+        font-size: 18px;
+    }
+    a.material-icons:hover {
+        color: #2196F3 !important;
+    }
+</style>
+<script src="~/js/patients-recently-added-script.js"></script>
+
+<div class="col-md-3 zero-margin">
+    <div id="flight-card" class="card" style="margin-bottom:0">
+        <div class="card-header deep-orange accent-2">
+            <div class="card-title">
+                <h5 class="flight-card-title">Recently Added</h5>
+                <p class="flight-card-date">@DateTime.Now.ToString("MMM dd, ddd hh:mm")</p>
+            </div>
+        </div>
+    </div>
+    <ul id="profile-page-about-details" class="collection z-depth-1 col s12 m3 l3" style="padding:0; margin-top:0">
+        <li class="collection-item">
+            <div class="">
+                <div class="col s12">
+                    <i class="material-icons left blue-text">person_add</i><a class="blue-text modal-trigger" data-target="station-expense-modal">Add Patients</a>
+                </div>
+            </div>
+        </li>
+        <li class="collection-item">
+            <div class="">
+                <div class="col s12">
+                    <i class="material-icons left blue-text">group_add</i><a class="blue-text modal-trigger" data-target="truck-fuel-modal">Add Contacts</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <ul id="profile-page-about-details" class="collection z-depth-1 col s12 m3 l3" style="padding:0;margin-top:-10px;">
+        <li class="collection-item">
+            <div class="">
+                <div class="col s12">
+                    <i class="material-icons left black-text">attach_file</i><a class="black-text" href="/patients/register/tb">TB Register</a>
+                </div>
+            </div>
+        </li>
+        <li class="collection-item">
+            <div class="">
+                <div class="col s12">
+                    <i class="material-icons left black-text">kitchen</i><a class="black-text" href="/patients/register/mdrtb">MDR Register</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="col-md-9" style="padding:0; margin-top:7px; margin-bottom:0px;">
+    <nav class="navbar nav-extended">
+        <div class="nav-content" style="border: 1px solid rgba(0,0,0,0.1)">
+            <ul class="tabs">
+                <li class="tab"><a href="#patients" class="active">Patients</a></li>
+                <li class="tab"><a href="#contacts" class="active">Contacts</a></li>
+            </ul>
+
+            <div id="patients" class="body">
+                <div class="row" style="margin-top: 10px;">
+                    <div class="input-field col-md-3">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="patients-start-date" type="text" class="datepicker" value="@Model.Date1x.ToString("d MMMM, yyyy")">
+                    </div>
+
+                    <div class="input-field col-md-3">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="patients-stops-date" type="text" class="datepicker" value="@Model.Date2x.ToString("d MMMM, yyyy")">
+                    </div>
+
+                    <div class="input-field col-md-5">
+                        <i class="material-icons prefix">filter_list</i>
+                        <input id="patients-filter" type="text" placeholder="Filter Patients" />
+                    </div>
+
+                    <div class="col-md-1">
+                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-purchases"><i class="material-icons" style="line-height: 42px">search</i></a>
+                    </div>
+                </div>
+
+                <table id="patients-table" class="bordered" data-loaded="0" style="margin-top: -20px">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>IDENTIFIER</th>
+                            <th>NAME</th>
+                            <th>AGE</th>
+                            <th>GENDER</th>
+                            <th>FACILITY</th>
+                            <th>ADDED ON</th>
+                            <th>STATUS</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+
+                    <tbody style="font-size:0.9em">
+                        <tr>
+                            <td colspan="9" style="padding-left: 20px">NO PATIENTS FOUND</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div id="contacts" class="body">
+                <div class="row" style="margin-top: 10px;">
+                    <div class="input-field col-md-3">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="contacts-start-date" type="text" class="datepicker" value="@Model.Date1x.ToString("d MMMM, yyyy")">
+                    </div>
+
+                    <div class="input-field col-md-3">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="contacts-stops-date" type="text" class="datepicker" value="@Model.Date2x.ToString("d MMMM, yyyy")">
+                    </div>
+
+                    <div class="input-field col-md-5">
+                        <i class="material-icons prefix">filter_list</i>
+                        <input id="contacts-filter" type="text" placeholder="Filter Contacts" />
+                    </div>
+
+                    <div class="col-md-1">
+                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-purchases"><i class="material-icons" style="line-height: 42px">search</i></a>
+                    </div>
+                </div>
+
+                <table id="contacts-table" class="bordered" data-loaded="0" style="margin-top: -20px">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>IDENTIFIER</th>
+                            <th>NAME</th>
+                            <th>AGE</th>
+                            <th>GENDER</th>
+                            <th>INDEX</th>
+                            <th>ADDED ON</th>
+                            <th>STATUS</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+
+                    <tbody style="font-size:0.9em">
+                        <tr>
+                            <td colspan="9" style="padding-left: 20px">NO CONTACT FOUND</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nav>
+</div>
+<div style="clear:both"></div>
