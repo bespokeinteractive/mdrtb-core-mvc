@@ -103,12 +103,12 @@
             @foreach (var ps in Model.PatientSearch) {
                 <tr>
                     <td>@ps.Program.TbmuNumber</td>
-                    <td><a class="blue-text" href="/administrator/users/@ps.Patient.Uuid">@ps.Patient.Person.Name</a></td>
+                    <td><a class="blue-text" href="/patients/profile/@ps.Patient.Uuid">@ps.Patient.Person.Name</a></td>
                     <td>@ps.Patient.GetAge()</td>
                     <td>@ps.Patient.Person.Gender</td>
                     <td>@ps.Facility</td>
                     <td>@ps.Status</td>
-                    <td>@ps.Program.GetDaysInProgram() Days</td>
+                    <td>@ps.Program.GetDaysInProgram() days</td>
                     <td><a class='material-icons tiny-box grey-text right'>border_color</a></td>
                 </tr>
             }
