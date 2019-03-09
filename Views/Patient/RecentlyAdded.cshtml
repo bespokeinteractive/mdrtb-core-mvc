@@ -25,7 +25,7 @@
         color: #2196F3 !important;
     }
 </style>
-<script src="~/js/patients-recently-added-script.js"></script>
+<script src="~/js/patient-recently-added-script.js"></script>
 
 <div class="col-md-3 zero-margin">
     <div id="flight-card" class="card" style="margin-bottom:0">
@@ -40,7 +40,7 @@
         <li class="collection-item">
             <div class="">
                 <div class="col s12">
-                    <i class="material-icons left blue-text">person_add</i><a class="blue-text modal-trigger" data-target="station-expense-modal">Add Patients</a>
+                    <i class="material-icons left blue-text">person_add</i><a class="blue-text modal-trigger" href="/registration/add">Add Patients</a>
                 </div>
             </div>
         </li>
@@ -75,8 +75,8 @@
     <nav class="navbar nav-extended">
         <div class="nav-content" style="border: 1px solid rgba(0,0,0,0.1)">
             <ul class="tabs">
-                <li class="tab"><a href="#patients" class="active">Patients</a></li>
-                <li class="tab"><a href="#contacts" class="active">Contacts</a></li>
+                <li class="tab patients" data-loaded="1"><a href="#patients" class="active">Patients</a></li>
+                <li class="tab contacts" data-loaded="0"><a href="#contacts" class="active">Contacts</a></li>
             </ul>
 
             <div id="patients" class="body">
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="col-md-1">
-                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-purchases"><i class="material-icons" style="line-height: 42px">search</i></a>
+                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-patients"><i class="material-icons" style="line-height: 42px">search</i></a>
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@
 
                     <tbody style="font-size:0.9em">
                         <tr>
-                            <td colspan="9" style="padding-left: 20px">NO PATIENTS FOUND</td>
+                            <td colspan="9" style="padding-left: 20px">NO RECENT PATIENTS FOUND</td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="col-md-1">
-                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-purchases"><i class="material-icons" style="line-height: 42px">search</i></a>
+                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right get-contacts"><i class="material-icons" style="line-height: 42px">search</i></a>
                     </div>
                 </div>
 
@@ -164,7 +164,7 @@
 
                     <tbody style="font-size:0.9em">
                         <tr>
-                            <td colspan="9" style="padding-left: 20px">NO CONTACT FOUND</td>
+                            <td colspan="9" style="padding-left: 20px">NO RECENT CONTACT FOUND</td>
                         </tr>
                     </tbody>
                 </table>

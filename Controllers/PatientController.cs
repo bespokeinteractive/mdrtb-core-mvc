@@ -131,10 +131,23 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
-
         [AllowAnonymous]
         public JsonResult SearchPatient(string qString) {
             return Json(new PatientService(HttpContext).SearchPatients(qString));
+        }
+
+        [AllowAnonymous]
+        public JsonResult GetRecentlyAdded(string start, string stops, string filter = "") {
+            if (string.IsNullOrEmpty(filter))
+                filter = "";
+            return Json(new PatientService(HttpContext).SearchPatients(filter, start, stops));
+        }
+
+        [AllowAnonymous]
+        public JsonResult GetRecentContacts(string start, string stops, string filter = "") {
+            if (string.IsNullOrEmpty(filter))
+                filter = "";
+            return Json(new PatientService(HttpContext).GetContacts(start, stops, filter));
         }
 
         [HttpPost]
@@ -162,8 +175,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
-        public IActionResult RegisterNewIntake()
-        {
+        public IActionResult RegisterNewIntake() {
             PatientProgram pp = IntakeModel.Program;
             pp.ArtStartedOn = DateTime.Parse(IntakeModel.ArtStartedOn);
             pp.CptStartedOn = DateTime.Parse(IntakeModel.CptStartedOn);
@@ -185,7 +197,6 @@ namespace EtbSomalia.Controllers
 
             return LocalRedirect("/patients/profile/" + pp.Patient.Uuid);
         }
-
 
         [AllowAnonymous]
         public string GetBirthdateFromString(string value)

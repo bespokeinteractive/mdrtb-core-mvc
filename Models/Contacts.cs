@@ -27,6 +27,7 @@ namespace EtbSomalia.Models
         public Users AddedBy { get; set; }
 
         public string Notes { get; set; }
+        public string Age { get; set; }
 
         public Contacts() {
             Id = 0;

@@ -16,8 +16,7 @@ namespace EtbSomalia.Controllers
         public ContactAddViewModel ContactAddModel { get; set; }
 
         [Route("contacts")]
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             List<Contacts> contacts = new List<Contacts>(new PatientService(HttpContext).GetContacts());
             return View(contacts);
         }

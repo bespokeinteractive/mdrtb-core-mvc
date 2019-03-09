@@ -5,7 +5,7 @@ namespace EtbSomalia.Extensions
 {
     public class SqlServerConnection
     {
-        private static readonly String sConn = "Data Source=172.20.10.11;Initial Catalog=EtbSomalia;User ID=ct;Password=ct-2011;Max Pool Size=200;";
+        private static readonly String sConn = "Data Source=192.168.100.9;Initial Catalog=EtbSomalia;User ID=ct;Password=ct-2011;Max Pool Size=200;";
         private readonly SqlConnection conn = new SqlConnection(sConn);
         private SqlCommand comm = new SqlCommand();
 
@@ -21,7 +21,7 @@ namespace EtbSomalia.Extensions
             }
         }
 
-        public Int64 SqlServerUpdate(string SqlString) {
+        public long SqlServerUpdate(string SqlString) {
             try {
                 SqlCommand command = new SqlCommand(SqlString, conn);
                 command.Connection.Open();
@@ -44,8 +44,7 @@ namespace EtbSomalia.Extensions
             }
         }
 
-        public string GetQueryString(string sString, string command, string sAdditionalString = "", bool AndJoin = true)
-        {
+        public string GetQueryString(string sString, string command, string sAdditionalString = "", bool AndJoin = true) {
             string query = "";
             string JOIN = " AND ";
 

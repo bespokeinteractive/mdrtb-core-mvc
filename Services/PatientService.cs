@@ -224,12 +224,14 @@ namespace EtbSomalia.Services
 
             SqlServerConnection conn = new SqlServerConnection();
             string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
+            string order = " ORDER BY ps_name";
 
             if (!string.IsNullOrEmpty(start)) {
                 query += " AND pp_enrolled_on BETWEEN '" + DateTime.Parse(start) + "' AND '" + DateTime.Parse(stop) + "'";
+                order = " ORDER BY pp_enrolled_on DESC, ps_name";
             }
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + " ORDER BY ps_name");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + order);
             if (dr.HasRows) {
                 while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
@@ -356,11 +358,19 @@ namespace EtbSomalia.Services
             return contact;
         }
 
-        public List<Contacts> GetContacts() {
+        public List<Contacts> GetContacts(string start = "", string stop = "", string filter = "") {
             List<Contacts> contacts = new List<Contacts>();
-
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id ORDER BY ct_identifier, p.ps_name");
+
+            string query = conn.GetQueryString(filter, "ct_identifier+'-'+ct_notes+'-'+p.ps_name+'-'+p.ps_gender+'-'+cs.cpt_name+'-'+cl.cpt_name+'-'+cr.cpt_name+'-'+cp.cpt_name+'-'+pp_tbmu+'-'+ps.ps_name", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
+            string order = " ORDER BY ct_identifier, p.ps_name";
+
+            if (!string.IsNullOrEmpty(start)) {
+                query += " AND ct_added_on BETWEEN '" + DateTime.Parse(start) + "' AND '" + DateTime.Parse(stop) + "'";
+                order = " ORDER BY CAST(ct_added_on AS DATE) DESC, ct_identifier, p.ps_name";
+            }
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_notes, ct_exposed_from, ct_added_on, ct_added_by, ct_patient_id, ct_next_screening, p.ps_idnt, p.ps_name, p.ps_gender, p.ps_dob, cs.cpt_id, cs.cpt_name [status], cl.cpt_id, cl.cpt_name [location], cr.cpt_id, cr.cpt_name [relation], cp.cpt_id, cp.cpt_name [proximity], ct_desease_after, cd.cpt_name[disease_after], ct_prev_treated, ct.cpt_name[previously_treated], pp_idnt, pp_tbmu, pp_enrolled_on, pt_uuid, ps.ps_idnt, ps.ps_name, ps.ps_gender, ps.ps_dob FROM Contacts INNER JOIN Person p ON ct_person=p.ps_idnt INNER JOIN PatientProgram ON ct_index=pp_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ps ON pt_person=ps.ps_idnt INNER JOIN Concept cs ON ct_status= cs.cpt_id INNER JOIN Concept cl ON ct_location= cl.cpt_id INNER JOIN Concept cr ON ct_relationship= cr.cpt_id INNER JOIN Concept cp ON ct_proximity=cp.cpt_id INNER JOIN Concept cd ON ct_desease_after=cd.cpt_id INNER JOIN Concept ct ON ct_prev_treated=ct.cpt_id" + query + order);
             if (dr.HasRows)
             {
                 while (dr.Read())
@@ -404,6 +414,8 @@ namespace EtbSomalia.Services
                         Gender = dr[31].ToString().FirstCharToUpper(),
                         DateOfBirth = Convert.ToDateTime(dr[32]),
                     };
+
+                    contact.Age = contact.GetAge();
 
                     contacts.Add(contact);
                 }
