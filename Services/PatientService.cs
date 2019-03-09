@@ -219,7 +219,7 @@ namespace EtbSomalia.Services
             return vitals;
         }
 
-        public List<PatientSearch> SearchPatients(string filter, string start = "", string stop = "") {
+        public List<PatientSearch> SearchPatients(string filter, string start = "", string stop = "", long facility = 0, bool active = false) {
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
@@ -231,7 +231,12 @@ namespace EtbSomalia.Services
                 order = " ORDER BY pp_enrolled_on DESC, ps_name";
             }
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + order);
+            if (!facility.Equals(0))
+                query += " AND pp_facility=" + facility;
+            if (active)
+                query += " AND pp_completed_on IS NULL";
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, pp_enrolled_on, pp_completed_on, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + order);
             if (dr.HasRows) {
                 while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
@@ -243,12 +248,16 @@ namespace EtbSomalia.Services
 
                     ps.Program.Id = Convert.ToInt64(dr[5]);
                     ps.Program.TbmuNumber = dr[6].ToString();
+                    ps.Program.DateEnrolled = Convert.ToDateTime(dr[7]);
 
-                    ps.Status = dr[7].ToString();
-                    ps.Facility = dr[8].ToString();
+                    if (dr[8] != DBNull.Value)
+                        ps.Program.DateCompleted = Convert.ToDateTime(dr[8]);
+
+                    ps.Status = dr[9].ToString();
+                    ps.Facility = dr[10].ToString();
 
                     ps.Age = ps.Patient.GetAge();
-                    ps.AddedOn = Convert.ToDateTime(dr[9]).ToString("dd/MM/yyyy");
+                    ps.AddedOn = Convert.ToDateTime(dr[11]).ToString("dd/MM/yyyy");
 
                     search.Add(ps);
                 }

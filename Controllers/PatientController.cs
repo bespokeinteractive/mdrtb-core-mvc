@@ -124,6 +124,19 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
+        [Route("patients/active")]
+        public IActionResult Active(PatientActiveViewModel model, long fac = 0) {
+            CoreService core = new CoreService(HttpContext);
+            model.Facilities = core.GetFacilitiesIEnumerable();
+            if (fac.Equals(0))
+                model.Active = core.GetFacility(Convert.ToInt64(model.Facilities[0].Value));
+            else
+                model.Active = core.GetFacility(fac);
+
+            model.PatientSearch = new PatientService(HttpContext).SearchPatients("", "", "", model.Active.Id, true);
+            return View(model);
+        }
+
         [Route("patients/register/{type}")]
         public IActionResult RegisterView(string type, RegisterViewModel model) {
             model.Type = type;
