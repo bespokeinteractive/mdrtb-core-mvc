@@ -138,8 +138,19 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/register/{type}")]
-        public IActionResult RegisterView(string type, RegisterViewModel model) {
+        public IActionResult RegisterView(string type, RegisterViewModel model, long fac = 0) {
+            CoreService core = new CoreService(HttpContext);
+
             model.Type = type;
+            model.Facilities = core.GetFacilitiesIEnumerable();
+            if (fac.Equals(0))
+                model.Active = core.GetFacility(Convert.ToInt64(model.Facilities[0].Value));
+            else
+                model.Active = core.GetFacility(fac);
+
+            if (type.Equals("tb"))
+                model.Register = new PatientService().GetBmuRegister(model.Active);
+
 
             return View(model);
         }
@@ -212,8 +223,7 @@ namespace EtbSomalia.Controllers
         }
 
         [AllowAnonymous]
-        public string GetBirthdateFromString(string value)
-        {
+        public string GetBirthdateFromString(string value) {
             if (string.IsNullOrWhiteSpace(value))
                 return "";
 
@@ -264,8 +274,7 @@ namespace EtbSomalia.Controllers
             return "";
         }
 
-        public Boolean IsNumber(String s)
-        {
+        public Boolean IsNumber(String s) {
             Boolean value = true;
             foreach (Char c in s.ToCharArray())
             {

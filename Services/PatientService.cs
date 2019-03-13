@@ -223,7 +223,7 @@ namespace EtbSomalia.Services
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
+            string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+fc_name+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
             string order = " ORDER BY ps_name";
 
             if (!string.IsNullOrEmpty(start)) {
@@ -264,6 +264,54 @@ namespace EtbSomalia.Services
             }
 
             return search;
+        }
+
+        public List<Register> GetBmuRegister(Facility facility) {
+            List<Register> registers = new List<Register>();
+            SqlServerConnection conn = new SqlServerConnection();
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pp_idnt, ISNULL(NULLIF(pp_tbmu,'N/A'), pp_registeer_no)pp_tbmux, ISNULL(NULLIF(pp_supporter,''),'—')pp_supporter, pp_created_on, pp_enrolled_on, pp_completed_on, pp_category, c_catg.cpt_name, pp_type, CASE WHEN pp_type=3 THEN 'PB' ELSE 'EP' END pp_type, pp_confirmation, CASE WHEN pp_confirmation=6 THEN 'BC' ELSE 'CD' END pp_confirmation, pp_outcome, ISNULL(c_outc.cpt_name, '—')outcome, pp_dots_by, c_dots.cpt_name, pp_referred_by, c_refs.cpt_name, fc_idnt, fc_name, pp_art_started, CASE WHEN pp_art_started=45 THEN 'Y' ELSE 'N' END pp_art, pp_cpt_started, CASE WHEN pp_cpt_started=45 THEN 'Y' ELSE 'N' END pp_cpt, pt_uuid, ps_name, UPPER(SUBSTRING(ps_gender,1,1))ps_gender, ps_dob, pa_address rg_date_1, rg_sputum_1, rg_hiv, rg_xray, rg_date_2, rg_sputum_2, rg_date_3, rg_sputum_3, rg_date_4, rg_sputum_4 FROM PatientProgram INNER JOIN Program ON pp_progam=prg_idnt AND pp_progam=1 INNER JOIN Facilities ON pp_facility=fc_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON ps_idnt=pt_person LEFT OUTER JOIN PersonAddress ON pa_person=pt_person AND pa_default=1 LEFT OUTER JOIN Concept AS c_catg ON pp_category=c_catg.cpt_id LEFT OUTER JOIN Concept AS c_outc ON pp_outcome=c_outc.cpt_id LEFT OUTER JOIN Concept AS c_dots ON pp_dots_by=c_dots.cpt_id LEFT OUTER JOIN Concept AS c_refs ON pp_referred_by=c_refs.cpt_id LEFT OUTER JOIN vRegisterBmu ON rg_program=pp_idnt ORDER BY pp_tbmux");
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    Register register = new Register();
+                    if (dr[5] != DBNull.Value)
+                        register.DateCompleted = Convert.ToDateTime(dr[5]).ToString("dd/MM/yyyy");
+
+                    register.Program = new PatientProgram {
+                        Id = Convert.ToInt64(dr[0]),
+                        TbmuNumber = dr[1].ToString(),
+                        TreatmentSupporter = dr[2].ToString(),
+                        CreatedOn = Convert.ToDateTime(dr[3]),
+                        DateEnrolled = Convert.ToDateTime(dr[4]),
+                        Category = new Concept {
+                            Id = Convert.ToInt64(dr[6]),
+                            Name = dr[7].ToString(),
+                        },
+                        Type = new Concept {
+                            Id = Convert.ToInt64(dr[8]),
+                            Name = dr[9].ToString(),
+                        },
+                        Confirmation = new Concept {
+                            Id = Convert.ToInt64(dr[10]),
+                            Name = dr[11].ToString(),
+                        },
+                        Outcome = new Concept {
+                            Id = Convert.ToInt64(dr[12]),
+                            Name = dr[13].ToString(),
+                        },
+                        DotsBy = new Concept {
+                            Id = Convert.ToInt64(dr[14]),
+                            Name = dr[15].ToString(),
+                        },
+                        ReferredBy = new Concept {
+                            Id = Convert.ToInt64(dr[16]),
+                            Name = dr[17].ToString(),
+                        },
+                    };
+                }
+            }
+
+            return registers;
         }
 
         public Contacts GetContact(long idnt) {
