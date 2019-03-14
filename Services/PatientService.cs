@@ -219,10 +219,11 @@ namespace EtbSomalia.Services
             return vitals;
         }
 
-        public List<PatientSearch> SearchPatients(string filter, string start = "", string stop = "", long facility = 0, bool active = false) {
+        public List<PatientSearch> SearchPatients(string filter, string start = "", string stop = "", long facility = 0, bool active = false, int limit = 50) {
             List<PatientSearch> search = new List<PatientSearch>();
 
             SqlServerConnection conn = new SqlServerConnection();
+            string count = "";
             string query = conn.GetQueryString(filter, "ps_name+'-'+ps_gender+'-'+pp_tbmu+'-'+fc_name+'-'+ISNULL(cpt_name, prg_description)", "pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + "))", true);
             string order = " ORDER BY ps_name";
 
@@ -230,13 +231,14 @@ namespace EtbSomalia.Services
                 query += " AND pp_enrolled_on BETWEEN '" + DateTime.Parse(start) + "' AND '" + DateTime.Parse(stop) + "'";
                 order = " ORDER BY pp_enrolled_on DESC, ps_name";
             }
-
+            if (!limit.Equals(0))
+                count = "TOP(" + limit + ")";
             if (!facility.Equals(0))
                 query += " AND pp_facility=" + facility;
             if (active)
                 query += " AND pp_completed_on IS NULL";
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(50) pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, pp_enrolled_on, pp_completed_on, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + order);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT " + count + " pt_idnt, pt_uuid, ps_name, ps_gender, ps_dob, pp_idnt, pp_tbmu, pp_enrolled_on, pp_completed_on, ISNULL(cpt_name, prg_description)x, fc_name, pp_enrolled_on FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PatientProgram ON pt_idnt=pp_patient INNER JOIN Program ON pp_progam=prg_idnt INNER JOIN Facilities ON pp_facility=fc_idnt LEFT OUTER JOIN Concept ON pp_outcome=cpt_id " + query + order);
             if (dr.HasRows) {
                 while (dr.Read()) {
                     PatientSearch ps = new PatientSearch();
