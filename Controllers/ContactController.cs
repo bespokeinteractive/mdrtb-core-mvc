@@ -69,7 +69,7 @@ namespace EtbSomalia.Controllers
             exam.NextScreening = DateTime.Parse(ContactAddModel.NextVisit);
             exam.Save(HttpContext);
 
-            return LocalRedirect("/contacts/" + contact.Id);
+            return LocalRedirect("/contacts/" + contact.GetUuid());
         }
     }
 }

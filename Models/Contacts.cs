@@ -57,6 +57,11 @@ namespace EtbSomalia.Models
             Uuid = uuid;
         }
 
+        public string GetUuid() {
+            Uuid = new PatientService().GetContactUuid(this);
+            return Uuid;
+        }
+
         public string GetName() {
             return Person.Name;
         }
