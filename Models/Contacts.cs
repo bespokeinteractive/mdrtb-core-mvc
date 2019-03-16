@@ -96,8 +96,7 @@ namespace EtbSomalia.Models
             Identifier = "CTX/" + Index.Program.Id + "/" + Convert.ToInt32(random.NextDouble() * 100).ToString().PadLeft(4, '0');
         }
 
-        public Contacts Register(HttpContext context)
-        {
+        public Contacts Register(HttpContext context) {
             this.GenerateIdentifier();
             Person.Save();
 

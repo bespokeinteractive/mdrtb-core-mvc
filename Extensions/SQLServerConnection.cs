@@ -33,9 +33,9 @@ namespace EtbSomalia.Extensions
                     command.ExecuteNonQuery();
                     return 0;
                 }
-
             }
-            catch (Exception) {
+            catch (Exception ex) {
+                Console.WriteLine("Post Error: " + ex.Message);
                 return 0;
             }
             finally {
