@@ -51,8 +51,8 @@ jq(function() {
             return;
         }
 
-        if(jq('#User_Username').val().length < 6){
-            Materialize.toast('<span>Username must atleast be 6 characters long</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
+        if(jq('#User_Username').val().length < 5){
+            Materialize.toast('<span>Username must atleast be 4 characters long</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
             return;
         }
 
