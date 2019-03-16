@@ -133,7 +133,7 @@ namespace EtbSomalia.Controllers
             else
                 model.Active = core.GetFacility(fac);
 
-            model.PatientSearch = new PatientService(HttpContext).SearchPatients("", "", "", model.Active.Id, true);
+            model.PatientSearch = new PatientService(HttpContext).SearchPatients("", "", "", model.Active.Id, true, 0);
             return View(model);
         }
 

@@ -122,8 +122,8 @@ namespace EtbSomalia.Controllers
 
         [Authorize(Roles = "Administrator, Super User")]
         [Route("administrator")]
-        public IActionResult Admin() {
-            return View();
+        public IActionResult Admin(AccountAdminViewModel model) {
+            return View(model);
         }
 
         [Authorize(Roles = "Administrator, Super User")]

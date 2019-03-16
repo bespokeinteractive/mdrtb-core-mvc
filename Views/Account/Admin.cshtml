@@ -1,10 +1,56 @@
-﻿@{
+﻿@model EtbSomalia.ViewModel.AccountAdminViewModel;
+@{
     ViewData["Title"] = "Administrator";
 }
 
-<div style="margin-top:20px;">
-    1.<a href="/administrator/users">Users</a><br />
-    2.<a href="/administrator/agencies">Agencies</a><br />
-    3.<a href="/administrator/regions">Regions</a><br />
-    4.<a href="/administrator/facilities">Facilities</a>
+<style>
+    .card .card-content {
+        padding: 0px 0 10px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    jq(function() {
+        jq('div.card-link').click(function(){
+            window.location.href = jq(this).data('url');
+        });
+    });
+</script>
+
+<div id="ecommerce-offer">
+    <div class="row zero-margin">
+        <div class="col s12 m3">
+            <div class="card gradient-shadow gradient-45deg-light-blue-cyan border-radius-3 purchases" data-rate="8">
+                <div class="card-link card-content center" data-url="/administrator/users">
+                    <h5 class="white-text lighten-4">@Model.Users</h5>
+                    <p class="white-text lighten-4">Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m3">
+            <div class="card gradient-shadow gradient-45deg-red-pink border-radius-3">
+                <div class="card-link card-content center" data-url="/administrator/agencies">
+                    <h5 class="white-text lighten-4">@Model.Agencies</h5>
+                    <p class="white-text lighten-4">Agencies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m3">
+            <div class="card gradient-shadow gradient-45deg-amber-amber border-radius-3">
+                <div class="card-link card-content center" data-url="/administrator/regions">
+                    <h5 class="white-text lighten-4">@Model.Regions</h5>
+                    <p class="white-text lighten-4">Regions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m3">
+            <div class="card gradient-shadow gradient-45deg-green-teal border-radius-3">
+                <div class="card-link card-content center" data-url="/administrator/facilities">
+                    <h5 class="white-text lighten-4">@Model.Facilities</h5>
+                    <p class="white-text lighten-4">Facilities</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

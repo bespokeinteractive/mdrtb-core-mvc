@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Security.Claims;
 using EtbSomalia.Extensions;
 using EtbSomalia.Models;
+using EtbSomalia.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -359,6 +360,19 @@ namespace EtbSomalia.Services
 
         public List<SelectListItem> GetRolesIEnumerable() {
             return GetIEnumerable("SELECT rl_idnt, rl_name FROM Roles");
+        }
+
+        public AccountAdminViewModel InitializeAdminModel(AccountAdminViewModel model) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("DECLARE @user INT, @facilty INT, @region INT, @agency INT; SELECT @user=COUNT(*) FROM Login; SELECT @facilty=COUNT(*) FROM Facilities WHERE fc_void=0; SELECT @region=COUNT(*) FROM Regions; SELECT @agency=COUNT(*) FROM Agency; SELECT @user usr, @facilty fc, @region rg, @agency ag");
+            if (dr.Read()) {
+                model.Users = Convert.ToInt32(dr[0]);
+                model.Facilities = Convert.ToInt32(dr[1]);
+                model.Regions = Convert.ToInt32(dr[2]);
+                model.Agencies = Convert.ToInt32(dr[3]);
+            }
+
+            return model;
         }
 
 
