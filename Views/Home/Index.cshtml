@@ -361,7 +361,7 @@
 <div class="row" style="margin-top: -30px;">
     <div class="col s12 m5 l5">
         <img class="zero margin" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;" />
-        <div class="collection z-depth-1" style="padding-bottom:30px">
+        <div class="collection z-depth-1 hide-on-med-and-down" style="padding-bottom:30px">
             <div class="input-field col s11">
                 <i class="material-icons prefix">history</i>
                 <input id="search_string" type="text" class="validate">
@@ -383,6 +383,12 @@
                 <i class="material-icons left" style="margin-right: 10px;">lightbulb_outline</i>
                 Active Patients
             </a>
+        </div>
+
+        <div class="collection z-depth-1 hide-on-large-only">
+            <a href="/patients/search" class="btn waves-effect waves-light gradient-45deg-light-blue-cyan" style="width:100%"><i class="material-icons">search</i>Search Patients</a>
+            <a href="/patients/search" class="btn waves-effect waves-light gradient-45deg-light-blue-cyan" style="width:100%"><i class="material-icons">lightbulb_outline</i>Active Patients</a>
+            <a href="/registration/add" class="btn waves-effect waves-light gradient-45deg-green-teal" style="width:100%"><i class="material-icons">group_add</i>Register Patients</a>
         </div>
     </div>
 
