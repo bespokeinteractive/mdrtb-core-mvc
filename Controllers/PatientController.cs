@@ -149,7 +149,7 @@ namespace EtbSomalia.Controllers
                 model.Active = core.GetFacility(fac);
 
             if (type.Equals("tb"))
-                model.Register = new PatientService().GetBmuRegister(model.Active);
+                model.Register = new PatientService(HttpContext).GetBmuRegister(model.Active);
 
 
             return View(model);

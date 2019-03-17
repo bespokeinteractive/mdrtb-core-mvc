@@ -272,7 +272,7 @@ namespace EtbSomalia.Services
             List<Register> registers = new List<Register>();
             SqlServerConnection conn = new SqlServerConnection();
 
-            SqlDataReader dr = conn.SqlServerConnect("SELECT pp_idnt, ISNULL(NULLIF(pp_tbmu,'N/A'), pp_registeer_no)pp_tbmux, ISNULL(NULLIF(pp_supporter,''),'—')pp_supporter, pp_created_on, pp_enrolled_on, pp_completed_on, pp_category, c_catg.cpt_name, pp_type, CASE WHEN pp_type=3 THEN 'PB' ELSE 'EP' END pp_type, pp_confirmation, CASE WHEN pp_confirmation=6 THEN 'BC' ELSE 'CD' END pp_confirmation, pp_outcome, ISNULL(c_outc.cpt_name, '—')outcome, pp_dots_by, c_dots.cpt_name, pp_referred_by, c_refs.cpt_name, fc_idnt, fc_name, pp_art_started, CASE WHEN pp_art_started=45 THEN 'Y' ELSE 'N' END pp_art, pp_cpt_started, CASE WHEN pp_cpt_started=45 THEN 'Y' ELSE 'N' END pp_cpt, pt_uuid, ps_name, UPPER(SUBSTRING(ps_gender,1,1))ps_gender, ps_dob, pa_address, rg_date_1, rg_sputum_1, rg_hiv, rg_xray, rg_date_2, rg_sputum_2, rg_date_3, rg_sputum_3, rg_date_4, rg_sputum_4 FROM PatientProgram INNER JOIN Program ON pp_progam=prg_idnt AND pp_progam=1 INNER JOIN Facilities ON pp_facility=fc_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON ps_idnt=pt_person LEFT OUTER JOIN PersonAddress ON pa_person=pt_person AND pa_default=1 LEFT OUTER JOIN Concept AS c_catg ON pp_category=c_catg.cpt_id LEFT OUTER JOIN Concept AS c_outc ON pp_outcome=c_outc.cpt_id LEFT OUTER JOIN Concept AS c_dots ON pp_dots_by=c_dots.cpt_id LEFT OUTER JOIN Concept AS c_refs ON pp_referred_by=c_refs.cpt_id LEFT OUTER JOIN vRegisterBmu ON rg_program=pp_idnt WHERE pp_facility=" + facility.Id + " ORDER BY pp_tbmux");
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pp_idnt, ISNULL(NULLIF(pp_tbmu,'N/A'), pp_registeer_no)pp_tbmux, ISNULL(NULLIF(pp_supporter,''),'—')pp_supporter, pp_created_on, pp_enrolled_on, pp_completed_on, pp_category, c_catg.cpt_name, pp_type, CASE WHEN pp_type=3 THEN 'PB' ELSE 'EP' END pp_type, pp_confirmation, CASE WHEN pp_confirmation=6 THEN 'BC' ELSE 'CD' END pp_confirmation, pp_outcome, ISNULL(c_outc.cpt_name, '—')outcome, pp_dots_by, c_dots.cpt_name, pp_referred_by, c_refs.cpt_name, fc_idnt, fc_name, pp_art_started, pp_cpt_started, pt_uuid, ps_name, UPPER(SUBSTRING(ps_gender,1,1))ps_gender, ps_dob, pa_address, rg_date_1, rg_sputum_1, rg_hiv, rg_xray, rg_date_2, rg_sputum_2, rg_date_3, rg_sputum_3, rg_date_4, rg_sputum_4 FROM PatientProgram INNER JOIN Program ON pp_progam=prg_idnt AND pp_progam=1 INNER JOIN Facilities ON pp_facility=fc_idnt INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON ps_idnt=pt_person LEFT OUTER JOIN PersonAddress ON pa_person=pt_person AND pa_default=1 LEFT OUTER JOIN Concept AS c_catg ON pp_category=c_catg.cpt_id LEFT OUTER JOIN Concept AS c_outc ON pp_outcome=c_outc.cpt_id LEFT OUTER JOIN Concept AS c_dots ON pp_dots_by=c_dots.cpt_id LEFT OUTER JOIN Concept AS c_refs ON pp_referred_by=c_refs.cpt_id LEFT OUTER JOIN vRegisterBmu ON rg_program=pp_idnt WHERE pp_facility=" + facility.Id + " ORDER BY pp_tbmux");
             if (dr.HasRows) {
                 while (dr.Read()) {
                     Register register = new Register();
@@ -313,7 +313,52 @@ namespace EtbSomalia.Services
                             Id = Convert.ToInt64(dr[18]),
                             Name = dr[19].ToString(),
                         },
+                        ArtStarted = Convert.ToInt32(dr[20]),
+                        CptStarted = Convert.ToInt32(dr[21]),
+                        Patient = new Patient {
+                            Uuid = dr[22].ToString(),
+                            Person = new Person {
+                                Name = dr[23].ToString(),
+                                Gender = dr[24].ToString(),
+                                DateOfBirth = Convert.ToDateTime(dr[25]),
+                                Address = new PersonAddress {
+                                    Address = dr[26].ToString(),
+                                }
+                            }
+                        }
                     };
+
+                    register.Start = new RegisterExam {
+                        SputumSmear = dr[28].ToString(),
+                        HivExam = dr[29].ToString(),
+                        XrayExam = dr[30].ToString(),
+                    };
+
+                    if (dr[27] != DBNull.Value)
+                        register.Start.Date = Convert.ToDateTime(dr[27]).ToString("dd.MM.yy");
+
+                    register.Two = new RegisterExam {
+                        SputumSmear = dr[32].ToString()
+                    };
+
+                    if (dr[31] != DBNull.Value)
+                        register.Two.Date = Convert.ToDateTime(dr[31]).ToString("dd.MM.yy");
+
+                    register.Five = new RegisterExam {
+                        SputumSmear = dr[34].ToString()
+                    };
+
+                    if (dr[33] != DBNull.Value)
+                        register.Five.Date = Convert.ToDateTime(dr[33]).ToString("dd.MM.yy");
+
+                    register.Last = new RegisterExam {
+                        SputumSmear = dr[36].ToString()
+                    };
+
+                    if (dr[35] != DBNull.Value)
+                        register.Last.Date = Convert.ToDateTime(dr[35]).ToString("dd.MM.yy");
+
+                    registers.Add(register);
                 }
             }
 

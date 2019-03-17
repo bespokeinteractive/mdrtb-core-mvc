@@ -1,3 +1,128 @@
-﻿@{
+﻿@model EtbSomalia.ViewModel.RegisterViewModel;
+@{
     ViewData["Title"] = "TB Register";
+    int count = 0;
 }
+
+<script>
+    $rev = jq('div.container');
+    $rev.removeClass('container');
+    $rev.removeClass('body-content');
+
+    jq(function() {
+        jq('.modal').modal();
+
+        jq('i.small.lime-text').click(function() {
+            jq('#change-facility-modal').modal('open');
+        });
+
+        jq('a.btn-post').click(function(){
+            window.location.href = "/patients/register/@Model.Type?fac=" + jq('#Active_Id').val();
+        });
+    });
+</script>
+
+<style>
+    footer, hr {
+        display: none;
+    }
+    i.small.lime-text {
+        cursor: pointer;
+    }
+</style>
+
+@if (Model.Type.Equals("tb"))
+{
+    <div class="card zero-margin" style="margin-top:10px; width:160%">
+        <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
+            <h5 class="card-stats-number"><i class="material-icons left">add_shopping_cart</i>@Model.Active.Name BMU Register <i class="material-icons small lime-text">border_color</i></h5>
+            <p class="card-stats-compare right">
+                <i class="material-icons left">alarm</i>From
+                <span class="deep-orange-text text-lighten-5">@Model.Active.Name</span>
+            </p>
+        </div>
+
+        <table id="reading" class="custom bordered" style="font-size:0.9em">
+            <thead class="deep-orange accent-2">
+                <tr>
+                    <th>#</th>
+                    <th>TBMU</th>
+                    <th>NAME</th>
+                    <th>SEX</th>
+                    <th>AGE</th>
+                    <th>ENROLLED</th>
+                    <th>FACILITY</th>
+                    <th>DOT</th>
+                    <th>CATEGORY</th>
+                    <th>SITE</th>
+                    <th>START</th>
+                    <th>SPUTUM</th>
+                    <th>HIV</th>
+                    <th>XRAY</th>
+                    <th>2/3M</th>
+                    <th>SPUTUM</th>
+                    <th>5/6M</th>
+                    <th>SPUTUM</th>
+                    <th>LAST</th>
+                    <th>SPUTUM</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var reg in Model.Register){
+                    count += 1;
+                    <tr>
+                        <td>@count</td>
+                        <td>@reg.Program.TbmuNumber</td>
+                        <td><a href="/patients/profile/@reg.Program.Patient.Uuid" class="blue-text">@reg.Program.Patient.Person.Name.ToUpper()</a></td>
+                        <td>@reg.Program.Patient.Person.Gender</td>
+                        <td>@reg.Program.Patient.GetAgeInYears()</td>
+                        <td>@reg.Program.DateEnrolled.ToString("dd.MM.yyyy")</td>
+                        <td>@reg.Program.Facility.Name</td>
+                        <td>@reg.Program.DotsBy.Name</td>
+                        <td>@reg.Program.Category.Name</td>
+                        <td>@reg.Program.Type.Name/@reg.Program.Confirmation.Name</td>
+                        <td>@reg.Start.Date</td>
+                        <td>@reg.Start.SputumSmear</td>
+                        <td>@reg.Start.HivExam</td>
+                        <td>@reg.Start.XrayExam</td>
+                        <td>@reg.Two.Date</td>
+                        <td>@reg.Two.SputumSmear</td>
+                        <td>@reg.Five.Date</td>
+                        <td>@reg.Five.SputumSmear</td>
+                        <td>@reg.Last.Date</td>
+                        <td>@reg.Last.SputumSmear</td>
+                    </tr>
+                }
+            </tbody>
+
+            <thead class="deep-orange accent-2">
+            </thead>
+        </table>
+        <div style="clear:both"></div>
+
+        <input data-val="true" data-val-required="The StartDate field is required." id="StartDate" name="StartDate" type="hidden" value="3/15/2019 12:00:00 AM">
+        <input data-val="true" data-val-required="The StopsDate field is required." id="StopsDate" name="StopsDate" type="hidden" value="4/14/2019 12:00:00 AM">
+    </div>
+}
+
+
+
+<div id="change-facility-modal" class="modal modal-fixed-footer" style="width: 500px">
+    <div class="modal-content">
+        <h4>Change Facilities</h4>
+        <p>Specify the below Parameters for the Facility</p>
+        <div>
+            <div class="input-field">
+                <i class="material-icons prefix">public</i>
+                @Html.DropDownListFor(model => model.Active.Id, Model.Facilities)
+                <label for="gender">Facility</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Cancel</a>
+        <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Change</a>
+    </div>
+</div>

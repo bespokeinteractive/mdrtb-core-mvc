@@ -23,14 +23,14 @@ namespace EtbSomalia.Models
     }
 
     public class RegisterExam {
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public string SputumSmear { get; set; }
         public string GeneXpert { get; set; }
         public string HivExam { get; set; }
         public string XrayExam { get; set; }
 
         public RegisterExam() {
-            Date = DateTime.Now;
+            Date = "—";
             SputumSmear = "—";
             HivExam = "—";
             XrayExam = "—";
