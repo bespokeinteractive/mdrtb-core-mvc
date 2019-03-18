@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using EtbSomalia.DataModel;
 using EtbSomalia.Models;
 using EtbSomalia.Services;
 using EtbSomalia.ViewModel;
@@ -48,6 +49,11 @@ namespace EtbSomalia.Controllers
             model.Contact = new PatientService(HttpContext).GetContact(uuid);
             model.Contact.Person.Address = model.Contact.Person.GetPersonAddress();
             return View(model);
+        }
+
+        [Route("contacts/register")]
+        public IActionResult Register() {
+            return View(new PatientService(HttpContext).GetContactsRegister());
         }
 
         [HttpPost]

@@ -1,5 +1,4 @@
-﻿using System;
-using EtbSomalia.Extensions;
+﻿using EtbSomalia.Extensions;
 using EtbSomalia.Services;
 
 namespace EtbSomalia.Models

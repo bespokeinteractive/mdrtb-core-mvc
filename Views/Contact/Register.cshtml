@@ -1,0 +1,101 @@
+﻿@model System.Collections.Generic.List<EtbSomalia.DataModel.ContactsRegister>;
+@{
+    ViewData["Title"] = "Contacts Register";
+    int count = 0;
+    long line = 0;
+}
+
+<script>
+    $rev = jq('div.container');
+    $rev.removeClass('container');
+    $rev.removeClass('body-content');
+</script>
+
+<style>
+    footer, hr {
+        display: none;
+    }
+</style>
+
+<div class="card zero-margin" style="margin-top:10px; width:100%">
+    <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
+        <h5 class="card-stats-number"><i class="material-icons left">add_shopping_cart</i>Contacts Register</h5>
+        <p class="card-stats-compare right">
+            <i class="material-icons left">alarm</i>View
+            <span class="deep-orange-text text-lighten-5">Register</span>
+        </p>
+    </div>
+
+    <table id="reading" class="custom bordered" style="font-size:0.7em">
+        <thead class="deep-orange accent-2">
+            <tr>
+                <th>#</th>
+                <th>IDENTIFIER</th>
+                <th>CONTACT</th>
+                <th>SEX</th>
+                <th>AGE</th>
+                <th>FROM</th>
+                <th>STATUS</th>
+                <th>PREV</th>
+                <th>AFTER</th>
+                <th>INDEX</th>
+                <th>RELATION</th>
+                <th>LOCATION</th>
+                <th>COUGH</th>
+                <th>FEVER</th>
+                <th>W/LOSS</th>
+                <th>SWEATS</th>
+                <th>SPUTUM</th>
+                <th>LBTI</th>
+                <th>GENEXPERT</th>
+                <th>XRAY</th>
+                <th>P/T</th>
+                <th>NEXT</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var reg in Model) {
+            <tr>
+                @if (line.Equals(reg.Contact.Id)) {
+                    <td colspan="12">&nbsp;</td>
+                }
+                else {
+                    count++;
+                    line = reg.Contact.Id;
+
+                    <td>@count</td>
+                    <td>@reg.Contact.Identifier</td>
+                    <td><a href="/contacts/@reg.Contact.Uuid" class="blue-text">@reg.Contact.Person.Name.ToUpper()</a></td>
+                    <td>@reg.Contact.Person.Gender.Substring(0, 1).ToUpper()</td>
+                    <td>@reg.Contact.GetAgeInYears()</td>
+                    <td>@reg.Contact.ExposedOn.ToString("dd/MM/yyyy")</td>
+                    <td>@reg.Contact.Status.Name</td>
+                    <td>@reg.Contact.PrevouslyTreated.Name</td>
+                    <td>@reg.Contact.DiseaseAfter.Name</td>
+                    <td><a href="/patients/profile/@reg.Contact.Index.Patient.Uuid" class="red-text">@reg.Contact.Index.Patient.Person.Name.ToUpper()</a></td>
+                    <td>@reg.Contact.Relation.Name</td>
+                    <td>@reg.Contact.Location.Name</td>
+                }
+                <td>@(reg.Examination.Cough ? "Y" : "N")</td>
+                <td>@(reg.Examination.Fever ? "Y" : "N")</td>
+                <td>@(reg.Examination.WeightLoss ? "Y" : "N")</td>
+                <td>@(reg.Examination.NightSweat ? "Y" : "N")</td>
+                <td>@reg.Examination.SputumSmear.Name</td>
+                <td>@reg.Examination.LTBI.Name</td>
+                <td>@reg.Examination.GeneXpert.Name</td>
+                <td>@reg.Examination.XrayExam.Name</td>
+                <td>@(reg.Examination.PreventiveTherapy == "" ? "N/A" : reg.Examination.PreventiveTherapy)</td>
+                <td>@reg.Examination.NextScreening.ToString("dd/MM/yyyy")</td>
+            </tr>
+            }
+        </tbody>
+
+        <thead class="deep-orange accent-2">
+        </thead>
+    </table>
+    <div style="clear:both"></div>
+
+    <input data-val="true" data-val-required="The StartDate field is required." id="StartDate" name="StartDate" type="hidden" value="3/15/2019 12:00:00 AM">
+    <input data-val="true" data-val-required="The StopsDate field is required." id="StopsDate" name="StopsDate" type="hidden" value="4/14/2019 12:00:00 AM">
+</div>

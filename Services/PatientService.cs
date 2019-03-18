@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Security.Claims;
+using EtbSomalia.DataModel;
 using EtbSomalia.Extensions;
 using EtbSomalia.Models;
 using EtbSomalia.ViewModel;
@@ -609,8 +610,57 @@ namespace EtbSomalia.Services
             return new DateTime(1900,1,1);
         }
 
-        public PersonAddress GetPersonAddress(Person person)
+        public List<ContactsRegister> GetContactsRegister()
         {
+            List<ContactsRegister> register = new List<ContactsRegister>();
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ct_idnt, ct_uuid, ct_identifier, ct_exposed_from, st.cpt_name, lc.cpt_name, rl.cpt_name, da.cpt_name, pv.cpt_name, p.ps_name, p.ps_gender, p.ps_dob, pp_tbmu, pt_uuid, ps.ps_name, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, sp.cpt_name, lt.cpt_name, gx.cpt_name, xr.cpt_name, ce_preventive_regimen, ce_next_screening FROM Contacts INNER JOIN Person AS p ON ct_person = p.ps_idnt INNER JOIN PatientProgram ON ct_index = pp_idnt INNER JOIN Patient ON pp_patient = pt_idnt INNER JOIN Person AS ps ON pt_person=ps.ps_idnt INNER JOIN ContactsExaminations ON ce_contact=ct_idnt INNER JOIN Concept st ON st.cpt_id=ct_status INNER JOIN Concept lc ON lc.cpt_id=ct_location INNER JOIN Concept rl ON rl.cpt_id=ct_relationship INNER JOIN Concept da ON da.cpt_id=ct_desease_after INNER JOIN Concept pv ON pv.cpt_id=ct_prev_treated INNER JOIN Concept sp ON sp.cpt_id=ce_sputum_smear INNER JOIN Concept lt ON lt.cpt_id=ce_ltbi INNER JOIN Concept gx ON gx.cpt_id=ce_genxpert INNER JOIN Concept xr ON xr.cpt_id=ce_xray_exam WHERE pt_idnt IN (SELECT pp_patient FROM PatientProgram WHERE pp_facility IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ")) ORDER BY ct_identifier, p.ps_name, ct_idnt");
+            if (dr.HasRows) { 
+                while (dr.Read()) {
+                    register.Add(new ContactsRegister {
+                        Contact = new Contacts {
+                            Id = Convert.ToInt32(dr[0]),
+                            Uuid = dr[1].ToString(),
+                            Identifier = dr[2].ToString(),
+                            ExposedOn = Convert.ToDateTime(dr[3]),
+                            Status = new Concept { Name = dr[4].ToString() },
+                            Location = new Concept { Name = dr[5].ToString() },
+                            Relation = new Concept { Name = dr[6].ToString() },
+                            DiseaseAfter = new Concept { Name = dr[7].ToString() },
+                            PrevouslyTreated = new Concept { Name = dr[8].ToString() },
+                            Person = new Person {
+                                Name = dr[9].ToString(),
+                                Gender = dr[10].ToString(),
+                                DateOfBirth = Convert.ToDateTime(dr[11]),
+                            },
+                            Index = new PatientProgram {
+                                TbmuNumber = dr[12].ToString(),
+                                Patient = new Patient {
+                                    Uuid = dr[13].ToString(),
+                                    Person = new Person { Name = dr[14].ToString() }
+                                }
+                            }
+                        },
+                        Examination = new ContactsExamination {
+                            Cough = Convert.ToBoolean(dr[15]),
+                            Fever = Convert.ToBoolean(dr[16]),
+                            WeightLoss = Convert.ToBoolean(dr[17]),
+                            NightSweat = Convert.ToBoolean(dr[18]),
+                            SputumSmear = new Concept { Name = dr[19].ToString() },
+                            LTBI = new Concept { Name = dr[20].ToString() },
+                            GeneXpert = new Concept { Name = dr[21].ToString() },
+                            XrayExam = new Concept { Name = dr[22].ToString() },
+                            PreventiveTherapy = dr[23].ToString(),
+                            NextScreening = Convert.ToDateTime(dr[24]),
+                        }
+                    });
+                }
+            }
+            return register;
+        }
+
+        public PersonAddress GetPersonAddress(Person person) {
             PersonAddress address = null;
 
             SqlServerConnection conn = new SqlServerConnection();
