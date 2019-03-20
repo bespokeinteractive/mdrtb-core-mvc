@@ -10,6 +10,7 @@
     $rev.removeClass('container');
     $rev.removeClass('body-content');
 </script>
+<script type="text/javascript" src="/js/patient-contacts-register.js"></script>
 
 <style>
     footer, hr {
@@ -21,15 +22,15 @@
     <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
         <h5 class="card-stats-number"><i class="material-icons left">add_shopping_cart</i>Contacts Register</h5>
         <p class="card-stats-compare right">
-            <i class="material-icons left">alarm</i>View
-            <span class="deep-orange-text text-lighten-5">Register</span>
+            <i class="material-icons left">get_app</i>
+            <a class="deep-orange-text text-lighten-5 export">Export Register</a>
         </p>
     </div>
 
-    <table id="reading" class="custom bordered" style="font-size:0.7em">
+    <table id="contact-register" class="custom bordered" style="font-size:0.7em">
         <thead class="deep-orange accent-2">
             <tr>
-                <th>#</th>
+                <th></th>
                 <th>IDENTIFIER</th>
                 <th>CONTACT</th>
                 <th>SEX</th>
@@ -58,7 +59,7 @@
             @foreach (var reg in Model) {
             <tr>
                 @if (line.Equals(reg.Contact.Id)) {
-                    <td colspan="12">&nbsp;</td>
+                    <td colspan="12" style="padding-left:20px">&mdash;</td>
                 }
                 else {
                     count++;
