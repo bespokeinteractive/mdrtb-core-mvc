@@ -6,16 +6,22 @@
 }
 
 <script>
+    var title = '@DateTime.Now.ToString("yyMMddHHmm")-contacts.csv';
+
     $rev = jq('div.container');
     $rev.removeClass('container');
     $rev.removeClass('body-content');
 </script>
-<script type="text/javascript" src="/js/patient-contacts-register.js"></script>
+<script type="text/javascript" src="/js/contact-register-script.js"></script>
 
 <style>
     footer, hr {
         display: none;
     }
+    a.export {
+        cursor: pointer;
+    }
+
 </style>
 
 <div class="card zero-margin" style="margin-top:10px; width:100%">
@@ -56,39 +62,65 @@
         </thead>
 
         <tbody>
-            @foreach (var reg in Model) {
-            <tr>
-                @if (line.Equals(reg.Contact.Id)) {
-                    <td colspan="12" style="padding-left:20px">&mdash;</td>
-                }
-                else {
-                    count++;
-                    line = reg.Contact.Id;
-
-                    <td>@count</td>
-                    <td>@reg.Contact.Identifier</td>
-                    <td><a href="/contacts/@reg.Contact.Uuid" class="blue-text">@reg.Contact.Person.Name.ToUpper()</a></td>
-                    <td>@reg.Contact.Person.Gender.Substring(0, 1).ToUpper()</td>
-                    <td>@reg.Contact.GetAgeInYears()</td>
-                    <td>@reg.Contact.ExposedOn.ToString("dd/MM/yyyy")</td>
-                    <td>@reg.Contact.Status.Name</td>
-                    <td>@reg.Contact.PrevouslyTreated.Name</td>
-                    <td>@reg.Contact.DiseaseAfter.Name</td>
-                    <td><a href="/patients/profile/@reg.Contact.Index.Patient.Uuid" class="red-text">@reg.Contact.Index.Patient.Person.Name.ToUpper()</a></td>
-                    <td>@reg.Contact.Relation.Name</td>
-                    <td>@reg.Contact.Location.Name</td>
-                }
-                <td>@(reg.Examination.Cough ? "Y" : "N")</td>
-                <td>@(reg.Examination.Fever ? "Y" : "N")</td>
-                <td>@(reg.Examination.WeightLoss ? "Y" : "N")</td>
-                <td>@(reg.Examination.NightSweat ? "Y" : "N")</td>
-                <td>@reg.Examination.SputumSmear.Name</td>
-                <td>@reg.Examination.LTBI.Name</td>
-                <td>@reg.Examination.GeneXpert.Name</td>
-                <td>@reg.Examination.XrayExam.Name</td>
-                <td>@(reg.Examination.PreventiveTherapy == "" ? "N/A" : reg.Examination.PreventiveTherapy)</td>
-                <td>@reg.Examination.NextScreening.ToString("dd/MM/yyyy")</td>
+            <tr class="hidden data">
+                <td></td>
+                <td>IDENTIFIER</td>
+                <td>CONTACT</td>
+                <td>SEX</td>
+                <td>AGE</td>
+                <td>EXPOSED_FROM</td>
+                <td>STATUS</td>
+                <td>PREVIOUSLY_TREEATED</td>
+                <td>DISEASE_AFTER_EXPOSURE</td>
+                <td>INDEX_PATIENT</td>
+                <td>RELATIONSHIP</td>
+                <td>LOCATION</td>
+                <td>COUGH</td>
+                <td>FEVER</td>
+                <td>WEIGHT_LOSS</td>
+                <td>SWEATS</td>
+                <td>SPUTUM_SMEAR_EXAM</td>
+                <td>LBTI_EXAM</td>
+                <td>GENEXPERT_EXAM</td>
+                <td>XRAY_EXAM</td>
+                <td>PREVENTIVE_THERAPY</td>
+                <td>NEXT_SCREENING</td>
             </tr>
+
+            @foreach (var reg in Model) {
+                <tr class="data">
+                    @if (line.Equals(reg.Contact.Id)) {
+                        <td colspan="12" style="padding-left:20px">&mdash;</td>
+                    }
+                    else {
+                        count++;
+                        line = reg.Contact.Id;
+
+                        <td>@count</td>
+                        <td>@reg.Contact.Identifier</td>
+                        <td><a href="/contacts/@reg.Contact.Uuid" class="blue-text">@reg.Contact.Person.Name.ToUpper()</a></td>
+                        <td>@reg.Contact.Person.Gender.Substring(0, 1).ToUpper()</td>
+                        <td>@reg.Contact.GetAgeInYears()</td>
+                        <td>@reg.Contact.ExposedOn.ToString("dd/MM/yyyy")</td>
+                        <td>@reg.Contact.Status.Name</td>
+                        <td>@reg.Contact.PrevouslyTreated.Name</td>
+                        <td>@reg.Contact.DiseaseAfter.Name</td>
+                        <td><a href="/patients/profile/@reg.Contact.Index.Patient.Uuid" class="red-text">@reg.Contact.Index.Patient.Person.Name.ToUpper()</a></td>
+                        <td>@reg.Contact.Relation.Name</td>
+                        <td>@reg.Contact.Location.Name</td>
+                    }
+
+                    <td>@(reg.Examination.Cough ? "Y" : "N")</td>
+                    <td>@(reg.Examination.Fever ? "Y" : "N")</td>
+                    <td>@(reg.Examination.WeightLoss ? "Y" : "N")</td>
+                    <td>@(reg.Examination.NightSweat ? "Y" : "N")</td>
+                    <td>@reg.Examination.SputumSmear.Name</td>
+                    <td>@reg.Examination.LTBI.Name</td>
+                    <td>@reg.Examination.GeneXpert.Name</td>
+                    <td>@reg.Examination.XrayExam.Name</td>
+                    <td>@(reg.Examination.PreventiveTherapy == "" ? "N/A" : reg.Examination.PreventiveTherapy)</td>
+                    <td>@reg.Examination.NextScreening.ToString("dd/MM/yyyy")</td>
+                </tr>
             }
         </tbody>
 
