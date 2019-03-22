@@ -3,6 +3,7 @@ namespace EtbSomalia.DataModel
 {
     public class DataSummaryModel
     {
+        public string Name { get; set; }
         public int Year { get; set; }
         public int Males { get; set; }
         public int Females { get; set; }
@@ -16,6 +17,7 @@ namespace EtbSomalia.DataModel
         public int Complete { get; set; }
 
         public DataSummaryModel() {
+            Name = "";
             Year = 0;
             Males = 0;
             Females = 0;

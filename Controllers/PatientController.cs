@@ -161,7 +161,12 @@ namespace EtbSomalia.Controllers
             model.Title = type.FirstCharToUpper();
             if (type.Equals("national"))
                 model.Summary = service.GetDataSummaryNational();
-
+            else if (type.Equals("regional"))
+                model.Summary = service.GetDataSummaryRegional();
+            else if (type.Equals("facility"))
+                model.Summary = service.GetDataSummaryFacility();
+            else if (type.Equals("agency"))
+                model.Summary = service.GetDataSummaryAgency();
 
             return View(model);
         }

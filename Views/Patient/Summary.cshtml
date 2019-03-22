@@ -11,88 +11,98 @@
     int cd = 0;
     int complete = 0;
     int outcomes = 0;
+
+    int year = 0;
 }
 
 
-@if (Model.Title.Equals("National"))
-{
-    <div class="card zero-margin" style="margin-top:10px;">
-        <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
-            <h5 class="card-stats-number"><i class="material-icons left">public</i>@Model.Title Summary</h5>
-            <p class="card-stats-compare right">
-                <i class="material-icons left">alarm</i>Last
-                <span class="deep-orange-text text-lighten-5">5yrs</span>
-            </p>
-        </div>
-
-        <table id="reading" class="custom bordered" style="font-size:0.9em">
-            <thead class="deep-orange accent-2">
-                <tr>
-                    <th>YEAR</th>
-                    <th class="center-align">TB</th>
-                    <th class="center-align">MDR-TB</th>
-                    <th class="center-align">MALES</th>
-                    <th class="center-align">FEMALE</th>
-                    <th class="center-align">PB</th>
-                    <th class="center-align">EP</th>
-                    <th class="center-align">B/C</th>
-                    <th class="center-align">C/D</th>
-                    <th class="center-align">COMPLETE</th>
-                    <th class="center-align">OUTCOMES</th>
-                    <th>NOTES</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var summ in Model.Summary) {
-                    tb += summ.Tb;
-                    mdr += summ.Mdr;
-                    male += summ.Males;
-                    female += summ.Females;
-                    pb += summ.Pulmonary;
-                    ep += summ.ExtraPulmonary;
-                    bc += summ.BacterialConfirmed;
-                    cd += summ.ClinicalDiagnosed;
-                    complete += summ.Complete;
-                    outcomes += summ.Outcomes;
-
-                    <tr>
-                        <td>@summ.Year</td>
-                        <td class="center-align">@summ.Tb</td>
-                        <td class="center-align">@summ.Mdr</td>
-                        <td class="center-align">@summ.Males</td>
-                        <td class="center-align">@summ.Females</td>
-                        <td class="center-align">@summ.Pulmonary</td>
-                        <td class="center-align">@summ.ExtraPulmonary</td>
-                        <td class="center-align">@summ.BacterialConfirmed</td>
-                        <td class="center-align">@summ.ClinicalDiagnosed</td>
-                        <td class="center-align">@summ.Complete</td>
-                        <td class="center-align">@summ.Outcomes</td>
-                        <td>N/A</td>
-                    </tr>
-                }
-            </tbody>
-
-            <thead class="deep-orange accent-2">
-                <tr>
-                    <th></th>
-                    <th class="center-align">@string.Format("{0:N0}", tb)</th>
-                    <th class="center-align">@string.Format("{0:N0}", mdr)</th>
-                    <th class="center-align">@string.Format("{0:N0}", male)</th>
-                    <th class="center-align">@string.Format("{0:N0}", female)</th>
-                    <th class="center-align">@string.Format("{0:N0}", pb)</th>
-                    <th class="center-align">@string.Format("{0:N0}", ep)</th>
-                    <th class="center-align">@string.Format("{0:N0}", bc)</th>
-                    <th class="center-align">@string.Format("{0:N0}", cd)</th>
-                    <th class="center-align">@string.Format("{0:N0}", complete)</th>
-                    <th class="center-align">@string.Format("{0:N0}", outcomes)</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
-        <div style="clear:both"></div>
-
-        <input data-val="true" data-val-required="The StartDate field is required." id="StartDate" name="StartDate" type="hidden" value="3/15/2019 12:00:00 AM">
-        <input data-val="true" data-val-required="The StopsDate field is required." id="StopsDate" name="StopsDate" type="hidden" value="4/14/2019 12:00:00 AM">
+<div class="card zero-margin" style="margin-top:10px;">
+    <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
+        <h5 class="card-stats-number"><i class="material-icons left">grain</i>@Model.Title Summary</h5>
+        <p class="card-stats-compare right">
+            <i class="material-icons left">alarm</i>Last
+            <span class="deep-orange-text text-lighten-5">5yrs</span>
+        </p>
     </div>
-}
+
+    <table id="reading" class="custom bordered" style="font-size:0.9em">
+        <thead class="deep-orange accent-2">
+            <tr>
+                <th>YEAR</th>
+                @if (!Model.Title.Equals("National")) {
+                    <th class="center-align">NAME</th>
+                }
+                <th class="center-align">TB</th>
+                <th class="center-align">MDR-TB</th>
+                <th class="center-align">MALES</th>
+                <th class="center-align">FEMALE</th>
+                <th class="center-align">PB</th>
+                <th class="center-align">EP</th>
+                <th class="center-align">B/C</th>
+                <th class="center-align">C/D</th>
+                <th class="center-align">COMPLETE</th>
+                <th class="center-align">OUTCOMES</th>
+                <th>NOTES</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var summ in Model.Summary) {
+                tb += summ.Tb;
+                mdr += summ.Mdr;
+                male += summ.Males;
+                female += summ.Females;
+                pb += summ.Pulmonary;
+                ep += summ.ExtraPulmonary;
+                bc += summ.BacterialConfirmed;
+                cd += summ.ClinicalDiagnosed;
+                complete += summ.Complete;
+                outcomes += summ.Outcomes;
+
+                <tr>
+                    <td>@(summ.Year == year ? "" : summ.Year.ToString())</td>
+                    @if (!Model.Title.Equals("National")) {
+                        <td>@summ.Name.ToUpper()</td>
+                    }
+                    <td class="center-align">@summ.Tb</td>
+                    <td class="center-align">@summ.Mdr</td>
+                    <td class="center-align">@summ.Males</td>
+                    <td class="center-align">@summ.Females</td>
+                    <td class="center-align">@summ.Pulmonary</td>
+                    <td class="center-align">@summ.ExtraPulmonary</td>
+                    <td class="center-align">@summ.BacterialConfirmed</td>
+                    <td class="center-align">@summ.ClinicalDiagnosed</td>
+                    <td class="center-align">@summ.Complete</td>
+                    <td class="center-align">@summ.Outcomes</td>
+                    <td>N/A</td>
+                </tr>
+
+                year = summ.Year;
+            }
+        </tbody>
+
+        <thead class="deep-orange accent-2">
+            <tr>
+                <th></th>
+                @if (!Model.Title.Equals("National")) { 
+                    <td></td> 
+                }
+                <th class="center-align">@string.Format("{0:N0}", tb)</th>
+                <th class="center-align">@string.Format("{0:N0}", mdr)</th>
+                <th class="center-align">@string.Format("{0:N0}", male)</th>
+                <th class="center-align">@string.Format("{0:N0}", female)</th>
+                <th class="center-align">@string.Format("{0:N0}", pb)</th>
+                <th class="center-align">@string.Format("{0:N0}", ep)</th>
+                <th class="center-align">@string.Format("{0:N0}", bc)</th>
+                <th class="center-align">@string.Format("{0:N0}", cd)</th>
+                <th class="center-align">@string.Format("{0:N0}", complete)</th>
+                <th class="center-align">@string.Format("{0:N0}", outcomes)</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+    <div style="clear:both"></div>
+
+    <input data-val="true" data-val-required="The StartDate field is required." id="StartDate" name="StartDate" type="hidden" value="3/15/2019 12:00:00 AM">
+    <input data-val="true" data-val-required="The StopsDate field is required." id="StopsDate" name="StopsDate" type="hidden" value="4/14/2019 12:00:00 AM">
+</div>

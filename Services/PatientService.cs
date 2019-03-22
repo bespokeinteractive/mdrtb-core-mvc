@@ -366,11 +366,11 @@ namespace EtbSomalia.Services
             return registers;
         }
 
-        public List<DataSummaryModel> GetDataSummaryNational() {
+        private List<DataSummaryModel> GetDataSummary(string query) {
             List<DataSummaryModel> model = new List<DataSummaryModel>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT TOP(5) YR, SUM(males)males, SUM(females)females, SUM(tb)tb, SUM(mdr)mdr, SUM(pb)pb, SUM(ep)ep, SUM(bc)bc, SUM(cd)cd, SUM(complete)complete, SUM(outcomes)outcomes FROM (SELECT YEAR(pp_enrolled_on)YR, CASE WHEN ps_gender='male' THEN 1 ELSE 0 END males, CASE WHEN ps_gender='female' THEN 1 ELSE 0 END females, CASE WHEN pp_progam=1 THEN 1 ELSE 0 END tb, CASE WHEN pp_progam=2 THEN 1 ELSE 0 END mdr, CASE WHEN pp_type=3 THEN 1 ELSE 0 END pb, CASE WHEN pp_type=4 THEN 1 ELSE 0 END ep, CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END bc, CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END cd, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END complete, CASE WHEN pp_outcome=0 THEN 0 ELSE 1 END outcomes FROM PatientProgram INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON pt_person=ps_idnt WHERE pp_enrolled_on IS NOT NULL) As Foo GROUP BY YR ORDER BY YR DESC");
+            SqlDataReader dr = conn.SqlServerConnect(query);
             if (dr.HasRows) {
                 while (dr.Read()) {
                     model.Add(new DataSummaryModel {
@@ -384,12 +384,29 @@ namespace EtbSomalia.Services
                         BacterialConfirmed = Convert.ToInt32(dr[7]),
                         ClinicalDiagnosed = Convert.ToInt32(dr[8]),
                         Complete = Convert.ToInt32(dr[9]),
-                        Outcomes = Convert.ToInt32(dr[10])
+                        Outcomes = Convert.ToInt32(dr[10]),
+                        Name = dr[11].ToString()
                     });
                 }
             }
 
             return model;
+        }
+
+        public List<DataSummaryModel> GetDataSummaryNational() {
+            return this.GetDataSummary("SELECT TOP(5) YR, SUM(males)males, SUM(females)females, SUM(tb)tb, SUM(mdr)mdr, SUM(pb)pb, SUM(ep)ep, SUM(bc)bc, SUM(cd)cd, SUM(complete)complete, SUM(outcomes)outcomes, ''x FROM (SELECT YEAR(pp_enrolled_on)YR, CASE WHEN ps_gender='male' THEN 1 ELSE 0 END males, CASE WHEN ps_gender='female' THEN 1 ELSE 0 END females, CASE WHEN pp_progam=1 THEN 1 ELSE 0 END tb, CASE WHEN pp_progam=2 THEN 1 ELSE 0 END mdr, CASE WHEN pp_type=3 THEN 1 ELSE 0 END pb, CASE WHEN pp_type=4 THEN 1 ELSE 0 END ep, CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END bc, CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END cd, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END complete, CASE WHEN pp_outcome=0 THEN 0 ELSE 1 END outcomes FROM PatientProgram INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON pt_person=ps_idnt WHERE pp_enrolled_on IS NOT NULL) As Foo GROUP BY YR ORDER BY YR DESC");
+        }
+
+        public List<DataSummaryModel> GetDataSummaryRegional() {
+            return this.GetDataSummary("SELECT YR, SUM(males)males, SUM(females)females, SUM(tb)tb, SUM(mdr)mdr, SUM(pb)pb, SUM(ep)ep, SUM(bc)bc, SUM(cd)cd, SUM(complete)complete, SUM(outcomes)outcomes, rg_name FROM (SELECT YEAR(pp_enrolled_on)YR, CASE WHEN ps_gender='male' THEN 1 ELSE 0 END males, CASE WHEN ps_gender='female' THEN 1 ELSE 0 END females, CASE WHEN pp_progam=1 THEN 1 ELSE 0 END tb, CASE WHEN pp_progam=2 THEN 1 ELSE 0 END mdr, CASE WHEN pp_type=3 THEN 1 ELSE 0 END pb, CASE WHEN pp_type=4 THEN 1 ELSE 0 END ep, CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END bc, CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END cd, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END complete, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END outcomes, rg_name FROM PatientProgram INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON pt_person=ps_idnt INNER JOIN Facilities ON fc_idnt=pp_facility INNER JOIN Regions ON rg_idnt=fc_region WHERE pp_enrolled_on IS NOT NULL AND YEAR(pp_enrolled_on)>(YEAR(GETDATE())-5)) As Foo GROUP BY YR, rg_name ORDER BY YR DESC, rg_name");
+        }
+
+        public List<DataSummaryModel> GetDataSummaryAgency() {
+            return this.GetDataSummary("SELECT YR, SUM(males)males, SUM(females)females, SUM(tb)tb, SUM(mdr)mdr, SUM(pb)pb, SUM(ep)ep, SUM(bc)bc, SUM(cd)cd, SUM(complete)complete, SUM(outcomes)outcomes, ag_name FROM (SELECT YEAR(pp_enrolled_on)YR, CASE WHEN ps_gender='male' THEN 1 ELSE 0 END males, CASE WHEN ps_gender='female' THEN 1 ELSE 0 END females, CASE WHEN pp_progam=1 THEN 1 ELSE 0 END tb, CASE WHEN pp_progam=2 THEN 1 ELSE 0 END mdr, CASE WHEN pp_type=3 THEN 1 ELSE 0 END pb, CASE WHEN pp_type=4 THEN 1 ELSE 0 END ep, CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END bc, CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END cd, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END complete, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END outcomes, ag_name FROM PatientProgram INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON pt_person=ps_idnt INNER JOIN Facilities ON fc_idnt=pp_facility INNER JOIN Agency ON ag_idnt=fc_agency WHERE pp_enrolled_on IS NOT NULL AND YEAR(pp_enrolled_on)>(YEAR(GETDATE())-5)) As Foo GROUP BY YR, ag_name ORDER BY YR DESC, ag_name");
+        }
+
+        public List<DataSummaryModel> GetDataSummaryFacility() {
+            return this.GetDataSummary("SELECT YR, SUM(males)males, SUM(females)females, SUM(tb)tb, SUM(mdr)mdr, SUM(pb)pb, SUM(ep)ep, SUM(bc)bc, SUM(cd)cd, SUM(complete)complete, SUM(outcomes)outcomes, fc_name FROM (SELECT YEAR(pp_enrolled_on)YR, CASE WHEN ps_gender='male' THEN 1 ELSE 0 END males, CASE WHEN ps_gender='female' THEN 1 ELSE 0 END females, CASE WHEN pp_progam=1 THEN 1 ELSE 0 END tb, CASE WHEN pp_progam=2 THEN 1 ELSE 0 END mdr, CASE WHEN pp_type=3 THEN 1 ELSE 0 END pb, CASE WHEN pp_type=4 THEN 1 ELSE 0 END ep, CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END bc, CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END cd, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END complete, CASE WHEN pp_dots_by=0 THEN 1 ELSE 0 END outcomes, fc_name FROM PatientProgram INNER JOIN Patient ON pp_patient=pt_idnt INNER JOIN Person ON pt_person=ps_idnt INNER JOIN Facilities ON fc_idnt=pp_facility WHERE pp_enrolled_on IS NOT NULL AND YEAR(pp_enrolled_on)>(YEAR(GETDATE())-5)) As Foo GROUP BY YR, fc_name ORDER BY YR DESC, fc_name");
         }
 
         public Contacts GetContact(long idnt) {
