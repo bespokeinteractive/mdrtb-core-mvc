@@ -7,6 +7,7 @@ using EtbSomalia.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
 using System.Collections.Generic;
+using EtbSomalia.Extensions;
 
 namespace EtbSomalia.Controllers
 {
@@ -150,6 +151,16 @@ namespace EtbSomalia.Controllers
 
             if (type.Equals("tb"))
                 model.Register = new PatientService(HttpContext).GetBmuRegister(model.Active);
+
+
+            return View(model);
+        }
+
+        [Route("patients/summary/{type}")]
+        public IActionResult Summary(string type, PatientSummaryViewModel model, PatientService service) {
+            model.Title = type.FirstCharToUpper();
+            if (type.Equals("national"))
+                model.Summary = service.GetDataSummaryNational();
 
 
             return View(model);
