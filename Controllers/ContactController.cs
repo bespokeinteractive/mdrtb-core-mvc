@@ -44,11 +44,12 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("contacts/{uuid}")]
-        public IActionResult Main(string uuid, ContactMainViewModel model)
-        {
-            model.Contact = new PatientService(HttpContext).GetContact(uuid);
-            model.Contact.Person.Address = model.Contact.Person.GetPersonAddress();
-            return View(model);
+        public IActionResult Main(string uuid, ContactMainViewModel Model, PatientService Service) {
+            Model.Contact = Service.GetContact(uuid);
+            Model.Contact.Person.Address = Model.Contact.Person.GetPersonAddress();
+            Model.Examinations = Service.GetContactsExaminations(Model.Contact);
+
+            return View(Model);
         }
 
         [Route("contacts/register")]

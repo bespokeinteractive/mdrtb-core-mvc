@@ -541,8 +541,7 @@ namespace EtbSomalia.Services
             return contacts;
         }
 
-        public List<Contacts> GetContacts(Patient patient)
-        {
+        public List<Contacts> GetContacts(Patient patient) {
             List<Contacts> contacts = new List<Contacts>();
 
             SqlServerConnection conn = new SqlServerConnection();
@@ -610,8 +609,87 @@ namespace EtbSomalia.Services
             return new DateTime(1900,1,1);
         }
 
-        public List<ContactsRegister> GetContactsRegister()
-        {
+        public ContactsExamination GetContactsExaminations(long idnt) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ce_idnt, ce_contact, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, ce_sputum_smear, sp.cpt_name, ce_ltbi, lt.cpt_name, ce_genxpert, gx.cpt_name, ce_xray_exam, xr.cpt_name, ISNULL(NULLIF(ce_preventive_regimen,'No'),'N/A')pt, ce_next_screening, ce_added_on, ce_added_by FROM ContactsExaminations INNER JOIN Concept sp ON sp.cpt_id=ce_sputum_smear INNER JOIN Concept lt ON lt.cpt_id=ce_ltbi INNER JOIN Concept gx ON gx.cpt_id=ce_genxpert INNER JOIN Concept xr ON xr.cpt_id=ce_xray_exam WHERE ce_idnt=" + idnt + " ORDER BY ce_added_on DESC, ce_idnt");           
+            if (dr.Read()) {
+                return new ContactsExamination {
+                    Id = Convert.ToInt64(dr[0]),
+                    Contact = new Contacts { Id = Convert.ToInt64(dr[1]) },
+                    Cough = Convert.ToBoolean(dr[2]),
+                    Fever = Convert.ToBoolean(dr[3]),
+                    WeightLoss = Convert.ToBoolean(dr[4]),
+                    NightSweat = Convert.ToBoolean(dr[5]),
+                    SputumSmear = new Concept {
+                        Id = Convert.ToInt64(dr[6]),
+                        Name = dr[7].ToString()
+                    },
+                    LTBI = new Concept {
+                        Id = Convert.ToInt64(dr[8]),
+                        Name = dr[9].ToString()
+                    },
+                    GeneXpert = new Concept {
+                        Id = Convert.ToInt64(dr[10]),
+                        Name = dr[11].ToString()
+                    },
+                    XrayExam = new Concept {
+                        Id = Convert.ToInt64(dr[12]),
+                        Name = dr[13].ToString()
+                    },
+                    PreventiveTherapy = dr[14].ToString(),
+                    NextScreening = Convert.ToDateTime(dr[15]),
+                    AddedOn = Convert.ToDateTime(dr[16]),
+                    AddedBy = new Users(Convert.ToInt64(dr[17]))
+                };
+            }
+
+            return new ContactsExamination();
+        }
+
+        public List<ContactsExamination> GetContactsExaminations(Contacts contact) {
+            List<ContactsExamination> examinations = new List<ContactsExamination>();
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT ce_idnt, ce_contact, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, ce_sputum_smear, sp.cpt_name, ce_ltbi, lt.cpt_name, ce_genxpert, gx.cpt_name, ce_xray_exam, xr.cpt_name, ISNULL(NULLIF(ce_preventive_regimen,'No'),'N/A')pt, ce_next_screening, ce_added_on, ce_added_by FROM ContactsExaminations INNER JOIN Concept sp ON sp.cpt_id=ce_sputum_smear INNER JOIN Concept lt ON lt.cpt_id=ce_ltbi INNER JOIN Concept gx ON gx.cpt_id=ce_genxpert INNER JOIN Concept xr ON xr.cpt_id=ce_xray_exam WHERE ce_contact=" + contact.Id + " ORDER BY ce_added_on DESC, ce_idnt");
+            if (dr.HasRows) { 
+                while (dr.Read()) {
+                    examinations.Add(new ContactsExamination {
+                        Id = Convert.ToInt64(dr[0]),
+                        Contact = new Contacts { Id = Convert.ToInt64(dr[1]) },
+                        Cough = Convert.ToBoolean(dr[2]),
+                        Fever = Convert.ToBoolean(dr[3]),
+                        WeightLoss = Convert.ToBoolean(dr[4]),
+                        NightSweat = Convert.ToBoolean(dr[5]),
+                        SputumSmear = new Concept { 
+                            Id = Convert.ToInt64(dr[6]),
+                            Name = dr[7].ToString()
+                        },
+                        LTBI = new Concept {
+                            Id = Convert.ToInt64(dr[8]),
+                            Name = dr[9].ToString()
+                        },
+                        GeneXpert = new Concept
+                        {
+                            Id = Convert.ToInt64(dr[10]),
+                            Name = dr[11].ToString()
+                        },
+                        XrayExam = new Concept
+                        {
+                            Id = Convert.ToInt64(dr[12]),
+                            Name = dr[13].ToString()
+                        },
+                        PreventiveTherapy = dr[14].ToString(),
+                        NextScreening = Convert.ToDateTime(dr[15]),
+                        AddedOn = Convert.ToDateTime(dr[16]),
+                        AddedBy = new Users(Convert.ToInt64(dr[17]))
+                    });
+                }
+            }
+
+            return examinations;
+        }
+
+        public List<ContactsRegister> GetContactsRegister() {
             List<ContactsRegister> register = new List<ContactsRegister>();
 
             SqlServerConnection conn = new SqlServerConnection();

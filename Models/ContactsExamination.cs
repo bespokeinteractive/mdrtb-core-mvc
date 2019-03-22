@@ -21,6 +21,8 @@ namespace EtbSomalia.Models
 
         public string PreventiveTherapy { get; set; }
         public DateTime NextScreening { get; set; }
+        public DateTime AddedOn { get; set; }
+        public Users AddedBy { get; set; }
 
         public ContactsExamination()
         {
@@ -39,10 +41,12 @@ namespace EtbSomalia.Models
 
             PreventiveTherapy = "";
             NextScreening = DateTime.Now.AddMonths(6);
+
+            AddedOn = DateTime.Now;
+            AddedBy = new Users();
         }
 
-        public ContactsExamination Save(HttpContext context)
-        {
+        public ContactsExamination Save(HttpContext context) {
             return new PatientService().SaveContactsExamination(this);
         }
     }

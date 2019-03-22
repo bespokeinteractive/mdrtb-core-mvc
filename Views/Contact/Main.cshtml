@@ -1,6 +1,7 @@
 ﻿@model EtbSomalia.ViewModel.ContactMainViewModel
 @{
     ViewData["Title"] = Model.Contact.Person.Name;
+    var exam = Model.Examinations[0];
 }
 
 <style>
@@ -134,12 +135,12 @@
                 <hr style="margin: 10px 0;" />
                 <p class="truncate">
                     <i class="material-icons">assignment_ind</i>
-                    <span>@Model.Contact.Person.Address.Address</span>
+                    <span>@(Model.Contact.Person.Address == null ? "N/A" : Model.Contact.Person.Address.Address)</span>
                 </p>
 
                 <p>
                     <i class="material-icons">perm_phone_msg</i>
-                    <span>@Model.Contact.Person.Address.Telephone</span>
+                    <span>@(Model.Contact.Person.Address == null ? "+253 63 XX XXXX" : Model.Contact.Person.Address.Telephone)</span>
                 </p>
 
                 <p>
@@ -208,28 +209,48 @@
                                     <h4 class="task-card-title white-text">Symptoms </h4>
                                 </li>
                                 <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                    <input type="checkbox" id="task1" checked>
+                                    <input type="checkbox" id="task1" @(exam.Cough ? "checked" : "")>
                                     <label for="task1" class="black-text" style="text-decoration: none;">
                                         Coughs
                                     </label>
                                 </li>
                                 <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                    <input type="checkbox" id="task2">
+                                    <input type="checkbox" id="task2" @(exam.Fever ? "checked" : "")>
                                     <label for="task2" style="text-decoration: none;">
                                         Fever
                                     </label>
                                 </li>
                                 <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                    <input type="checkbox" id="task3">
+                                    <input type="checkbox" id="task3" @(exam.WeightLoss ? "checked" : "")>
                                     <label for="task3" style="text-decoration: none;">
                                         Weight Loss
                                     </label>
                                 </li>
                                 <li class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                                    <input type="checkbox" id="task4">
+                                    <input type="checkbox" id="task4" @(exam.NightSweat ? "checked" : "")>
                                     <label for="task4" style="text-decoration: none;">
                                         Night Sweats
                                     </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-8 zero-margin" style="padding-left:5px">
+                            <ul id="task-card-1" class="collection with-header z-depth-1">
+                                <li class="collection-header deep-orange accent-2" style="width:100%">
+                                    <h4 class="task-card-title white-text">Examinations</h4>
+                                </li>
+                                <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); min-height:46px">
+                                    <strong>#0@(exam.Id) Sputum Smear</strong> @exam.SputumSmear.Name
+                                </li>
+                                <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); min-height:46px">
+                                    <strong>#0@(exam.Id + 1) GeneXpert</strong> @exam.GeneXpert.Name
+                                </li>
+                                <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); min-height:46px">
+                                    <strong>#0@(exam.Id + 2) LBTI</strong> @exam.LTBI.Name
+                                </li>
+                                <li class="collection-item dismissable white" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); min-height:46px">
+                                    <strong>#0@(exam.Id + 3) XRAY</strong> @exam.XrayExam.Name
                                 </li>
                             </ul>
                         </div>
