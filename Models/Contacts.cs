@@ -88,12 +88,9 @@ namespace EtbSomalia.Models
             return new PatientService().GetContactsLastScreening(this);
         }
 
-        public void GenerateIdentifier()
-        {
+        public void GenerateIdentifier() {
             Random random = new Random();
-            int rIdnt = random.Next(1, 100);
-
-            Identifier = "CTX/" + Index.Program.Id + "/" + Convert.ToInt32(random.NextDouble() * 100).ToString().PadLeft(4, '0');
+            Identifier = "CTX/" + random.Next(10, 55) + "/" + Convert.ToInt32(random.NextDouble() * 1000).ToString().PadLeft(4, '0');
         }
 
         public Contacts Register(HttpContext context) {
