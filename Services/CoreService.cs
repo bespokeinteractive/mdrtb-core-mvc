@@ -141,6 +141,30 @@ namespace EtbSomalia.Services
             return facilities;
         }
 
+        public List<Facility> GetFacilitiesRandom(int count = 0) {
+            List<Facility> facilities = new List<Facility>();
+            string top = "";
+            if (count > 0)
+                top = "TOP(" + count + ")";
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("SELECT " + top + " pp_facility, fc_name, fc_prefix, ag_name, COUNT(*)pp_sum, SUM(CASE WHEN pp_outcome=0 THEN 0 ELSE 1 END) pp_outcome FROM PatientProgram INNER JOIN Facilities ON fc_idnt=pp_facility INNER JOIN Agency ON fc_agency=ag_idnt GROUP BY pp_facility, fc_prefix, fc_name, ag_name ORDER BY NEWID()");
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    facilities.Add(new Facility {
+                        Id = Convert.ToInt64(dr[0]),
+                        Name = dr[1].ToString(),
+                        Prefix = dr[2].ToString(),
+                        Agency = new Agency { Name = dr[3].ToString() },
+                        Count = Convert.ToInt32(dr[4]),
+                        Outcomes = Convert.ToInt32(dr[5]),
+                    });
+                }
+            }
+
+            return facilities;
+        }
+
         public List<SelectListItem> GetFacilitiesIEnumerable() {
             return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' AND fc_idnt IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ") ORDER BY fc_name");
         }

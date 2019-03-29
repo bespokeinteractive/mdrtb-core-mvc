@@ -13,6 +13,7 @@ namespace EtbSomalia.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public int Count { get; set; }
+        public int Outcomes { get; set; }
         public DateTime LastRecord { get; set; }
         public Region Region { get; set; }
         public Agency Agency { get; set; }
@@ -25,6 +26,7 @@ namespace EtbSomalia.Models
             Name = "";
             Description = "";
             Count = 0;
+            Outcomes = 0;
             LastRecord = new DateTime(1900, 1, 1);
 
             Region = new Region();

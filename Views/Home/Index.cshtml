@@ -1,9 +1,10 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+@model EtbSomalia.ViewModel.HomeIndexViewModel;
 @{
     ViewData["Title"] = "Home";
     ViewData["Sample"] = "[100, 50, 20, 40, 80, 50, 80, 123, 108, 70, 35, 90]";
 
-
+    int count = 0;
     int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
 }
 
@@ -11,7 +12,7 @@
     //  Trending line chart data (Stations Sales)
     var trendingLineChart;
     var data = {
-        labels: ["Afgore", "Luuq", "Bosaso", "Huduqsi", "Taalex", "Qardo", "Sheik", "Qardo", "Odwenye", "Ceel Haal", "Brava", "Kismayo"],
+        labels: ["@(Model.Facilities[0].Prefix)", "@(Model.Facilities[1].Prefix)", "@(Model.Facilities[2].Prefix)", "@(Model.Facilities[3].Prefix)", "@(Model.Facilities[4].Prefix)", "@(Model.Facilities[5].Prefix)", "@(Model.Facilities[6].Prefix)", "@(Model.Facilities[7].Prefix)", "@(Model.Facilities[8].Prefix)", "@(Model.Facilities[9].Prefix)", "@(Model.Facilities[10].Prefix)", "@(Model.Facilities[11].Prefix)"],
         datasets: [{
                 label: "Fuel Sales",
                 fillColor: "rgba(128, 222, 234, 0.6)",
@@ -20,7 +21,7 @@
                 pointStrokeColor: "#ffffff",
                 pointHighlightFill: "#ffffff",
                 pointHighlightStroke: "#ffffff",
-                data: [620, 120, 930, 180, 650, 885, 40, 30, 70, 20, 50, 70]
+                data: [@(Model.Facilities[0].Count), @(Model.Facilities[1].Count), @(Model.Facilities[2].Count), @(Model.Facilities[3].Count), @(Model.Facilities[4].Count), @(Model.Facilities[5].Count), @(Model.Facilities[6].Count), @(Model.Facilities[7].Count), @(Model.Facilities[8].Count), @(Model.Facilities[9].Count), @(Model.Facilities[10].Count), @(Model.Facilities[11].Count)]
             },
             {
                 label: "Lube Sales",
@@ -30,7 +31,7 @@
                 pointStrokeColor: "#80deea",
                 pointHighlightFill: "#80deea",
                 pointHighlightStroke: "#80deea",
-                data: [60, 20, 90, 80, 50, 85, 40, 30, 70, 20, 50, 70]
+                data: [@(Model.Facilities[0].Outcomes), @(Model.Facilities[1].Outcomes), @(Model.Facilities[2].Outcomes), @(Model.Facilities[3].Outcomes), @(Model.Facilities[4].Outcomes), @(Model.Facilities[5].Outcomes), @(Model.Facilities[6].Outcomes), @(Model.Facilities[7].Outcomes), @(Model.Facilities[8].Outcomes), @(Model.Facilities[9].Outcomes), @(Model.Facilities[10].Outcomes), @(Model.Facilities[11].Outcomes)]
             }
         ]
     };
@@ -217,6 +218,7 @@
                         <thead>
                             <tr>
                                 <th data-field="id">&nbsp;</th>
+                                <th data-field="month">Prefix</th>
                                 <th data-field="month">Centre</th>
                                 <th data-field="item-sold">Sub-Recipient</th>
                                 <th data-field="item-price">Cases</th>
@@ -224,48 +226,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Afgoye</td>
-                                <td>Mercy USA</td>
-                                <td>10,100</td>
-                                <td>124,00.00</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Bosaso</td>
-                                <td>NTP</td>
-                                <td>44,095</td>
-                                <td>1,024,050.00</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Luuq</td>
-                                <td>World Vision</td>
-                                <td>100</td>
-                                <td>222.00</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Huduqsi</td>
-                                <td>N/A</td>
-                                <td>100</td>
-                                <td>222.00</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Taalex</td>
-                                <td>N/A</td>
-                                <td>0.00</td>
-                                <td>122.00</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Qardo</td>
-                                <td>N/A</td>
-                                <td>300</td>
-                                <td>405.00</td>
-                            </tr>
+                            @foreach (var fac in Model.Facilities) {
+                                count++;
+
+                                <tr>
+                                    <td>@count</td>
+                                    <td>@fac.Prefix</td>
+                                    <td>@fac.Name</td>
+                                    <td>@fac.Agency.Name</td>
+                                    <td>@string.Format("{0:N0}", fac.Count)</td>
+                                    <td>@string.Format("{0:N0}", fac.Outcomes)</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -303,51 +275,41 @@
                     <table class="responsive-table">
                         <thead>
                             <tr>
-                                <th data-field="country-name">Product Name</th>
-                                <th data-field="item-sold">Qnty Sold</th>
-                                <th data-field="total-profit">Total Sales</th>
+                                <th data-field="country-name">Drug Name</th>
+                                <th data-field="item-sold">Dispenses</th>
+                                <th data-field="total-profit">Total Value</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Diesel</td>
+                                <td>RH</td>
                                 <td>658,080</td>
                                 <td>12,345,452.55</td>
                             </tr>
                             <tr>
-                                <td>Super</td>
+                                <td>RHZ</td>
                                 <td>452,076</td>
                                 <td>9,893,452.90</td>
                             </tr>
                             <tr>
-                                <td>V-Power</td>
+                                <td>ETH</td>
                                 <td>100,453</td>
                                 <td>6,880,075.00</td>
                             </tr>
                             <tr>
-                                <td>Kerosene</td>
+                                <td>FQ</td>
                                 <td>76,724</td>
                                 <td>4,883,052.95</td>
                             </tr>
                             <tr>
-                                <td>Lubes</td>
+                                <td>INH</td>
                                 <td>6,502</td>
                                 <td>1,002,452.00</td>
                             </tr>
                             <tr>
-                                <td>Gas</td>
+                                <td>OFX</td>
                                 <td>601</td>
                                 <td>756,452.25</td>
-                            </tr>
-                            <tr>
-                                <td>Soda</td>
-                                <td>650</td>
-                                <td>543,452.23</td>
-                            </tr>
-                            <tr>
-                                <td>Others</td>
-                                <td>N/A</td>
-                                <td>425,452.44</td>
                             </tr>
                         </tbody>
                     </table>

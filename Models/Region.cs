@@ -5,10 +5,12 @@ namespace EtbSomalia.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public string Prefix { get; set; }
 
         public Region() {
             Id = 0;
             Name = "";
+            Prefix = "";
         }
 
         public Region(long idnt) : this() {

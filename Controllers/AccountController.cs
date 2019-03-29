@@ -168,6 +168,18 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator/agencies")]
+        public IActionResult Agencies() {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator, Super User")]
+        [Route("administrator/regions")]
+        public IActionResult Regions(AccountRegionsViewModel model) {
+            return View(model);
+        }
+
         /* Data Readers */
         [AllowAnonymous]
         public int CheckIfUserExists(int usr_idnt, string usr_name) {
