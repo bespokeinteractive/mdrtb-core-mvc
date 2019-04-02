@@ -8,13 +8,9 @@ namespace EtbSomalia.Models
     public class DrugTransferDetails
     {
         public long Id { get; set; }
-        public DrugTransfer drugTransfer { get; set; }
-
-        public DrugBatches drugBatches { get; set; }
-
+        public DrugTransfer Transfer { get; set; }
+        public DrugBatches Batches { get; set; }
         public long Quantity { get; set; }
-
         public string Comments { get; set; }
-
     }
 }

@@ -5,18 +5,14 @@ using System.Threading.Tasks;
 
 namespace EtbSomalia.Models
 {
-    public class Drug
-    {
+    public class Drug {
         public long Id { get; set; }
-        public String Initial { get; set; }
-        public String Name { get; set; }
-        public String Units { get; set; }
+        public string Initial { get; set; }
+        public string Name { get; set; }
         public DrugCategory Category { get; set; }
         public DrugFormulation Formulation { get; set; }
-        public long Created_By { get; set; }
-        public DateTime Created_On { get; set; }
-        public String Description { get; set; }
-
-
+        public Users CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string Description { get; set; }
     }
 }

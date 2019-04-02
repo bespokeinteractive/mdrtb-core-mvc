@@ -8,14 +8,13 @@ namespace EtbSomalia.Models
     public class DrugBatches
     {
         public long Id { get; set; }
-        public  Drug Drug { get; set; }
-
+        public Drug Drug { get; set; }
         public string Company { get; set; }
         public string Supplier { get; set; }
-        public DateTime Manufacture { get; set; }
-        public DateTime Expiry { get; set; }
-        public String Notes { get; set; }
-        public DateTime Created_On { get; set; }
-        public long Created_By { get; set; }
+        public DateTime DateOfManufacture { get; set; }
+        public DateTime DateOfExpiry { get; set; }
+        public string Notes { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Users CreatedBy { get; set; }
     }
 }

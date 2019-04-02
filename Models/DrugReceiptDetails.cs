@@ -8,8 +8,8 @@ namespace EtbSomalia.Models
     public class DrugReceiptDetails
     {
         public long Id { get; set; }
-        public DrugIssue drugIssue { get; set; }
-        public DrugBatches drugBatches { get; set; }
+        public DrugIssue Issue { get; set; }
+        public DrugBatches Batches { get; set; }
         public long Quantity { get; set; }
         public string Description { get; set; }
     }

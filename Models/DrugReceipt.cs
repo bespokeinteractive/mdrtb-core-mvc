@@ -9,10 +9,10 @@ namespace EtbSomalia.Models
     {
         public long Id { get; set; }
         public DateTime Date { get; set; }
-        public string Receipt_Number { get; set; }
+        public string ReceiptNumber { get; set; }
         public string Description { get; set; }
-        public long Created_By { get; set; }
-        public DateTime Created_On { get; set; }
+        public Users CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
 
     }
 }
