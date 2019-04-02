@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
-    <Folder Include="Services\" />
     <Folder Include="ViewModel\" />
     <Folder Include="Views\Patient\" />
     <Folder Include="Views\Contact\" />

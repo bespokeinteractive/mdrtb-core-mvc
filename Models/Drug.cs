@@ -14,5 +14,16 @@ namespace EtbSomalia.Models
         public Users CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Description { get; set; }
+
+        public Drug() {
+            Id = 0;
+            Initial = "";
+            Name = "";
+            Category = new DrugCategory();
+            Formulation = new DrugFormulation();
+            Description = "";
+
+        }
     }
+
 }
