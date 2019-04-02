@@ -18,6 +18,7 @@
     <Folder Include="Views\Contact\" />
     <Folder Include="DataModel\" />
     <Folder Include="Views\Report\" />
+    <Folder Include="Views\Inventory\" />
   </ItemGroup>
 
   <ItemGroup>
