@@ -24,7 +24,7 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
-        public JsonResult GetInventoryDrugs(long fac, long catg = 0, string filter = "") {
+        public JsonResult GetInventoryDrugs(long facl, long catg = 0, string filter = "") {
             DrugCategory category = null;
 
             if (string.IsNullOrEmpty(filter))
@@ -32,7 +32,7 @@ namespace EtbSomalia.Controllers
             if (!catg.Equals(0))
                 category = new DrugCategory(catg);
 
-            return Json(new InventoryDrugService().GetInventoryDrugs(new Facility(fac), category, filter));
+            return Json(new InventoryDrugService().GetInventoryDrugs(new Facility(facl), category, filter));
         }
     }
 }
