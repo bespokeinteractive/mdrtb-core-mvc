@@ -12,5 +12,13 @@ namespace EtbSomalia.Models
         public DrugBatches Batches { get; set; }
         public long Quantity { get; set; }
         public string Comments { get; set; }
+
+        public DrugTransferDetails() {
+            Id = 0;
+            Quantity = 0;
+            Comments = "";
+            Transfer = new DrugTransfer();
+            Batches = new DrugBatches();
+        }
     }
 }

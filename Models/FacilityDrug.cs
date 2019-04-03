@@ -12,5 +12,14 @@ namespace EtbSomalia.Models
         public int Reorder { get; set; }
         public DateTime CreatedOn { get; set; }
         public Users CreatedBy { get; set; }
+
+        public FacilityDrug() {
+            Id = 0;
+            Reorder = 0;
+            Facility = new Facility();
+            Drug = new Drug();
+            CreatedBy = new Users();
+
+        }
     }
 }

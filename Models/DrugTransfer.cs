@@ -19,5 +19,21 @@ namespace EtbSomalia.Models {
         public Users RejectedBy { get; set; }
         public DateTime RejectedOn { get; set; }
         public string RejectReason { get; set; }
+
+        public DrugTransfer() {
+            Id = 0;
+            Status = 0;
+            Description = "";
+            AcceptNotes = "";
+            RejectReason = "";
+            Location = new Facility();
+            Destination = new Facility();
+            CreatedBy = new Users();
+            AcceptedBy = new Users();
+            RejectedBy = new Users();
+
+
+
+        }
     }
 }

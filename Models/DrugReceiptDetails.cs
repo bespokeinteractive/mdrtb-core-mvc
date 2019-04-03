@@ -12,5 +12,14 @@ namespace EtbSomalia.Models
         public DrugBatches Batches { get; set; }
         public long Quantity { get; set; }
         public string Description { get; set; }
+
+        public DrugReceiptDetails() {
+            Id = 0;
+            Quantity = 0;
+            Description = "";
+            Issue = new DrugIssue();
+            Batches = new DrugBatches();
+
+        }
     }
 }

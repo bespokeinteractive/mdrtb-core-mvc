@@ -14,5 +14,13 @@ namespace EtbSomalia.Models
         public Users CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
 
+        public DrugReceipt() {
+            Id = 0;
+            ReceiptNumber = "";
+            Description = "";
+            CreatedBy = new Users();
+
+        }
+
     }
 }

@@ -16,5 +16,16 @@ namespace EtbSomalia.Models
         public string Notes { get; set; }
         public DateTime CreatedOn { get; set; }
         public Users CreatedBy { get; set; }
-    }
+
+        public DrugBatches()
+        {
+            Id = 0;         
+            Company = "";
+            Supplier = "";
+            Notes = "";
+            CreatedBy = new Users();
+            Drug = new Drug();
+        }
+
+        }
 }
