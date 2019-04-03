@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using EtbSomalia.Models;
 
 namespace EtbSomalia.Services
@@ -11,29 +9,42 @@ namespace EtbSomalia.Services
     public class InventoryDrugService
     {
 
-        public List<Drug> GetInventoryDrugs()
-        {
-            List<Drug> inventoryDrugs = new List<Drug>();
-
+        public List<FacilityDrug> GetInventoryDrugs(Facility facility, DrugCategory category, string filter="") {
+            List<FacilityDrug> FacilityDrug = new List<FacilityDrug>();
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("select IDD.drg_idnt, IDD.drg_name, IDC.dc_name , IDF.df_name , Idd.drg_description , IFD.fd_drug ,IFD.fd_facility from InventoryDrug as IDD inner join InventoryDrugCategory as IDC on IDD.drg_category = IDC.dc_idnt inner join InventoryDrugFormulation as IDF  on IDD.drg_formulation = IDF.df_idnt inner join InventoryFacilityDrug as IFD on IDD.drg_idnt = IFD.fd_drug ");
-            if (dr.HasRows)
-            {
-               while (dr.Read())
-                {
-               
-                    Drug drug = new Drug();
-                    drug.Id = Convert.ToUInt16(dr[0]);
-                    drug.Name = dr[1].ToString();
-                    drug.Category.Name = dr[2].ToString();
-                    drug.Formulation.Name = dr[3].ToString();                                 
-                    inventoryDrugs.Add(drug);
-                }
 
-                
+            string query = conn.GetQueryString(filter, "drg_initial+'-'+drg_name+'-'+dc_name+'-'+df_name+'-'+df_dosage", "fd_idnt>0");
+            if (!(facility is null))
+                query += " AND fd_facility=" + facility.Id;
+            if (!(category is null))
+                query += " AND dc_idnt=" + category.Id;
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT fd_idnt, fd_reorder, ISNULL(avls,0)fd_avls, drg_idnt, drg_initial, drg_name, dc_idnt, dc_name, df_idnt, df_name, df_dosage FROM InventoryFacilityDrug INNER JOIN InventoryDrug ON fd_drug=drg_idnt INNER JOIN InventoryDrugCategory ON drg_category=dc_idnt INNER JOIN InventoryDrugFormulation ON drg_formulation=df_idnt LEFT OUTER JOIN vDrugsSummary ON fac=fd_facility AND drg=fd_drug " + query + " ORDER BY drg_name");
+            if (dr.HasRows) {
+               while (dr.Read()) {
+                    FacilityDrug.Add(new FacilityDrug {
+                        Id = Convert.ToInt64(dr[0]),
+                        Reorder = Convert.ToInt64(dr[1]),
+                        Available = Convert.ToInt64(dr[2]),
+                        Drug = new Drug {
+                            Id = Convert.ToInt64(dr[3]),
+                            Initial = dr[4].ToString(),
+                            Name = dr[5].ToString(),
+                            Category = new DrugCategory { 
+                                Id = Convert.ToInt64(dr[6]),
+                                Name = dr[7].ToString() 
+                            },
+                            Formulation = new DrugFormulation { 
+                                Id = Convert.ToInt64(dr[8]),
+                                Name = dr[9].ToString(),
+                                Dosage = dr[10].ToString(),
+                            }                      
+                        },
+                    });
+                }
             }
 
-            return inventoryDrugs;
+            return FacilityDrug;
         }
     }
 }

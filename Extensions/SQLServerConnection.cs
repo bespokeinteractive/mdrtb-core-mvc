@@ -44,7 +44,7 @@ namespace EtbSomalia.Extensions
             }
         }
 
-        public string GetQueryString(string sString, string command, string sAdditionalString = "", bool AndJoin = true) {
+        public string GetQueryString(string filter, string command, string sAdditionalString = "", bool AndJoin = true) {
             string query = "";
             string JOIN = " AND ";
 
@@ -52,7 +52,7 @@ namespace EtbSomalia.Extensions
                 JOIN = " OR ";
 
             char[] Seps = new [] { ' ', '*', '-', '&', '%', '/', '$', '#' };
-            string[] MyInfo = sString.Split(Seps, StringSplitOptions.RemoveEmptyEntries);
+            string[] MyInfo = filter.Split(Seps, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i <= (MyInfo.Length - 1); i++)
             {
                 if (JOIN.Trim() == "OR" & !(MyInfo[i].Length > 1))

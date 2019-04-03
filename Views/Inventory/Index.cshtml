@@ -1,21 +1,20 @@
 ﻿@model EtbSomalia.ViewModel.InventoryIndexViewModel;
 @{
     ViewData["Title"] = "Inventory";
+    int count = 0;
+    double quantity = 0;
 }
 
 <style>
     a {
         cursor: pointer !important;
     }
-
     nav .input-field input:focus, nav .input-field input[type=text]:valid, nav .input-field input[type=password]:valid, nav .input-field input[type=email]:valid, nav .input-field input[type=url]:valid, nav .input-field input[type=date]:valid {
         border-bottom: 1px solid #9e9e9e;
     }
-
     td {
         padding: 10px;
     }
-
     a.material-icons.tiny-box {
         display: block;
         font-size: 14px;
@@ -24,19 +23,33 @@
         cursor: pointer;
         text-decoration: none;
     }
-
     a.material-icons:hover {
         color: #2196F3 !important;
     }
+    div.btn-floating {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+    }
+    div.btn-floating i {
+        font-size: 1.3em;
+        line-height: 30px;
+    }
+    .btn-move-up {
+        top: -20px;
+    }
 </style>
-<script src="~/js/expense-index-script.js"></script>
+<script src="~/js/inventory-index-script.js"></script>
 
 <div class="col-md-3 zero-margin">
     <div id="flight-card" class="card" style="margin-bottom:0">
         <div class="card-header deep-orange accent-2">
             <div class="card-title">
                 <h4 class="flight-card-title">Inventory</h4>
-                <p class="flight-card-date">@DateTime.Now.ToString("MMM dd, ddd hh:mm")</p>
+                <p class="flight-card-date truncate"><b>Facility/</b> @Model.Active.Name</p>
+                <div class="btn-floating btn-change activator btn-move-up waves-effect waves-light gradient-45deg-light-blue-cyan z-depth-5 right">
+                    <i class="material-icons">edit</i>
+                </div>
             </div>
         </div>
     </div>
@@ -131,19 +144,38 @@
                     </thead>
 
                     <tbody style="font-size:0.9em">
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="3">NO DRUGS FOUND</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>N/A</td>
-                        </tr>
+                        @foreach (var item in Model.InventoryDrugs){
+                            count++;
+                            quantity += item.Available;
+
+                            <tr>
+                                <td>@count</td>
+                                <td>@item.Drug.Name.ToUpper()</td>
+                                <td>@item.Drug.Category.Name.ToUpper()</td>
+                                <td>@item.Drug.Formulation.Name @item.Drug.Formulation.Dosage</td>
+                                <td>@string.Format("{0:N0}", item.Available)</td>
+                                <td>@string.Format("{0:N0}", item.Reorder)</td>
+                                <td>N/A</td>
+                                <td><a class="material-icons tiny-box grey-text right">border_color</a></td>
+                            </tr>
+                        }
+
+                        @if (Model.InventoryDrugs.Count.Equals(0)){
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="3">NO DRUGS FOUND</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>N/A</td>
+                            </tr>
+                        }
                     </tbody>
 
                     <tfoot>
                         <tr>
-                            <th colspan="4">SUMMARY</th>
-                            <th>@string.Format("{0:N}", 0)</th>
+                            <th>&nbsp;</th>
+                            <th colspan="3">SUMMARY</th>
+                            <th>@string.Format("{0:N}", quantity)</th>
                             <th>&mdash;</th>
                             <th>&mdash;</th>
                         </tr>
@@ -160,3 +192,22 @@
 </div>
 
 <div style="clear:both"></div>
+
+<div id="change-facility-modal" class="modal modal-fixed-footer" style="width: 500px">
+    <div class="modal-content">
+        <h4>Change Facilities</h4>
+        <p>Specify the below Parameters for the Facility</p>
+        <div>
+            <div class="input-field">
+                <i class="material-icons prefix">public</i>
+                @Html.DropDownListFor(model => model.Active.Id, Model.Facilities)
+                <label for="gender">Facility</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Cancel</a>
+        <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Change</a>
+    </div>
+</div>

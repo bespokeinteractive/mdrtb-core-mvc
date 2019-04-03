@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 namespace EtbSomalia.Models
 {
     public class DrugCategory {
-
         public long Id { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
@@ -18,6 +17,11 @@ namespace EtbSomalia.Models
             Name = "";
             Description = "";
             CreatedBy = new Users();
+            CreatedOn = DateTime.Now;
+        }
+
+        public DrugCategory(long idnt) : this() {
+            Id = idnt;
         }
     }
 }
