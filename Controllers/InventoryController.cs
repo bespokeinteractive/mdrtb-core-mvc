@@ -10,7 +10,7 @@ namespace EtbSomalia.Controllers
     public class InventoryController : Controller
     {
         [Route("inventory")]
-        public IActionResult Index(InventoryIndexViewModel model, InventoryDrugService service, long fac = 0) {
+        public IActionResult Index(InventoryIndexViewModel model, DrugService service, long fac = 0) {
             CoreService core = new CoreService(HttpContext);
             model.Facilities = core.GetFacilitiesIEnumerable();
 
@@ -25,14 +25,32 @@ namespace EtbSomalia.Controllers
         }
 
         public JsonResult GetInventoryDrugs(long facl, long catg = 0, string filter = "") {
+            Facility facility = null; 
             DrugCategory category = null;
 
-            if (string.IsNullOrEmpty(filter))
-                filter = "";
+            if (!facl.Equals(0))
+                facility = new Facility(facl);
             if (!catg.Equals(0))
                 category = new DrugCategory(catg);
+            if (string.IsNullOrEmpty(filter))
+                filter = "";
 
-            return Json(new InventoryDrugService().GetInventoryDrugs(new Facility(facl), category, filter));
+            return Json(new DrugService().GetInventoryDrugs(facility, category, filter));
         }
+
+        public JsonResult GetExpiredDrugBatches(long facl, long catg = 0, string filter = "") {
+            Facility facility = null;
+            DrugCategory category = null;
+
+            if (!facl.Equals(0))
+                facility = new Facility(facl);
+            if (!catg.Equals(0))
+                category = new DrugCategory(catg);
+            if (string.IsNullOrEmpty(filter))
+                filter = "";
+
+            return Json(new DrugService().GetDrugBatches(facility, category, DateTime.Now, true, false, filter));
+        }
+
     }
 }
