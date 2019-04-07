@@ -121,7 +121,7 @@ function GetExpiredDrugBatches(){
                 row += '<td>' + item.expiry + '</td>';
                 row += '<td>' + item.available.toString().toAccounting() + '</td>';
                 row += '<td>N/A</td>';
-                row += '<td><a class="material-icons tiny-box grey-text right">border_color</a></td>';
+                row += '<td><a class="material-icons tiny-box red-text right">delete_forever</a></td>';
                 row += '</tr>';
 
                 jq('#expired-table tbody').append(row);
