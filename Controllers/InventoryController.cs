@@ -52,5 +52,20 @@ namespace EtbSomalia.Controllers
             return Json(new DrugService().GetDrugBatches(facility, category, DateTime.Now, true, false, filter));
         }
 
+        public JsonResult GetDrugReceiptDetails(long facl, long catg = 0, string filter = "")
+        {
+            Facility facility = null;
+            DrugCategory category = null;
+
+            if (!facl.Equals(0))
+                facility = new Facility(facl);
+            if (!catg.Equals(0))
+                category = new DrugCategory(catg);
+            if (string.IsNullOrEmpty(filter))
+                filter = "";
+
+            return Json(new DrugService().GetDrugReceiptDetails(facility, category, null, null, filter));
+        }
+
     }
 }
