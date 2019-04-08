@@ -101,5 +101,62 @@ namespace EtbSomalia.Services
             }
             return batches;
         }
+
+        public List<DrugReceiptDetails> GetDrugReceiptDetails(Facility facility, DrugCategory category, DateTime? start_date, DateTime? end_date, string filter = "") {
+            List<DrugReceiptDetails> receipts = new List<DrugReceiptDetails>();
+
+            SqlServerConnection conn = new SqlServerConnection();
+
+            string query = conn.GetQueryString(filter, "idb_batch+'-'+idb_company+'-'+idb_supplier+'-'+drg_name+'-'+dc_name+'-'+df_name+'-'+df_dosage+'-'+fc_prefix+'-'+fc_name", "idb_idnt>0");
+            if (!(facility is null))
+                query += " AND fc_idnt=" + facility.Id;
+            if (!(category is null))
+                query += " AND dc_idnt=" + category.Id;
+            if (start_date.HasValue)
+                query += " AND idr_date>='" + Convert.ToDateTime(start_date).Date + "'";
+            if (end_date.HasValue)
+                query += " AND idr_date<='" + Convert.ToDateTime(end_date).Date + "'";
+
+            SqlDataReader dr = conn.SqlServerConnect("SELECT drd_idnt, drd_quantity, idr_idnt, idr_date, idr_receipt_no, idb_idnt, idb_batch, idb_company, idb_supplier, idb_manufacture, idb_expiry, drg_idnt, drg_initial, drg_name, df_idnt, df_name, df_dosage, dc_idnt, dc_name FROM InventoryDrugReceiptDetails INNER JOIN InventoryDrugReceipt ON drd_receipt=idr_idnt INNER JOIN InventoryDrugBatches ON drd_batch=idb_idnt INNER JOIN InventoryDrug ON idb_drug=drg_idnt INNER JOIN InventoryDrugFormulation ON drg_formulation=df_idnt INNER JOIN InventoryDrugCategory ON drg_category=dc_idnt " + query + " ORDER BY drd_idnt");
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    receipts.Add(new DrugReceiptDetails {
+                        Id = Convert.ToInt64(dr[0]),
+                        Quantity = Convert.ToInt64(dr[1]),
+                        Receipt = new DrugReceipt {
+                            Id = Convert.ToInt64(dr[2]),
+                            Date = Convert.ToDateTime(dr[3]),
+                            Number = dr[4].ToString(),
+                        },
+                        Batch = new DrugBatches {
+                            Id = Convert.ToInt64(dr[5]),
+                            BatchNo = dr[6].ToString(),
+                            Company = dr[7].ToString(),
+                            Supplier = dr[8].ToString(),
+                            DateOfManufacture = Convert.ToDateTime(dr[9]),
+                            Manufacture = Convert.ToDateTime(dr[9]).ToString("dd/MM"),
+                            DateOfExpiry = Convert.ToDateTime(dr[10]),
+                            Expiry = Convert.ToDateTime(dr[10]).ToString("dd/MM"),
+                            Drug = new Drug {
+                                Id = Convert.ToInt64(dr[11]),
+                                Initial = dr[12].ToString(),
+                                Name = dr[13].ToString(),
+                                Formulation = new DrugFormulation {
+                                    Id = Convert.ToInt64(dr[14]),
+                                    Name = dr[15].ToString(),
+                                    Dosage = dr[16].ToString()
+                                },
+                                Category = new DrugCategory {
+                                    Id = Convert.ToInt64(dr[17]),
+                                    Name = dr[18].ToString()
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            return receipts;
+        }
     }
 }

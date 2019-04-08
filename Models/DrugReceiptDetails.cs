@@ -3,8 +3,9 @@
     public class DrugReceiptDetails
     {
         public long Id { get; set; }
+        public DrugReceipt Receipt { get; set; }
         public DrugIssue Issue { get; set; }
-        public DrugBatches Batches { get; set; }
+        public DrugBatches Batch { get; set; }
         public long Quantity { get; set; }
         public string Description { get; set; }
 
@@ -13,8 +14,8 @@
             Quantity = 0;
             Description = "";
             Issue = new DrugIssue();
-            Batches = new DrugBatches();
-
+            Batch = new DrugBatches();
+            Receipt = new DrugReceipt();
         }
     }
 }
