@@ -109,7 +109,7 @@
             <ul class="tabs">
                 <li class="tab"><a data-loaded="1" href="#drugstock" class="active">Drug Stock</a></li>
                 <li class="tab"><a data-loaded="0" href="#expired" class="active expired">Expired</a></li>
-                <li class="tab"><a data-loaded="0" href="#receipts" class="active">Receipts</a></li>
+                <li class="tab"><a data-loaded="0" href="#receipts" class="active receipt">Receipts</a></li>
                 <li class="tab"><a data-loaded="0" href="#transfers" class="active">Transfers</a></li>
                 <li class="tab"><a data-loaded="0" href="#issues" class="active">Issue to Account</a></li>
             </ul>
@@ -227,10 +227,51 @@
                     <tbody style="font-size:0.9em"></tbody>
                     <tfoot></tfoot>
                 </table>
-
             </div>
 
-            <div id="receipts" class="body"></div>
+            <div id="receipts" class="body">
+                <div class="row" style="margin-top: 10px;">
+                    <div class="input-field col-md-4">
+                        <i class="material-icons prefix">lightbulb_outline</i>
+                        <select id="receipt_catg" class="modal-months">
+                            <option selected value="0">All Categories</option>
+                            <option value="2">MDRTB Drugs</option>
+                            <option value="1">TB Drugs</option>
+                            <option value="3">Pediatric Drugs</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field col-md-7">
+                        <i class="material-icons prefix">filter_list</i>
+                        <input id="receipt_filter" type="text" placeholder="Filter Drugs" />
+                    </div>
+
+                    <div class="col-md-1 get-receipt">
+                        <a class="btn btn-floating pulse btn gradient-45deg-amber-amber right"><i class="material-icons" style="line-height: 42px">search</i></a>
+                    </div>
+                </div>
+
+                <table id="receipt-table" class="bordered" data-loaded="0" style="margin-top: -20px">
+                    <thead>
+                        <tr>
+                            <th style="width:1px">#</th>
+                            <th>DATE</th>
+                            <th>BATCH</th>
+                            <th>DRUG</th>
+                            <th>COMPANY</th>
+                            <th>SUPPLIER</th>
+                            <th>MANUF</th>
+                            <th>EXPIRY</th>
+                            <th>QNTY</th>
+                            <th>NOTES</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody style="font-size:0.9em"></tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+
             <div id="transfers" class="body"></div>
             <div id="issues" class="body"></div>
         </div>

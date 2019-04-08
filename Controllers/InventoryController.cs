@@ -52,8 +52,7 @@ namespace EtbSomalia.Controllers
             return Json(new DrugService().GetDrugBatches(facility, category, DateTime.Now, true, false, filter));
         }
 
-        public JsonResult GetDrugReceiptDetails(long facl, long catg = 0, string filter = "")
-        {
+        public JsonResult GetDrugReceiptDetails(long facl, long catg = 0, string filter = "") {
             Facility facility = null;
             DrugCategory category = null;
 

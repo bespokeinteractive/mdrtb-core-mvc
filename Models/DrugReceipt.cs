@@ -9,6 +9,7 @@ namespace EtbSomalia.Models
     {
         public long Id { get; set; }
         public DateTime Date { get; set; }
+        public string DateString { get; set; }
         public string Number { get; set; }
         public string Description { get; set; }
         public Users CreatedBy { get; set; }
@@ -16,8 +17,10 @@ namespace EtbSomalia.Models
 
         public DrugReceipt() {
             Id = 0;
+            DateString = "";
             Number = "";
             Description = "";
+            Date = DateTime.Now;
             CreatedBy = new Users();
 
         }

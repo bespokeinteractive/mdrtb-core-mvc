@@ -17,10 +17,21 @@
         GetExpiredDrugBatches();
     });
 
+    jq('div.get-receipt a').click(function(){
+        GetDrugReceiptDetails();
+    });
+
     jq('li.tab a.expired').click(function(){
         if (jq(this).data('loaded') == 0){
             jq(this).data('loaded', 1);
             GetExpiredDrugBatches();
+        }
+    });
+
+    jq('li.tab a.receipt').click(function(){
+        if (jq(this).data('loaded') == 0){
+            jq(this).data('loaded', 1);
+            GetDrugReceiptDetails();
         }
     });
 });
@@ -136,6 +147,64 @@ function GetExpiredDrugBatches(){
             footr += '<th>&mdash;</td><th>&nbsp;</td></tr>';
 
             jq('#expired-table tfoot').append(footr);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+        },
+        complete: function() {
+            $('body').addClass('loaded');
+        }
+    });
+}
+
+function GetDrugReceiptDetails(){
+    jq.ajax({
+        dataType: "json",
+        url: '/Inventory/GetDrugReceiptDetails',
+        data: {
+            "facl":     facl,
+            "catg":     jq('#receipt_catg').val(),
+            "filter":   jq('#receipt_filter').val()
+        },
+        beforeSend: function() {
+            jq('body').removeClass('loaded');
+        },
+        success: function(results) {
+            jq('#receipt-table tbody').empty();
+            jq('#receipt-table tfoot').empty();
+
+            var available = 0.0;
+
+            jq.each(results, function(i, item) {
+                available += item.quantity;
+
+                var row = '<tr>';
+                row += '<td>' + (i+1) + '</td>';
+                row += '<td>' + item.receipt.dateString + '</td>';
+                row += '<td>' + item.batch.batchNo + '</td>';
+                row += '<td>' + item.batch.drug.name + ' ' + item.batch.drug.formulation.name + ' ' + item.batch.drug.formulation.dosage + '</td>';
+                row += '<td>' + item.batch.company + '</td>';
+                row += '<td>' + item.batch.supplier + '</td>';
+                row += '<td>' + item.batch.manufacture + '</td>';
+                row += '<td>' + item.batch.expiry + '</td>';
+                row += '<td>' + item.quantity + '</td>';
+                row += '<td>N/A</td>';
+                row += '<td><a class="material-icons tiny-box red-text right">delete_forever</a></td>';
+                row += '</tr>';
+
+                jq('#receipt-table tbody').append(row);
+            })
+
+            if(results.length == 0){
+                jq('#receipt-table tbody').append('<tr><td>&nbsp;</td><td colspan="5">NO DRUGS FOUND</td><td>0.00</td><td>N/A</td><th>&nbsp;</td></tr>');
+            }
+
+            var footr = '<tr><td>&nbsp;</td><th colspan="7">SUMMARY</th>';
+            footr += '<th>' + available.toString().toAccounting() + '</th>';
+            footr += '<th>&mdash;</td><th>&nbsp;</td></tr>';
+
+            jq('#receipt-table tfoot').append(footr);
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.log(xhr.status);
