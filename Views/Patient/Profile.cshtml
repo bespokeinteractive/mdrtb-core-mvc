@@ -78,7 +78,7 @@
             </div>
             <div class="col s12 m2 center-align">
                 <h4 class="card-title grey-text text-darken-4">@(Model.Program.Program.Id == 1 ? "TB Program" : "MDR-TB")</h4>
-                <p class="medium-small grey-text">@Model.Program.Type.Name</p>
+                <p class="medium-small grey-text">@(Model.Program.Type.Name.Replace("Extra-Pulmonary Tuberculosis", "Extra-Pulmonary"))</p>
             </div>
             <div class="col s12 m2 center-align">
                 <h4 class="card-title grey-text text-darken-4">@visits</h4>
@@ -129,7 +129,7 @@
             <li class="collection-item">
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12">
-                        <i class="material-icons left">poll</i> Add Visits
+                        <i class="material-icons left">poll</i> <a class="black-text" href="/patients/visits/add?p=@Model.Patient.Uuid">Add Visits</a>
                     </div>
                 </div>
             </li>

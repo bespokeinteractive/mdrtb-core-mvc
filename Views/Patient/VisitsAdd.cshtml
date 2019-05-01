@@ -1,6 +1,7 @@
-﻿@model EtbSomalia.ViewModel.PatientIntakeViewModel;
+﻿@model EtbSomalia.ViewModel.PatientVisitsViewModel;
 @{
-    ViewData["Title"] = "Intake Form";
+    ViewData["Title"] = "Add Visit";
+    int visits = Model.Program.GetVisitsCount();
 }
 
 <script src="~/js/patient-intake-script.js"></script>
@@ -9,19 +10,15 @@
     #profile-page-header .card-image {
         height: 100px;
     }
-
     #profile-page-header .card-profile-image {
         top: 40px;
     }
-
     div.row div.col.offset-m2 {
         margin-left: 15%;
     }
-
     .collapsible span.badge {
         margin-top: 0;
     }
-
     span.badge.new:after {
         content: " fields";
     }
@@ -50,8 +47,8 @@
                 <p class="medium-small grey-text">@(Model.Program.Type.Name.Replace("Extra-Pulmonary Tuberculosis", "Extra-Pulmonary"))</p>
             </div>
             <div class="col s12 m2 center-align">
-                <h4 class="card-title grey-text text-darken-4">0</h4>
-                <p class="medium-small grey-text">Visits Completed</p>
+                <h4 class="card-title grey-text text-darken-4">@visits</h4>
+                <p class="medium-small grey-text">@(visits == 1 ? "Visit" : "Visits") Completed</p>
             </div>
             <div class="col s12 m1 right-align">
                 <a class="btn-floating activator waves-effect waves-light rec accent-2 right" style="margin-right: 10px;">
@@ -75,7 +72,7 @@
     </div>
 </div>
 
-@using (Html.BeginForm("RegisterNewIntake", "Patient", FormMethod.Post))
+@using (Html.BeginForm("AddVisits", "Patient", FormMethod.Post))
 {
     <ul class="collapsible">
         <li>
@@ -84,21 +81,16 @@
                 VISIT DETAILS
                 <span class="new badge">8</span>
             </div>
-            <div class="collapsible-body">
+
+            <div class="collapsible-body" style="padding-bottom:0px">
                 <div class="row">
-                    <div class="input-field col s4">
-                        <i class="material-icons prefix">business</i>
-                        @Html.DropDownListFor(model => model.Program.Facility.Id, Model.Facilities)
-                        <label>Facility Enrolled</label>
+                    <div class="input-field col m4 s12">
+                        <i class="material-icons prefix">timer</i>
+                        @Html.DropDownListFor(model => model.Examination.Visit.Id, Model.Visits)
+                        <label>Visit</label>
                     </div>
 
-                    <div class="input-field col s4">
-                        <i class="material-icons prefix">create</i>
-                        @Html.TextBoxFor(model => model.Program.RegisterNumber)
-                        <label for="icon_prefix">Register Number</label>
-                    </div>
-
-                    <div class="input-field col s4">
+                    <div class="input-field col m4 s12">
                         <i class="material-icons prefix">border_color</i>
                         @Html.TextBoxFor(model => model.Program.LaboratoryNumber)
                         <label for="icon_prefix">Lab Number</label>
@@ -120,14 +112,12 @@
 
                     <div class="input-field col s4">
                         <i class="material-icons prefix">exit_to_app</i>
-                        @if (Model.Patient.GetAgeInYears() <= 5)
-                        {
+                        @if (Model.Patient.GetAgeInYears() <= 5) {
                             @Html.TextBoxFor(model => model.Examination.MUAC, new { type = "number", min = "0", step = "1" })
                             @Html.HiddenFor(model => model.Examination.BMI)
                             <label for="icon_prefix">MUAC</label>
                         }
-                        else
-                        {
+                        else {
                             @Html.TextBoxFor(model => model.Examination.BMI, new { type = "number", min = "0", step = "1" })
                             @Html.HiddenFor(model => model.Examination.MUAC)
                             <label for="icon_prefix">BMI</label>
@@ -135,7 +125,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" style="margin-bottom:0">
                     <div class="input-field col s4">
                         <i class="material-icons prefix">room_service</i>
                         @Html.DropDownListFor(model => model.Regimen.Regimen.Id, Model.Regimens)
@@ -144,13 +134,13 @@
 
                     <div class="input-field col s4">
                         <i class="material-icons prefix">event</i>
-                        @Html.TextBoxFor(model => model.RegimenStartedOn, new { @class = "datepicker" })
+                        @Html.TextBoxFor(model => model.RegimenStartedOn, Model.Regimen.StartedOn.ToString("d MMMM, yyyy"), new { @class = "datepicker" })
                         <label for="icon_prefix">Regimen Started On</label>
                     </div>
-                </div>
 
-                <div class="row" style="margin-bottom:0">
-                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="1">Next</a>
+                    <div class="input-field col s4" style="margin-bottom:0; padding-top:10px;">
+                        <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="1">Next</a>
+                    </div>
                 </div>
             </div>
         </li>
@@ -159,49 +149,6 @@
             <div class="collapsible-header gradient-45deg-light-blue-cyan white-text">
                 <i class="material-icons">assignment</i>
                 TREATMENT DETAILS
-            </div>
-            <div class="collapsible-body">
-                <div class="row">
-                    <div class="input-field col s4">
-                        <i class="material-icons prefix">transfer_within_a_station</i>
-                        @Html.DropDownListFor(model => model.Program.ReferredBy.Id, Model.Referees)
-                        <label>Referred By</label>
-                    </div>
-
-                    <div class="input-field col s4">
-                        <i class="material-icons prefix">record_voice_over</i>
-                        @Html.DropDownListFor(model => model.Program.DotsBy.Id, Model.DotsBy)
-                        <label for="icon_prefix">DOTs By</label>
-                    </div>
-
-                    <div class="input-field col s4">
-                        <i class="material-icons prefix">wc</i>
-                        @Html.TextBoxFor(model => model.Program.TreatmentSupporter, new { placeholder = "Daamin" })
-                        <label>Treatment Supporter</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">perm_contact_calendar</i>
-                        @Html.TextAreaFor(model => model.Program.SupporterContacts, new { @class = "materialize-textarea" })
-                        <label for="message">Treatment Supporter Address/Contacts</label>
-                    </div>
-                </div>
-
-                <div class="row" style="margin-bottom:0;padding-left: 55px;">
-                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="0">Prev</a>
-                    <a class="btn next-btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="2">Next</a>
-                </div>
-            </div>
-
-        </li>
-
-        <li>
-            <div class="collapsible-header gradient-45deg-red-pink accent-2 white-text">
-                <i class="material-icons">assignment</i>
-                EXAMINATIONS/INVESTIGATIONS
-                <span class="new badge">1</span>
             </div>
             <div class="collapsible-body">
                 <div class="row">
@@ -241,7 +188,7 @@
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
-                        @Html.TextBoxFor(model => model.HivExamDate, new { @class = "datepicker" })
+                        @Html.TextBoxFor(model => model.HivExamDate, Model.Examination.HivExamDate.ToString("d MMMM, yyyy"), new { @class = "datepicker" })
                         <label for="icon_prefix">Examination Date</label>
                     </div>
                 </div>
@@ -255,7 +202,7 @@
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
-                        @Html.TextBoxFor(model => model.ArtStartedOn, new { @class = "datepicker" })
+                        @Html.TextBoxFor(model => model.ArtStartedOn, Model.Program.ArtStartedOn.ToString("d MMMM, yyyy"), new { @class = "datepicker" })
                         <label for="icon_prefix">Started On</label>
                     </div>
                 </div>
@@ -269,7 +216,7 @@
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix">event</i>
-                        @Html.TextBoxFor(model => model.CptStartedOn, new { @class = "datepicker" })
+                        @Html.TextBoxFor(model => model.CptStartedOn, Model.Program.CptStartedOn.ToString("d MMMM, yyyy"),new { @class = "datepicker" })
                         <label for="icon_prefix">Started On</label>
                     </div>
                 </div>
@@ -289,7 +236,7 @@
                 </div>
 
                 <div class="row" style="margin-bottom:0;padding-left:55px;">
-                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="1">Prev</a>
+                    <a class="btn next-btn waves-effect waves-light gradient-45deg-red-pink gradient-shadow left" data-index="0">Prev</a>
                     <a class="btn submit waves-effect waves-light gradient-45deg-purple-deep-orange gradient-shadow right" id="submit_form">Submit</a>
                 </div>
             </div>

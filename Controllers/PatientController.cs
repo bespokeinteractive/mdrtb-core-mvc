@@ -20,6 +20,9 @@ namespace EtbSomalia.Controllers
         [BindProperty]
         public PatientIntakeViewModel IntakeModel { get; set; }
 
+        [BindProperty]
+        public PatientVisitsViewModel VisitModel { get; set; }
+
         // GET: /<controller>/
         [Route("registration/add")]
         public IActionResult Register(PatientRegisterViewModel model, ConceptService cs)
@@ -40,10 +43,9 @@ namespace EtbSomalia.Controllers
         {
             CoreService core = new CoreService(HttpContext);
             model.Program = ps.GetPatientProgram(idnt);
-            model.Program.Patient.GetUuid();
 
             if (!model.Program.DotsBy.Id.Equals(0)) {
-                return LocalRedirect("/patients/profile/" + model.Program.Patient.Uuid);
+                return LocalRedirect("/patients/profile/" + model.Program.Patient.GetUuid());
             }
 
             //Other Fields
@@ -110,6 +112,33 @@ namespace EtbSomalia.Controllers
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
             model.Examinations = core.GetRecentExaminations(model.Program);
             model.Contacts = ps.GetContacts(model.Patient);
+
+            return View(model);
+        }
+
+        [Route("patients/visits/add")]
+        public IActionResult VisitsAdd(string p, PatientVisitsViewModel model, CoreService core, PatientService ps, ConceptService cs) {
+            model.Patient = ps.GetPatient(p);
+            model.Program = ps.GetPatientProgram(model.Patient);
+            model.Regimen = core.GetPatientRegimen(model.Program);
+            model.Visits = core.GetProgramVisitsIEnumerable(model.Program, model.Regimen.Regimen);
+            model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
+            model.HivRecent = core.GetRecentHivExamination(model.Program);
+
+            model.Examination = new PatientExamination {
+                HivExam = model.HivRecent.Result,
+                HivExamDate = model.HivRecent.Date
+            };
+
+            //Exam Options
+            model.SputumSmearItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
+            model.HivExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.HIV_EXAM));
+            model.XrayExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.XRAY_EXAM));
+            model.GeneXpertItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.GENE_XPERT));
+
+            //HIV Options
+            model.ARTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.ART_STARTED_ON));
+            model.CPTItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.CPT_STARTED_ON));
 
             return View(model);
         }
@@ -214,6 +243,8 @@ namespace EtbSomalia.Controllers
             return LocalRedirect("/registration/intake/" + program.Id);
         }
 
+
+
         [HttpPost]
         public IActionResult RegisterNewIntake() {
             PatientProgram pp = IntakeModel.Program;
@@ -235,7 +266,32 @@ namespace EtbSomalia.Controllers
             px.XrayExamDate = DateTime.Parse(IntakeModel.XrayExamDate);
             px.Save(HttpContext);
 
-            return LocalRedirect("/patients/profile/" + pp.Patient.Uuid);
+            return LocalRedirect("/patients/profile/" + pp.Patient.GetUuid());
+        }
+
+        [HttpPost]
+        public IActionResult AddVisits() {
+            PatientProgram pp = VisitModel.Program;
+            pp.ArtStartedOn = DateTime.Parse(VisitModel.ArtStartedOn);
+            pp.CptStartedOn = DateTime.Parse(VisitModel.CptStartedOn);
+            pp.UpdateVisit(HttpContext);
+
+            //Test If Regimen has Changed, then Update
+            PatientRegimen pr = VisitModel.Regimen;
+            pr.Program = pp;
+            pr.Save(HttpContext);
+
+            //Post Visit
+            PatientExamination px = VisitModel.Examination;
+            px.Program = pp;
+            px.LabNo = pp.LaboratoryNumber;
+            px.SputumSmearDate = DateTime.Parse(VisitModel.SputumSmearDate);
+            px.GeneXpertDate = DateTime.Parse(VisitModel.GeneXpertDate);
+            px.HivExamDate = DateTime.Parse(VisitModel.HivExamDate);
+            px.XrayExamDate = DateTime.Parse(VisitModel.XrayExamDate);
+            px.Save(HttpContext);
+
+            return LocalRedirect("/patients/profile/" + pp.Patient.GetUuid());
         }
 
         [AllowAnonymous]

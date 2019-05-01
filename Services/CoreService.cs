@@ -288,6 +288,19 @@ namespace EtbSomalia.Services
             return regimen;
         }
 
+        //Read: Visits
+        public List<SelectListItem> GetProgramVisitsIEnumerable(PatientProgram pp, Regimen regimen, bool includeVisited = false, bool includeLastVisit = false) {
+            string query = "WHERE px_program=" + pp.Program.Id + " AND ex_regimen LIKE '%" + regimen.Id + "%'";
+
+            if (!includeVisited)
+                query += " AND ex_idnt NOT IN (SELECT pe_visit FROM PatientExamination WHERE pe_program=" + pp.Id + ")";
+
+            if (!includeLastVisit)
+                query += " AND ex_idnt<>25";
+
+            return GetIEnumerable("SELECT ex_idnt, ex_name FROM ProgramExaminations INNER JOIN Examinations ON px_exam=ex_idnt " + query);
+        }
+
         //Read: PatientExamination
         public PatientExamination GetPatientExamination(long idnt) {
             PatientExamination px = null;
@@ -358,24 +371,51 @@ namespace EtbSomalia.Services
             return 0;
         }
 
-        //List Examinations (Model)
+        //Examinations (Model)
+        public Examinations GetRecentHivExamination(PatientProgram pp) {
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("DECLARE @prog INT=" + pp.Id + "; SELECT TOP(1) pe_idnt, pe_hiv_date, 'HIV/AIDS TEST' pe_examination, pe_visit, ex_name, pe_labno, pe_hiv_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_hiv_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_program=@prog ORDER BY pe_hiv_date DESC, pe_idnt DESC");
+            if (dr.Read()) {
+                return new Examinations {
+                    Id = Convert.ToInt64(dr[0]),
+                    Date = Convert.ToDateTime(dr[1]),
+                    Name = dr[2].ToString(),
+                    Visit = new Visit { 
+                        Id = Convert.ToInt64(dr[3]), 
+                        Name = dr[4].ToString() 
+                    },
+                    LabNo = dr[5].ToString(),
+                    Result = new Concept {
+                        Id = Convert.ToInt64(dr[6]),
+                        Name = dr[7].ToString()
+                    }
+                };
+            }
+
+            return null;
+        }
+
         public List<Examinations> GetRecentExaminations(PatientProgram pp) {
             List<Examinations> exams = new List<Examinations>();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("DECLARE @prog INT=" + pp.Id + "; SELECT * FROM ( SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_sputum_date pe_exam_date, 'SPUTUM SMEAR' pe_examination, pe_visit, ex_name, pe_labno, pe_sputum_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_sputum_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_sputum_exam<>38 AND pe_program=@prog ORDER BY pe_sputum_date DESC, pe_idnt DESC ) As Foo UNION ALL SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_genexpert_date, 'GENEXPERT' pe_examination, pe_visit, ex_name, pe_labno, pe_genexpert_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_genexpert_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_genexpert_exam<>38 AND pe_program=@prog ORDER BY pe_sputum_date DESC, pe_idnt DESC ) As Foo UNION ALL SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_hiv_date, 'HIV/AIDS TEST' pe_examination, pe_visit, ex_name, pe_labno, pe_hiv_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_hiv_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_hiv_exam NOT IN (38,42) AND pe_program=@prog ORDER BY pe_sputum_date DESC, pe_idnt DESC ) As Foo UNION ALL SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_xray_date, 'X-RAY EXAM' pe_examination, pe_visit, ex_name, pe_labno, pe_xray_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_xray_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_xray_exam<>38 AND pe_program=@prog ORDER BY pe_sputum_date DESC, pe_idnt DESC ) As Foo) As Foo ORDER BY pe_exam_date DESC");
+            SqlDataReader dr = conn.SqlServerConnect("DECLARE @prog INT=" + pp.Id + "; SELECT * FROM ( SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_sputum_date pe_exam_date, 'SPUTUM SMEAR' pe_examination, pe_visit, ex_name, pe_labno, pe_sputum_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_sputum_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_sputum_exam<>38 AND pe_program=@prog ORDER BY pe_sputum_date DESC, pe_idnt DESC ) As Foo UNION ALL SELECT * FROM ( SELECT TOP(1)pe_idnt, pe_genexpert_date, 'GENEXPERT' pe_examination, pe_visit, ex_name, pe_labno, pe_genexpert_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_genexpert_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_genexpert_exam<>38 AND pe_program=@prog ORDER BY pe_genexpert_date DESC, pe_idnt DESC) As Foo UNION ALL SELECT * FROM (SELECT TOP(1)pe_idnt, pe_hiv_date, 'HIV/AIDS TEST' pe_examination, pe_visit, ex_name, pe_labno, pe_hiv_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_hiv_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_hiv_exam NOT IN (38,42) AND pe_program=@prog ORDER BY pe_hiv_date DESC, pe_idnt DESC) As Foo UNION ALL SELECT * FROM (SELECT TOP(1)pe_idnt, pe_xray_date, 'X-RAY EXAM' pe_examination, pe_visit, ex_name, pe_labno, pe_xray_exam, cpt_name FROM PatientExamination INNER JOIN Concept ON cpt_id=pe_xray_exam INNER JOIN Examinations ON pe_visit=ex_idnt WHERE pe_xray_exam<>38 AND pe_program=@prog ORDER BY pe_xray_date DESC, pe_idnt DESC) As Foo) As Foo ORDER BY pe_exam_date DESC");
             if (dr.HasRows) {
                 while (dr.Read()) {
-                    Examinations exam = new Examinations {
+                    exams.Add(new Examinations {
                         Id = Convert.ToInt64(dr[0]),
                         Date = Convert.ToDateTime(dr[1]),
                         Name = dr[2].ToString(),
-                        Visit = new Visit(Convert.ToInt64(dr[3]), dr[4].ToString()),
+                        Visit = new Visit {
+                            Id = Convert.ToInt64(dr[3]),
+                            Name = dr[4].ToString()
+                        },
                         LabNo = dr[5].ToString(),
-                        Result = new Concept(Convert.ToInt64(dr[6]), dr[7].ToString())
-                    };
-
-                    exams.Add(exam);
+                        Result = new Concept {
+                            Id = Convert.ToInt64(dr[6]),
+                            Name = dr[7].ToString()
+                        }
+                    });
                 }
             }
 
@@ -418,12 +458,19 @@ namespace EtbSomalia.Services
             return pp;
         }
 
+        public PatientProgram UpdateVisit(PatientProgram pp) {
+            SqlServerConnection conn = new SqlServerConnection();
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' output INSERTED.pp_idnt WHERE pp_idnt=" + pp.Id);
+
+            return pp;
+        }
+
         public PatientRegimen SavePatientRegimen(PatientRegimen pr) {
             SqlServerConnection conn = new SqlServerConnection();
-            pr.Id = conn.SqlServerUpdate("IF NOT EXISTS (SELECT pr_idnt FROM PatientRegimens WHERE pr_idnt=" + pr.Id + ") BEGIN INSERT INTO PatientRegimens (pr_program, pr_regimen, pr_started_on, pr_added_by) output INSERTED.pr_idnt VALUES (" + pr.Program.Id + ", " + pr.Regimen.Id + ", '" + pr.StartedOn.Date + "', " + Actor + ") END ELSE BEGIN UPDATE PatientRegimens SET pr_regimen=" + pr.Regimen.Id + ", pr_started_on='" + pr.StartedOn.Date + "' output INSERTED.pr_idnt WHERE pr_idnt=" + pr.Id + " END");
+            pr.Id = conn.SqlServerUpdate("DECLARE @prid INT=" + pr.Id + ", @prog INT=" + pr.Program.Id + ", @regm INT=" + pr.Regimen.Id + ", @user INT=" + Actor + ", @date DATE='" + pr.StartedOn.Date + "'; IF NOT EXISTS (SELECT pr_idnt FROM PatientRegimens WHERE pr_idnt=@prid AND pr_regimen=@regm) BEGIN INSERT INTO PatientRegimens (pr_program, pr_regimen, pr_started_on, pr_added_by) output INSERTED.pr_idnt VALUES (@prog, @regm, @date, @user) END ELSE BEGIN UPDATE PatientRegimens SET pr_started_on=@date output INSERTED.pr_idnt WHERE pr_idnt=@prid AND pr_regimen=@regm END");
 
             conn = new SqlServerConnection();
-            conn.SqlServerUpdate("UPDATE PatientRegimens SET pr_default=0 WHERE pr_program=" + pr.Program.Id + " AND pr_idnt<>" + pr.Id);
+            conn.SqlServerUpdate("DECLARE @prid INT=" + pr.Id + ", @prog INT=" + pr.Program.Id + "; UPDATE PatientRegimens SET pr_default=0 WHERE pr_program=@prog AND pr_idnt<>@prid");
 
             return pr;
         }

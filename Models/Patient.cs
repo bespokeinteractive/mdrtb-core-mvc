@@ -36,7 +36,9 @@ namespace EtbSomalia.Models
         }
 
         public string GetUuid() {
-            Uuid = new PatientService().GetPatientUuid(this.Id);
+            if (string.IsNullOrEmpty(Uuid))
+                Uuid = new PatientService().GetPatientUuid(this.Id);
+
             return Uuid;
         }
 
