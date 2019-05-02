@@ -69,7 +69,7 @@ namespace EtbSomalia.Controllers
 
             PersonAddress address = ContactAddModel.Contact.Person.Address;
             address.Person = contact.Person;
-            address.Save();
+            address.Save(HttpContext);
 
             ContactsExamination exam = ContactAddModel.Examination;
             exam.Contact = contact;

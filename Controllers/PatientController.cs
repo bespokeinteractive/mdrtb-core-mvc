@@ -23,6 +23,9 @@ namespace EtbSomalia.Controllers
         [BindProperty]
         public PatientVisitsViewModel VisitModel { get; set; }
 
+        [BindProperty]
+        public PatientProfileViewModel ProfileModel { get; set; }
+
         // GET: /<controller>/
         [Route("registration/add")]
         public IActionResult Register(PatientRegisterViewModel model, ConceptService cs)
@@ -93,7 +96,8 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/profile/{uuid}")]
-        public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, CoreService core, long program = 0) {
+        public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, long program = 0) {
+            CoreService core = new CoreService(HttpContext);
             model.Patient = ps.GetPatient(uuid);
 
             if (program.Equals(0)) {
@@ -107,6 +111,8 @@ namespace EtbSomalia.Controllers
                 return LocalRedirect("/registration/intake/" + model.Program.Id);
             }
 
+            model.DateOfBirth = model.Patient.Person.DateOfBirth.ToString("dd/MM/yyyy");
+            model.Facility = core.GetFacilitiesIEnumerable();
             model.Regimen = core.GetPatientRegimen(model.Program);
             model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
@@ -227,7 +233,7 @@ namespace EtbSomalia.Controllers
 
             PersonAddress address = RegisterModel.Address;
             address.Person = patient.Person;
-            address.Save();
+            address.Save(HttpContext);
 
             PatientProgram program = new PatientProgram(patient) {
                 DateEnrolled = DateTime.Parse(RegisterModel.DateEnrolled),
@@ -243,7 +249,22 @@ namespace EtbSomalia.Controllers
             return LocalRedirect("/registration/intake/" + program.Id);
         }
 
+        [HttpPost]
+        public IActionResult UpdatePatientDetails() {
+            Patient pt = ProfileModel.Patient;
+            Person ps = pt.Person;
+            ps.DateOfBirth = DateTime.ParseExact(ProfileModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            ps.Save(HttpContext);
 
+            PersonAddress pa = ps.Address;
+            pa.Person = ps;
+            pa.Save(HttpContext);
+
+            PatientProgram pp = ProfileModel.Program;
+            pp.UpdateFacility();
+
+            return LocalRedirect("/patients/profile/" + pt.GetUuid());
+        }
 
         [HttpPost]
         public IActionResult RegisterNewIntake() {

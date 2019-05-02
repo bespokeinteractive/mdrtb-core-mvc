@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using EtbSomalia.Models;
+using EtbSomalia.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EtbSomalia.ViewModel
 {
@@ -10,6 +12,11 @@ namespace EtbSomalia.ViewModel
         public PatientProgram Program { get; set; }
         public PatientRegimen Regimen { get; set; }
         public Vitals LatestVitals { get; set; }
+
+        public string DateOfBirth { get; set; }
+
+        public IEnumerable<SelectListItem> Gender { get; set; }
+        public IEnumerable<SelectListItem> Facility { get; set; }
 
         public List<Examinations> Examinations { get; set; }
         public List<Contacts> Contacts { get; set; }
@@ -22,6 +29,8 @@ namespace EtbSomalia.ViewModel
             LatestVitals = new Vitals();
             Examinations = new List<Examinations>();
             Contacts = new List<Contacts>();
+
+            Gender = new PatientService().InitializeGender();
         }
     }
 }

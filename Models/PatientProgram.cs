@@ -86,12 +86,16 @@ namespace EtbSomalia.Models
             return core.CreatePatientProgram(this);
         }
 
-        public PatientProgram UpdateIntake(HttpContext Context) {
-            return new CoreService(Context).UpdateIntake(this);
+        public void UpdateFacility() {
+            new CoreService().UpdateFacility(this);
         }
 
-        public PatientProgram UpdateVisit(HttpContext Context) {
-            return new CoreService(Context).UpdateVisit(this);
+        public void UpdateIntake(HttpContext Context) {
+            new CoreService(Context).UpdateIntake(this);
+        }
+
+        public void UpdateVisit(HttpContext Context) {
+            new CoreService(Context).UpdateVisit(this);
         }
 
         public int GetVisitsCount() {

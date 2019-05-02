@@ -4,6 +4,9 @@
 	Author: DENNIS HENRY
 	Author URL: https://github.com/daugmaud
 ================================================================================*/
+a.pointer{
+    cursor:pointer;
+}
 .zero-margin {
     margin: 0px;
     padding: 0px;
@@ -17,28 +20,23 @@
 .tabs li:first-child {
     margin-left: 20px;
 }
-
 .navbar {
     box-shadow: none;
     margin-bottom: 0px;
 }
-
 .nav-content .body {
     min-height: 550px;
     padding: 10px;
 }
-
 .card .table-card h5 {
     line-height: 0;
     margin: 0;
 }
-
 .card .table-card i {
     line-height: 0;
     margin: 0;
     height: 1px;
 }
-
 
 /*Homepage Custom CSS*/
 /*List of Stations (Push/Pending)*/
@@ -47,22 +45,18 @@ ul.updated-push li i{
     font-size: 0.9em;
     color: #f00;
 }
-
 ul.updated-push li i {
     color: #00f;
 }
-
 ul.pending-push li a,
 ul.updated-push li a {
     color: #333;
 }
-
 ul.pending-push li a:hover,
 ul.updated-push li a:hover {
     color: #337ab7;
     text-decoration: underline;
 }
-
 ul.pending-push li small {
     color: #666;
 }
@@ -115,12 +109,10 @@ table.custom tbody tr td {
 table.custom tbody tr td {
     padding: 7px 5px;
 }
-
 table.custom thead {
     border-top: 1px solid rgba(255,255,255,0.1);
     color: #eee;
 }
-
 ul.station li {
     width: 100%;
 }

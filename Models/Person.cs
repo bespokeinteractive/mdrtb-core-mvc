@@ -1,6 +1,7 @@
 ﻿using System;
 using EtbSomalia.Extensions;
 using EtbSomalia.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace EtbSomalia.Models
 {
@@ -55,6 +56,10 @@ namespace EtbSomalia.Models
             Id = conn.SqlServerUpdate("INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_estimate) output INSERTED.ps_idnt VALUES ('" + Name + "', '" + Gender + "', '" + DateOfBirth.Date + "', 1)");
 
             return this;
+        }
+
+        public Person Save(HttpContext context) {
+            return new PatientService(context).SavePerson(this);
         }
     }
 }

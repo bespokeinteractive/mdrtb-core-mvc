@@ -104,6 +104,7 @@
         </p>
         <p><i class="material-icons cyan-text text-darken-2 left">perm_phone_msg</i> @Model.Patient.Person.Address.Telephone</p>
         <p><i class="material-icons cyan-text text-darken-2 left">cake</i> @(Model.Patient.Person.DateOfBirth.ToString("dd MMM yyyy"))</p>
+        <p><i class="material-icons cyan-text text-darken-2 left">business</i> @(Model.Program.Facility.Name) Facility</p>
     </div>
 </div>
 
@@ -122,7 +123,7 @@
             <li class="collection-item">
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12">
-                        <i class="material-icons left">card_travel</i> Update Details
+                        <i class="material-icons left">card_travel</i> <a class="black-text pointer modal-trigger" data-target="edit-patient-modal">Update Details</a> 
                     </div>
                 </div>
             </li>
@@ -321,10 +322,11 @@
                                 </tr>
                             }
 
-                            @if (Model.Contacts.Count.Equals(0)){
+                            @if (Model.Contacts.Count.Equals(0))
+                            {
                                 <tr>
                                     <td colspan="7">NO CONTACTS FOUND</td>
-                                </tr> 
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -335,3 +337,61 @@
         </nav>
     </div>
 </div>
+
+@using (Html.BeginForm("UpdatePatientDetails", "Patient", FormMethod.Post))
+{
+    <div id="edit-patient-modal" class="modal modal-fixed-footer" style="width: 550px; min-height: 580px;">
+        <div class="modal-content">
+            <h4>Update Patient</h4>
+            <p>Specify the patients details in the form below</p>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    @Html.TextBoxFor(model => model.Patient.Person.Name)
+                    <label>Full Names</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">bubble_chart</i>
+                    @Html.DropDownListFor(model => model.Patient.Person.Gender, Model.Gender)
+                    <label for="gender">Gender</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">event</i>
+                    @Html.TextBoxFor(model => model.DateOfBirth, Model.Patient.Person.DateOfBirth.ToString("dd/MM/yyyy"), new { @class = "date-of-birth" })
+                    <label>Date of Birth</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">business</i>
+                    @Html.DropDownListFor(model => model.Program.Facility.Id, Model.Facility)
+                    <label for="gender">Facility</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">settings_phone</i>
+                    @Html.TextBoxFor(model => model.Patient.Person.Address.Telephone)
+                    <label for="telephone">Telephone</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">perm_contact_calendar</i>
+                    @Html.TextAreaFor(model => model.Patient.Person.Address.Address, new { @class = "materialize-textarea" })
+                    <label for="message">Address</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            @Html.HiddenFor(model => model.Program.Id)
+            @Html.HiddenFor(model => model.Patient.Id)
+            @Html.HiddenFor(model => model.Patient.Uuid)
+            @Html.HiddenFor(model => model.Patient.Person.Id)
+            @Html.HiddenFor(model => model.Patient.Person.Address.Id)
+
+            <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+            <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>
+        </div>
+    </div>
+}

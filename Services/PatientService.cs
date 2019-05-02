@@ -807,16 +807,28 @@ namespace EtbSomalia.Services
         }
 
         //Data Writers
-        public Contacts RegisterContact(Contacts ctx)
-        {
+        public Contacts RegisterContact(Contacts ctx) {
             SqlServerConnection conn = new SqlServerConnection();
             ctx.Id = conn.SqlServerUpdate("INSERT INTO Contacts (ct_person, ct_index, ct_exposed_from, ct_identifier, ct_location, ct_relationship, ct_proximity, ct_desease_after, ct_prev_treated, ct_next_screening, ct_added_by) output INSERTED.ct_idnt VALUES (" + ctx.Person.Id + ", " + ctx.Index.Id + ", '" + ctx.ExposedOn.Date + "', '" + ctx.Identifier + "', " + ctx.Location.Id + ", " + ctx.Relation.Id + ", " + ctx.Proximity.Id + ", " + ctx.DiseaseAfter.Id + ", " + ctx.PrevouslyTreated.Id + ", '" + ctx.NextVisit + "', " + Actor + ")");
 
             return ctx;
         }
 
-        public ContactsExamination SaveContactsExamination(ContactsExamination cx)
-        {
+        public Person SavePerson(Person ps) {
+            SqlServerConnection conn = new SqlServerConnection();
+            ps.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + ps.Id + ", @name NVARCHAR(250)='" + ps.Name + "', @gender NVARCHAR(10)='" + ps.Gender + "', @dob DATE='" + ps.DateOfBirth + "', @actor INT=" + Actor + "; IF NOT EXISTS (SELECT ps_idnt FROM Person WHERE ps_idnt=@idnt) BEGIN INSERT INTO Person(ps_name, ps_gender, ps_dob, ps_added_by, ps_estimate) output INSERTED.ps_idnt VALUES (@name, @gender, @dob, @actor, 1) END ELSE BEGIN UPDATE Person SET ps_name=@name, ps_gender=@gender, ps_dob=@dob output INSERTED.ps_idnt WHERE ps_idnt=@idnt END");
+
+            return ps;
+        }
+
+        public PersonAddress SavePersonAddress(PersonAddress pa) {
+            SqlServerConnection conn = new SqlServerConnection();
+            pa.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + pa.Id + ", @psid INT=" + pa.Person.Id + ", @tels NVARCHAR(250)='" + pa.Telephone + "', @adds NVARCHAR(250)='" + pa.Address + "'; IF NOT EXISTS (SELECT pa_idnt FROM PersonAddress WHERE pa_idnt=@idnt) BEGIN INSERT INTO PersonAddress(pa_person, pa_default, pa_telephone, pa_address) output INSERTED.pa_idnt VALUES (@psid, 1, @tels, @adds) END ELSE BEGIN UPDATE PersonAddress SET pa_telephone=@tels, pa_address=@adds output INSERTED.pa_idnt WHERE pa_idnt=@idnt END");
+
+            return pa;
+        }
+
+        public ContactsExamination SaveContactsExamination(ContactsExamination cx) {
             SqlServerConnection conn = new SqlServerConnection();
             cx.Id = conn.SqlServerUpdate("INSERT INTO ContactsExaminations (ce_contact, ce_cough, ce_fever, ce_weight_loss, ce_night_sweats, ce_ltbi, ce_sputum_smear, ce_genxpert, ce_xray_exam, ce_preventive_regimen, ce_next_screening, ce_added_by) output INSERTED.ce_idnt VALUES (" + cx.Contact.Id + ", '" + cx.Cough + "', '" + cx.Fever + "', '" + cx.WeightLoss + "', '" + cx.NightSweat + "', " + cx.LTBI.Id + ", " + cx.SputumSmear.Id + ", " + cx.GeneXpert.Id + ", " + cx.XrayExam.Id + ", '" + cx.PreventiveTherapy + "', '" + cx.NextScreening.Date + "', " + Actor + ")");
 

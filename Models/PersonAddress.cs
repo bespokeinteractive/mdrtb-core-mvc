@@ -1,6 +1,7 @@
 ﻿using System;
 using EtbSomalia.Extensions;
-
+using EtbSomalia.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace EtbSomalia.Models
 {
@@ -30,11 +31,8 @@ namespace EtbSomalia.Models
             County = "";
         }
 
-        public PersonAddress Save(){
-            SqlServerConnection conn = new SqlServerConnection();
-            Id = conn.SqlServerUpdate("INSERT INTO PersonAddress(pa_person, pa_default, pa_telephone, pa_address) output INSERTED.pa_idnt VALUES ('" + Person.Id + "', 1, '" + Telephone + "', '" + Address + "')");
-
-            return this;
+        public PersonAddress Save(HttpContext Context){
+            return new PatientService(Context).SavePersonAddress(this);
         }
 
         public PersonAddress Update()
