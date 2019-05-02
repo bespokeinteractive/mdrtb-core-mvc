@@ -152,6 +152,10 @@ namespace EtbSomalia.Controllers
         [Route("patients/search")]
         public IActionResult Search(PatientSearchViewModel model, string q = "") {
             model.Query = q;
+
+            if (!string.IsNullOrEmpty(q))
+                model.Search = new PatientService(HttpContext).SearchPatients(q);
+
             return View(model);
         }
 

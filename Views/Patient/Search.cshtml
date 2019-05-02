@@ -2,19 +2,14 @@
 
 @{
     ViewData["Title"] = "Search Patient";
+    int count = 0;
 }
 
 <script type="text/javascript">
-    var qString = '@Model.Query';
-
     jq(function() {
        jq('a.btn-search').click(function(){
             SearchPatient();
        });
-
-       if (qString != ''){
-            SearchPatient();
-       }
 
        jq('#Query').keypress(function (e) {
             var key = e.which;
@@ -121,10 +116,27 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>&nbsp;</td>
-                <td colspan="7">No Records Found</td>
-            </tr>
+            @foreach (var search in Model.Search){
+                count++;
+
+                <tr>
+                    <td>@count</td>
+                    <td>@search.Program.TbmuNumber</td>
+                    <td><a class='blue-text' href='/patients/profile/@(search.Patient.Uuid)'>@(search.Patient.Person.Name)</a></td>
+                    <td>@search.Age</td>
+                    <td>@search.Patient.Person.Gender</td>
+                    <td>@search.Facility</td>
+                    <td>@search.Status</td>
+                    <td><a class='material-icons tiny-box grey-text right'>border_color</a></td>
+                </tr>
+            }
+
+            @if(Model.Search.Count.Equals(0)){
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="7">No Records Found</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
