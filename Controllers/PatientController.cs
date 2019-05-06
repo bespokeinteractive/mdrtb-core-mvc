@@ -112,6 +112,11 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
+        [Route("patients/profile")]
+        public IActionResult ProfileRedirect() {
+            return LocalRedirect("/patients/search");
+        }
+
         [Route("patients/profile/{uuid}")]
         public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, ConceptService cs, long program = 0) {
             CoreService core = new CoreService(HttpContext);
