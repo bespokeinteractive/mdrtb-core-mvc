@@ -8,15 +8,19 @@
     #profile-page-header .card-image {
         height: 150px;
     }
+
     #profile-page-header .card-profile-image {
         top: 90px;
     }
+
     .nav-content .body {
         min-height: 300px;
     }
+
     .collection .collection-item.avatar {
         width: 100%;
     }
+
     div.dtls span {
         display: inline-block;
         width: 120px;
@@ -70,7 +74,12 @@
         <div class="row pt-2" style="margin-bottom:10px">
             <div class="col s12 m3 offset-m2">
                 <h4 class="card-title grey-text text-darken-4">@Model.Patient.Person.Name</h4>
-                <p class="medium-small grey-text">@Model.Program.TbmuNumber</p>
+                <p class="medium-small grey-text">
+                    @Model.Program.TbmuNumber &nbsp;
+                    @if(Model.Patient.isDead()){
+                        <span class="task-cat red accent-2">DECEASED</span>
+                    }
+                </p>
             </div>
             <div class="col s12 m2 center-align">
                 <h4 class="card-title grey-text text-darken-4">Age/Sex</h4>
@@ -119,36 +128,70 @@
             </div>
         </div>
 
-        <ul id="profile-page-about-details" class="collection z-depth-1">
+        <ul id="profile-page-about-details" class="collection z-depth-1" style="margin-bottom:0;">
             <li class="collection-item">
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12">
-                        <i class="material-icons left">card_travel</i> <a class="black-text pointer modal-trigger" data-target="edit-patient-modal">Update Details</a> 
+                        <i class="material-icons left">card_travel</i> <a class="black-text pointer modal-trigger modal-alerts" data-target="@(Model.Patient.isDead() ? "" : "edit-patient-modal")" data-dead="@Model.Patient.Dead">Update Details</a>
                     </div>
                 </div>
             </li>
-            <li class="collection-item">
-                <div class="row" style="margin-bottom: 0px;">
-                    <div class="col s12">
-                        <i class="material-icons left">poll</i> <a class="black-text" href="/patients/visits/add?p=@Model.Patient.Uuid">Add Visits</a>
+
+            @if(Model.Patient.isDead() || Model.Program.DateCompleted.HasValue) {
+                if (!Model.Patient.isDead()){
+                    <li class="collection-item">
+                        <div class="row" style="margin-bottom: 0px;">
+                            <div class="col s12">
+                                <i class="material-icons left">poll</i> <a class="black-text" href="/registration/enroll?p=@Model.Patient.Uuid">Enroll to Program</a>
+                            </div>
+                        </div>
+                    </li>
+                }
+            }
+            else {
+                <li class="collection-item">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="col s12">
+                            <i class="material-icons left">poll</i> <a class="black-text" href="/patients/visits/add?p=@Model.Patient.Uuid">Add Visits</a>
+                        </div>
                     </div>
-                </div>
-            </li>
-            <li class="collection-item">
-                <div class="row" style="margin-bottom: 0px;">
-                    <div class="col s12">
-                        <i class="material-icons left">domain</i> Update Regimen
+                </li>
+                <li class="collection-item">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="col s12">
+                            <i class="material-icons left">domain</i> Update Regimen
+                        </div>
                     </div>
-                </div>
-            </li>
-            <li class="collection-item">
-                <div class="row" style="margin-bottom: 0px;">
-                    <div class="col s12">
-                        <i class="material-icons left">cake</i> View Contacts
+                </li>
+                <li class="collection-item">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="col s12">
+                            <i class="material-icons left">cake</i> <a class="pointer black-text view-contacts">View Contacts</a>
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            }
         </ul>
+
+        @if (!Model.Program.DateCompleted.HasValue)
+        {
+            <ul id="profile-page-about-details" class="collection z-depth-1">
+                <li class="collection-item">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="col s12">
+                            <i class="material-icons left">airplanemode_active</i> <a class="black-text pointer modal-trigger" data-target="transfer-patient-modal">Transfer Patient</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="collection-item">
+                    <div class="row" style="margin-bottom: 0px;">
+                        <div class="col s12">
+                            <i class="material-icons left">exit_to_app</i> <a class="black-text pointer modal-trigger" data-target="update-outcome-modal">Exit from Program</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        }
     </div>
 
     <div id="profile-page-sidebar" class="col s12 m9 zero-margin" style="padding: 0 9px 0 0px;">
@@ -249,7 +292,8 @@
                         </thead>
 
                         <tbody>
-                            @foreach (var exam in Model.Examinations) {
+                            @foreach (var exam in Model.Examinations)
+                            {
                                 <tr>
                                     <td>@exam.Date.ToString("dd/MM/yyyy")</td>
                                     <td>@exam.Name</td>
@@ -309,8 +353,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var contact in Model.Contacts)
-                            {
+                            @foreach (var contact in Model.Contacts) {
                                 <tr>
                                     <td>@contact.Identifier</td>
                                     <td><a class="blue-text" href="/contacts/@contact.Uuid">@contact.Person.Name.ToUpper()</a></td>
@@ -338,7 +381,7 @@
     </div>
 </div>
 
-@using (Html.BeginForm("UpdatePatientDetails", "Patient", FormMethod.Post))
+@using (Html.BeginForm("UpdatePatientDetails", "Patient", FormMethod.Post, new { id = "edit-patient-form" }))
 {
     <div id="edit-patient-modal" class="modal modal-fixed-footer" style="width: 550px; min-height: 580px;">
         <div class="modal-content">
@@ -389,6 +432,64 @@
             @Html.HiddenFor(model => model.Patient.Uuid)
             @Html.HiddenFor(model => model.Patient.Person.Id)
             @Html.HiddenFor(model => model.Patient.Person.Address.Id)
+
+            <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+            <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>
+        </div>
+    </div>
+}
+
+
+@using (Html.BeginForm("UpdatePatientOutcome", "Patient", FormMethod.Post, new { id = "update-outcome-form" }))
+{
+    <div id="update-outcome-modal" class="modal modal-fixed-footer" style="width: 650px; min-height: 580px;">
+        <div class="modal-content">
+            <h4>Update Outcome</h4>
+            <p>Specify the outcome details in the form below</p>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    @Html.TextBoxFor(model => model.Patient.Person.Name, new { @readonly = "readonly" })
+                    <label>Full Names</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">history</i>
+                    @Html.DropDownListFor(model => model.Program.Outcome.Id, Model.Outcomes)
+                    <label for="gender">Outcome</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">event</i>
+                    @Html.TextBoxFor(model => model.DateOfBirth, DateTime.Now.ToString("d MMMM, yyyy"), new { @class = "datepicker" })
+                    <label>Outcome Date</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">colorize</i>
+                    @Html.DropDownListFor(model => model.Examination.SputumSmear.Id, Model.ExamOpts)
+                    <label>Microscopy Result</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">border_color</i>
+                    @Html.TextBoxFor(model => model.Examination.LabNo, Model.Program.LaboratoryNumber)
+                    <label for="icon_prefix">Lab Number</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">assignment</i>
+                    @Html.TextAreaFor(model => model.Examination.Notes, new { @class = "materialize-textarea" })
+                    <label for="message">Summary Notes</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            @Html.HiddenFor(model => model.Program.Id)
+            @Html.HiddenFor(model => model.Program.Program.Id)
+            @Html.HiddenFor(model => model.Patient.Id)
+            @Html.HiddenFor(model => model.Patient.Uuid)
 
             <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
             <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>

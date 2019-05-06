@@ -54,8 +54,7 @@ namespace EtbSomalia.ViewModel
             InitiazeBoolOpts();
         }
 
-        private void InitiazeBoolOpts()
-        {
+        private void InitiazeBoolOpts() {
             BoolOpts = new List<SelectListItem> {
                 new SelectListItem { Value = "1", Text = "YES" },
                 new SelectListItem { Value = "0", Text = "NO" }

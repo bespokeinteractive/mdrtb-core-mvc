@@ -28,8 +28,7 @@ namespace EtbSomalia.Controllers
 
         // GET: /<controller>/
         [Route("registration/add")]
-        public IActionResult Register(PatientRegisterViewModel model, ConceptService cs)
-        {
+        public IActionResult Register(PatientRegisterViewModel model, ConceptService cs) {
             CoreService service = new CoreService(HttpContext);
             model.Facilities = service.GetFacilitiesIEnumerable();
 
@@ -95,8 +94,26 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
+        [Route("registration/enroll")]
+        public IActionResult Enroll(string p, PatientRegisterViewModel model, ConceptService cs) {
+            model.Patient = new PatientService(HttpContext).GetPatient(p);
+            model.Program.Category = new Concept(Constants.RELAPSE);
+
+            if (model.Patient.isDead()) {
+                return LocalRedirect("/patients/profile/" + model.Patient.GetUuid());
+            }
+
+            model.Facilities = new CoreService(HttpContext).GetFacilitiesIEnumerable();
+            model.TBCategory = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_CATEGORY));
+            model.TBTypes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_TYPE));
+            model.TBConfirmation = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_CONFIRMATION));
+            model.ResistanceProfile = cs.GetConceptAnswersIEnumerable(new Concept(Constants.RESISTANCE_PROFILE));
+
+            return View(model);
+        }
+
         [Route("patients/profile/{uuid}")]
-        public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, long program = 0) {
+        public IActionResult Profile(string uuid, PatientProfileViewModel model, PatientService ps, ConceptService cs, long program = 0) {
             CoreService core = new CoreService(HttpContext);
             model.Patient = ps.GetPatient(uuid);
 
@@ -110,6 +127,9 @@ namespace EtbSomalia.Controllers
             if (model.Program.DotsBy.Id.Equals(0)){
                 return LocalRedirect("/registration/intake/" + model.Program.Id);
             }
+
+            model.ExamOpts = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
+            model.Outcomes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TREATMENT_OUTCOME));
 
             model.DateOfBirth = model.Patient.Person.DateOfBirth.ToString("dd/MM/yyyy");
             model.Facility = core.GetFacilitiesIEnumerable();
@@ -126,6 +146,11 @@ namespace EtbSomalia.Controllers
         public IActionResult VisitsAdd(string p, PatientVisitsViewModel model, CoreService core, PatientService ps, ConceptService cs) {
             model.Patient = ps.GetPatient(p);
             model.Program = ps.GetPatientProgram(model.Patient);
+
+            if (model.Program.DateCompleted.HasValue) {
+                return LocalRedirect("/patients/profile/" + model.Patient.GetUuid());
+            }
+
             model.Regimen = core.GetPatientRegimen(model.Program);
             model.Visits = core.GetProgramVisitsIEnumerable(model.Program, model.Regimen.Regimen);
             model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
@@ -239,17 +264,23 @@ namespace EtbSomalia.Controllers
             address.Person = patient.Person;
             address.Save(HttpContext);
 
-            PatientProgram program = new PatientProgram(patient) {
-                DateEnrolled = DateTime.Parse(RegisterModel.DateEnrolled),
-                Facility = new Facility(RegisterModel.FacilityId),
-                Type = new Concept(RegisterModel.TypeId),
-                Confirmation = new Concept(RegisterModel.ConfirmationId),
-                Program = new Programs(RegisterModel.ProgramId),
-                Category = new Concept(RegisterModel.CategoryId)
-            };
-
+            PatientProgram program = RegisterModel.Program;
+            program.Patient = patient;
+            program.DateEnrolled = DateTime.Parse(RegisterModel.DateEnrolled);
             program.Create(HttpContext);
             
+            return LocalRedirect("/registration/intake/" + program.Id);
+        }
+
+        [HttpPost]
+        public IActionResult EnrollExistingPatient() {
+            Patient patient = RegisterModel.Patient;
+
+            PatientProgram program = RegisterModel.Program;
+            program.Patient = patient;
+            program.DateEnrolled = DateTime.Parse(RegisterModel.DateEnrolled);
+            program.Create(HttpContext);
+
             return LocalRedirect("/registration/intake/" + program.Id);
         }
 
@@ -271,11 +302,38 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        public IActionResult UpdatePatientOutcome() {
+            DateTime date = DateTime.Parse(ProfileModel.DateOfBirth);
+
+            PatientProgram pp = ProfileModel.Program;
+            PatientExamination px = ProfileModel.Examination;
+            Patient pt = ProfileModel.Patient;
+
+            pp.DateCompleted = date;
+            pp.LaboratoryNumber = px.LabNo;
+            pp.UpdateOutcome();
+
+            px.SputumSmearDate = date;
+            px.Visit = new Visit(25);
+            px.Program = pp;
+            px.Save(HttpContext);
+
+            if (pp.Outcome.Id.Equals(Constants.PATIENT_DIED)) {
+                pt.isDead(true);
+                pt.DiedOn = date;
+                pt.CauseOfDeath = new Concept(pp.Program.Id);
+                pt.Update();
+            }
+
+            return LocalRedirect("/patients/profile/" + pt.GetUuid());
+        }
+
+        [HttpPost]
         public IActionResult RegisterNewIntake() {
             PatientProgram pp = IntakeModel.Program;
             pp.ArtStartedOn = DateTime.Parse(IntakeModel.ArtStartedOn);
             pp.CptStartedOn = DateTime.Parse(IntakeModel.CptStartedOn);
-            pp.UpdateIntake(HttpContext);
+            pp.UpdateIntake();
 
             PatientRegimen pr = IntakeModel.Regimen;
             pr.Program = pp;
@@ -299,7 +357,7 @@ namespace EtbSomalia.Controllers
             PatientProgram pp = VisitModel.Program;
             pp.ArtStartedOn = DateTime.Parse(VisitModel.ArtStartedOn);
             pp.CptStartedOn = DateTime.Parse(VisitModel.CptStartedOn);
-            pp.UpdateVisit(HttpContext);
+            pp.UpdateVisit();
 
             //Test If Regimen has Changed, then Update
             PatientRegimen pr = VisitModel.Regimen;

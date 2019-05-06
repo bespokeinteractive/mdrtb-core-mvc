@@ -8,8 +8,8 @@ a.pointer{
     cursor:pointer;
 }
 .zero-margin {
-    margin: 0px;
-    padding: 0px;
+    margin: 0px!important;
+    padding: 0px!important;
 }
 .zero-padding {
     padding: 0px!important;

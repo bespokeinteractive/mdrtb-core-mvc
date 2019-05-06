@@ -32,7 +32,7 @@
         jq('.tab-2').hide();
     });
 
-    jq('.input-field.post a').click(function(){
+    jq('#register-patient-form .input-field.post a').click(function(){
         var count = jq('#Patient_Person_Name').val().split(' ').length;
         if (count < 2){
             Materialize.toast('<span>Specify atleast two Names</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
@@ -52,6 +52,11 @@
         jq('form').submit();
 
     });
+
+    jq('#enroll-patient-form .input-field.post a').click(function(){
+        jq('form').submit();
+
+    });     
 
     jq('#DateOfBirth').on('blur', function(){
         jq.ajax({

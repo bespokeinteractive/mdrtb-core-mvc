@@ -17,8 +17,7 @@ namespace EtbSomalia.Models
 
         readonly ConceptService service = new ConceptService();
 
-        public Concept()
-        {
+        public Concept() {
             Id = 0;
             Uuid = Guid.NewGuid().ToString();
             Name = "";

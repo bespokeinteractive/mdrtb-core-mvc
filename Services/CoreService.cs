@@ -458,12 +458,17 @@ namespace EtbSomalia.Services
 
         public void UpdateIntake(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();
-            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_registeer_no='" + pp.RegisterNumber + "', pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_dots_by=" + pp.DotsBy.Id + ", pp_referred_by=" + pp.ReferredBy.Id + ", pp_facility=" + pp.Facility.Id + ", pp_supporter='" + pp.TreatmentSupporter + "', pp_supporter_contacts='" + pp.SupporterContacts + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' output INSERTED.pp_idnt WHERE pp_idnt=" + pp.Id);
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_registeer_no='" + pp.RegisterNumber + "', pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_dots_by=" + pp.DotsBy.Id + ", pp_referred_by=" + pp.ReferredBy.Id + ", pp_facility=" + pp.Facility.Id + ", pp_supporter='" + pp.TreatmentSupporter + "', pp_supporter_contacts='" + pp.SupporterContacts + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' WHERE pp_idnt=" + pp.Id);
         }
 
         public void UpdateVisit(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();
-            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' output INSERTED.pp_idnt WHERE pp_idnt=" + pp.Id);
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_art_started=" + pp.ArtStarted + ", pp_art_started_on='" + pp.ArtStartedOn + "', pp_cpt_started=" + pp.CptStarted + ", pp_cpt_started_on='" + pp.CptStartedOn + "' WHERE pp_idnt=" + pp.Id);
+        }
+
+        public void UpdateOutcome(PatientProgram pp) {
+            SqlServerConnection conn = new SqlServerConnection();
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_completed_on='" + pp.DateCompleted + "', pp_outcome=" + pp.Outcome.Id + " WHERE pp_idnt=" + pp.Id);
         }
 
         public PatientRegimen SavePatientRegimen(PatientRegimen pr) {

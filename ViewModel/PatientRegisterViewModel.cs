@@ -21,15 +21,9 @@ namespace EtbSomalia.ViewModel
         public String DateOfBirth { get; set; }
         public String DateEnrolled { get; set; }
 
-        public Int64 FacilityId { get; set; }
-        public Int64 TypeId { get; set; }
-        public Int64 ConfirmationId { get; set; }
-        public Int64 ProgramId { get; set; }
-        public Int64 CategoryId { get; set; }
         public PersonAddress Address { get; set; }
 
-        public PatientRegisterViewModel()
-        {
+        public PatientRegisterViewModel() {
             Address = new PersonAddress();
             Patient = new Patient();
             Program = new PatientProgram();

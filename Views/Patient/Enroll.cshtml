@@ -47,12 +47,15 @@
     ul.left-menu li:hover:not(.selected) .menu-title {
         color: white;
     }
+
     ul.left-menu li:hover:not(.selected) .menu-date {
         border-bottom: 1px dotted white;
     }
+
     ul.left-menu li .arrow-border, ul.left-menu li .arrow {
         display: none;
     }
+
     ul.left-menu li.selected {
         background: white;
         color: #363463;
@@ -60,6 +63,7 @@
     ul.left-menu li.selected .arrow-border, ul.left-menu li.selected .arrow {
         display: block;
     }
+
     ul.left-menu li.selected .menu-date {
         border-bottom: 1px dotted #888;
     }
@@ -109,84 +113,47 @@
     .input-field.prev {
         margin-left: 45px;
     }
+    #profile-card .card-content p span {
+        font-size: 0.9rem;
+    }
 </style>
 
 <div class="row">
-    <div class="col s2">
-        <div class="aside">
-            <ul id="left-menu" class="left-menu" style="border-left: 1px solid #ccc;">
-                <li class="menu-item item-1 selected">
-                    <span class="menu-date">
-                        Patient Details
-                    </span>
-                    <span class="menu-title">
-                        Demographic Information
-                    </span>
-                    <span class="arrow-border"></span>
-                    <span class="arrow"></span>
-                </li>
+    <div class="col s3 zero-margin">
+        <div id="profile-card" class="card">
+            <div class="card-image waves-effect waves-block waves-light">
+                <img class="activator" src="~/images/gallary/11.png" alt="user bg">
+            </div>
 
-                <li class="menu-item item-2">
-                    <span class="menu-date">
-                        Intake Details
-                    </span>
-                    <span class="menu-title">
-                        Enrollment Information
-                    </span>
-                    <span class="arrow-border"></span>
-                    <span class="arrow"></span>
-                </li>
+            <div class="card-content" style="padding-right: 10px">
+                <img src="~/images/avatar/avatar-13.png" alt="" class="circle responsive-img activator card-profile-image grey lighten-3 padding-2">
+                <a class="btn-floating activator btn-move-up waves-effect waves-light red accent-2 z-depth-5 right">
+                    <i class="material-icons">edit</i>
+                </a>
+                <div class="card-title activator grey-text text-darken-4 truncate" style="font-size:1.4em">@Model.Patient.Person.Name</div>
+                <div class="activator"><a class="grey-text text-darken-1">@Model.Patient.Person.Gender, @Model.Patient.GetAge()</a></div>
+                <hr style="margin: 10px 0;" />
+                <p class="truncate">
+                    <i class="material-icons left">call</i>
+                    <span>@Model.Patient.Person.Address.Telephone</span>
+                </p>
 
-                <li class="menu-item">
-                    &nbsp;
-                </li>
-            </ul>
+                <p class="truncate">
+                    <i class="material-icons left">mail_outline</i>
+                    <span>@Model.Patient.Person.Address.Address</span>
+                </p>
+
+                <p>
+                    <i class="material-icons left">event</i>
+                    <span>@Model.Patient.Person.DateOfBirth.ToString("dd MMMM, yyyy")</span>
+                </p>
+            </div>
         </div>
     </div>
 
     <div class="col s6">
-        @using (Html.BeginForm("RegisterNewPatient", "Patient", FormMethod.Post, new { id = "register-patient-form"}))
-        {
-            <div class="card-panel tab-1">
-                <h3 class="header2">DEMOGRAPHIC DETAILS</h3>
-                <div class="row">
-                    <div class="input-field">
-                        <i class="material-icons prefix">account_circle</i>
-                        @Html.TextBoxFor(model => model.Patient.Person.Name)
-                        <label for="first_name">Full Names</label>
-                    </div>
-
-                    <div class="input-field">
-                        <i class="material-icons prefix">bubble_chart</i>
-                        @Html.DropDownListFor(model => model.Patient.Person.Gender, Model.Gender)
-                        <label for="gender">Gender</label>
-                    </div>
-
-                    <div class="input-field">
-                        <i class="material-icons prefix">event</i>
-                        @Html.TextBoxFor(model => model.DateOfBirth)
-                        <label for="password">Date of Birth</label>
-                    </div>
-
-                    <div class="input-field">
-                        <i class="material-icons prefix">settings_phone</i>
-                        @Html.TextBoxFor(model => model.Address.Telephone)
-                        <label for="telephone">Telephone</label>
-                    </div>
-
-                    <div class="input-field">
-                        <i class="material-icons prefix">perm_contact_calendar</i>
-                        @Html.TextAreaFor(model => model.Address.Address, new { @class = "materialize-textarea" })
-                        <label for="message">Address</label>
-                    </div>
-
-                    <div class="input-field next">
-                        <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right">Next</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-panel tab-2" style="display:none;">
+        @using (Html.BeginForm("EnrollExistingPatient", "Patient", FormMethod.Post, new { id = "enroll-patient-form"})) {
+            <div class="card-panel tab-2">
                 <h3 class="header2">ENROLLMENT DETAILS</h3>
                 <div class="row">
                     <div class="input-field">
@@ -225,19 +192,18 @@
                         <label>Patient Category</label>
                     </div>
 
-                    <div class="input-field prev">
-                        <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow left">Prev</a>
-                    </div>
-
                     <div class="input-field post">
                         <a class="btn waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right">Save</a>
                     </div>
                 </div>
             </div>
+
+            @Html.HiddenFor(model => model.Patient.Id)
+            @Html.HiddenFor(model => model.Patient.Uuid)
         }
     </div>
 
-    <div class="col s4 z-depth-3" style="padding:0;margin-top:8px;">
+    <div class="col s3 z-depth-3" style="padding:0;margin-top:8px;">
         <img src="~/images/tb-infographic.jpg" style="width:100%;" />
     </div>
 </div>

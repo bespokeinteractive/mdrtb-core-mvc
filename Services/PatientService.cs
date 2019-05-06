@@ -35,31 +35,37 @@ namespace EtbSomalia.Services
             Patient patient = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_idnt=" + idnt);
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, pt_dead, pt_death_date, pt_death_cause, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_idnt=" + idnt);
             if (dr.Read()) {
                 patient = new Patient {
                     Id = Convert.ToInt64(dr[0]),
-                    Uuid = dr[1].ToString()
+                    Uuid = dr[1].ToString(),
+                    Dead = Convert.ToInt32(dr[2])
                 };
 
+                if (!string.IsNullOrEmpty(dr[3].ToString())) {
+                    patient.DiedOn = Convert.ToDateTime(dr[3]);
+                    patient.CauseOfDeath = new Concept(Convert.ToInt64(dr[4]));
+                }
+
                 patient.Person = new Person { 
-                    Id = Convert.ToInt64(dr[2]),
-                    Name = dr[3].ToString(),
-                    Gender = dr[4].ToString().FirstCharToUpper(),
-                    DateOfBirth = Convert.ToDateTime(dr[5]),
-                    AgeEstimate = Convert.ToBoolean(dr[6])
+                    Id = Convert.ToInt64(dr[5]),
+                    Name = dr[6].ToString(),
+                    Gender = dr[7].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[8]),
+                    AgeEstimate = Convert.ToBoolean(dr[9])
                 };
 
                 patient.Person.Address = new PersonAddress { 
-                    Id = Convert.ToInt64(dr[7]),
-                    Default = Convert.ToBoolean(dr[8]),
-                    Mobile = dr[9].ToString(),
-                    Telephone = dr[10].ToString(),
-                    Address = dr[11].ToString(),
-                    PostalCode = dr[12].ToString(),
-                    Village = dr[13].ToString(),
-                    State = dr[14].ToString(),
-                    County = dr[15].ToString()
+                    Id = Convert.ToInt64(dr[10]),
+                    Default = Convert.ToBoolean(dr[11]),
+                    Mobile = dr[12].ToString(),
+                    Telephone = dr[13].ToString(),
+                    Address = dr[14].ToString(),
+                    PostalCode = dr[15].ToString(),
+                    Village = dr[16].ToString(),
+                    State = dr[17].ToString(),
+                    County = dr[18].ToString()
                 };
             }
 
@@ -70,31 +76,38 @@ namespace EtbSomalia.Services
             Patient patient = null;
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_uuid COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '" + uuid + "'");
-            if (dr.Read()) {
+            SqlDataReader dr = conn.SqlServerConnect("SELECT pt_idnt, pt_uuid, pt_dead, pt_death_date, pt_death_cause, ps_idnt, ps_name, ps_gender, ps_dob, ps_estimate, pa_idnt, pa_default, pa_mobile, pa_telephone, pa_address, pa_postalcode, pa_village, pa_state, pa_county FROM Patient INNER JOIN Person ON pt_person=ps_idnt INNER JOIN PersonAddress ON ps_idnt=pa_person WHERE pt_uuid COLLATE SQL_Latin1_General_CP1_CS_AS LIKE '" + uuid + "'");
+            if (dr.Read())
+            {
                 patient = new Patient {
                     Id = Convert.ToInt64(dr[0]),
-                    Uuid = dr[1].ToString()
+                    Uuid = dr[1].ToString(),
+                    Dead = Convert.ToInt32(dr[2])
                 };
 
+                if (!string.IsNullOrEmpty(dr[3].ToString())) {
+                    patient.DiedOn = Convert.ToDateTime(dr[3]);
+                    patient.CauseOfDeath = new Concept(Convert.ToInt64(dr[4]));
+                }
+
                 patient.Person = new Person {
-                    Id = Convert.ToInt64(dr[2]),
-                    Name = dr[3].ToString(),
-                    Gender = dr[4].ToString().FirstCharToUpper(),
-                    DateOfBirth = Convert.ToDateTime(dr[5]),
-                    AgeEstimate = Convert.ToBoolean(dr[6])
+                    Id = Convert.ToInt64(dr[5]),
+                    Name = dr[6].ToString(),
+                    Gender = dr[7].ToString().FirstCharToUpper(),
+                    DateOfBirth = Convert.ToDateTime(dr[8]),
+                    AgeEstimate = Convert.ToBoolean(dr[9])
                 };
 
                 patient.Person.Address = new PersonAddress {
-                    Id = Convert.ToInt64(dr[7]),
-                    Default = Convert.ToBoolean(dr[8]),
-                    Mobile = dr[9].ToString(),
-                    Telephone = dr[10].ToString(),
-                    Address = dr[11].ToString(),
-                    PostalCode = dr[12].ToString(),
-                    Village = dr[13].ToString(),
-                    State = dr[14].ToString(),
-                    County = dr[15].ToString()
+                    Id = Convert.ToInt64(dr[10]),
+                    Default = Convert.ToBoolean(dr[11]),
+                    Mobile = dr[12].ToString(),
+                    Telephone = dr[13].ToString(),
+                    Address = dr[14].ToString(),
+                    PostalCode = dr[15].ToString(),
+                    Village = dr[16].ToString(),
+                    State = dr[17].ToString(),
+                    County = dr[18].ToString()
                 };
             }
 
@@ -807,6 +820,11 @@ namespace EtbSomalia.Services
         }
 
         //Data Writers
+        public void UpdatePatient(Patient pt) {
+            SqlServerConnection conn = new SqlServerConnection();
+            conn.SqlServerUpdate("DECLARE @idnt INT=" + pt.Id + ", @dead INT=" + pt.Dead + ", @cause INT=" + pt.CauseOfDeath.Id + ", @date DATE='" + pt.DiedOn + "'; UPDATE Patient SET pt_dead=@dead, pt_death_date=@date, pt_death_cause=@cause WHERE pt_idnt=@idnt");
+        }
+
         public Contacts RegisterContact(Contacts ctx) {
             SqlServerConnection conn = new SqlServerConnection();
             ctx.Id = conn.SqlServerUpdate("INSERT INTO Contacts (ct_person, ct_index, ct_exposed_from, ct_identifier, ct_location, ct_relationship, ct_proximity, ct_desease_after, ct_prev_treated, ct_next_screening, ct_added_by) output INSERTED.ct_idnt VALUES (" + ctx.Person.Id + ", " + ctx.Index.Id + ", '" + ctx.ExposedOn.Date + "', '" + ctx.Identifier + "', " + ctx.Location.Id + ", " + ctx.Relation.Id + ", " + ctx.Proximity.Id + ", " + ctx.DiseaseAfter.Id + ", " + ctx.PrevouslyTreated.Id + ", '" + ctx.NextVisit + "', " + Actor + ")");

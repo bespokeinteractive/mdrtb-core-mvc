@@ -90,12 +90,16 @@ namespace EtbSomalia.Models
             new CoreService().UpdateFacility(this);
         }
 
-        public void UpdateIntake(HttpContext Context) {
-            new CoreService(Context).UpdateIntake(this);
+        public void UpdateIntake() {
+            new CoreService().UpdateIntake(this);
         }
 
-        public void UpdateVisit(HttpContext Context) {
-            new CoreService(Context).UpdateVisit(this);
+        public void UpdateVisit() {
+            new CoreService().UpdateVisit(this);
+        }
+
+        public void UpdateOutcome() {
+            new CoreService().UpdateOutcome(this);
         }
 
         public int GetVisitsCount() {

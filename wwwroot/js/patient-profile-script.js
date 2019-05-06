@@ -19,10 +19,26 @@
             return;
         }
 
-        jq('form').submit();
+        jq('#edit-patient-form').submit();
+    });
+
+    jq('#update-outcome-modal a.btn-post').click(function(){
+        jq('#update-outcome-form').submit();
     });
     
     jq('a.btn-add-contacts').click(function(){
         window.location.href = "/contacts/add?p=" + xProg;
+    });
+
+    jq('a.view-contacts').click(function(){
+        jq('ul.tabs').tabs('select_tab', 'contacts');
+    });
+
+    jq('a.modal-alerts').click(function(){
+        var dead = jq(this).data('dead');
+        if (dead == 1){
+            Materialize.toast('<span>Action cannot be performed on a deceased Patient</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
+            return;
+        }
     });
 });
