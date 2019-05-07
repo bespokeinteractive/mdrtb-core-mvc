@@ -25,19 +25,23 @@
         display: inline-block;
         width: 120px;
     }
+
     td, th {
         padding: 6px 15px;
     }
-    td a.material-icons.right.blue-text {
-        display: inline-block;
-        font-size: 16px;
-        height: auto;
-        line-height: 1;
-    }
+
+        td a.material-icons.right.blue-text {
+            display: inline-block;
+            font-size: 16px;
+            height: auto;
+            line-height: 1;
+        }
+
     .visits-list .collection-item.avatar {
         min-height: 50px;
         padding-left: 72px !important;
     }
+
     .visits-list.collection .collection-item {
         background-color: #fff;
         line-height: 1.5rem;
@@ -45,16 +49,24 @@
         margin: 0;
         border-bottom: 1px solid #e0e0e0;
     }
-    .visits-list.collection .collection-item.avatar .secondary-content {
-        top: 3px;
-        right: 0px;
-    }
+
+        .visits-list.collection .collection-item.avatar .secondary-content {
+            top: 3px;
+            right: 0px;
+        }
+
     #contacts-table th {
         padding: 10px;
     }
+
     td i.material-icons {
         height: 0px;
         line-height: 0px;
+    }
+
+    #datepicker-container {
+        position: fixed;
+        z-index: 10000;
     }
 </style>
 
@@ -76,7 +88,8 @@
                 <h4 class="card-title grey-text text-darken-4">@Model.Patient.Person.Name</h4>
                 <p class="medium-small grey-text">
                     @Model.Program.TbmuNumber &nbsp;
-                    @if(Model.Patient.isDead()){
+                    @if (Model.Patient.isDead())
+                    {
                         <span class="task-cat red accent-2">DECEASED</span>
                     }
                 </p>
@@ -132,13 +145,15 @@
             <li class="collection-item">
                 <div class="row" style="margin-bottom: 0px;">
                     <div class="col s12">
-                        <i class="material-icons left">card_travel</i> <a class="black-text pointer modal-trigger modal-alerts" data-target="@(Model.Patient.isDead() ? "" : "edit-patient-modal")" data-dead="@Model.Patient.Dead">Update Details</a>
+                        <i class="material-icons left">card_travel</i> <a class="black-text pointer modal-trigger modal-alerts" data-target="@(Model.Patient.isDead() ? "" : "edit-patient-modal")" data-dead="@Model.Patient.Dead" data-outcome="0">Update Details</a>
                     </div>
                 </div>
             </li>
 
-            @if(Model.Patient.isDead() || Model.Program.DateCompleted.HasValue) {
-                if (!Model.Patient.isDead()){
+            @if (Model.Patient.isDead() || Model.Program.DateCompleted.HasValue)
+            {
+                if (!Model.Patient.isDead())
+                {
                     <li class="collection-item">
                         <div class="row" style="margin-bottom: 0px;">
                             <div class="col s12">
@@ -148,7 +163,8 @@
                     </li>
                 }
             }
-            else {
+            else
+            {
                 <li class="collection-item">
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="col s12">
@@ -159,14 +175,14 @@
                 <li class="collection-item">
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="col s12">
-                            <i class="material-icons left">domain</i> Update Regimen
+                            <i class="material-icons left">group</i> <a class="pointer black-text view-contacts">View Contacts</a>
                         </div>
                     </div>
                 </li>
                 <li class="collection-item">
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="col s12">
-                            <i class="material-icons left">cake</i> <a class="pointer black-text view-contacts">View Contacts</a>
+                            <i class="material-icons left">domain</i> <a class="pointer black-text modal-trigger modal-alerts" data-target="@(Model.Patient.isDead() ? "" : "update-regimen-modal")" data-dead="@Model.Patient.Dead" data-outcome="@Model.Program.Outcome.Id">Update Regimen</a>
                         </div>
                     </div>
                 </li>
@@ -194,7 +210,7 @@
         }
     </div>
 
-    <div id="profile-page-sidebar" class="col s12 m9 zero-margin" style="padding: 0 9px 0 0px;">
+    <div id="profile-page-sidebar" class="col s12 m9 zero-margin" style="padding: 0 9px 0 0px!important;">
         <nav class="navbar nav-extended">
             <div class="nav-content" style="border: 1px solid rgba(0,0,0,0.1)">
                 <ul class="tabs">
@@ -268,9 +284,9 @@
                             <p>
                                 @Model.Regimen.Regimen.Name, @Model.Regimen.Regimen.Description (@Model.Regimen.Regimen.Program.Description)
                                 <br>
-                                <span class="ultra-small">From @Model.Regimen.StartedOn.ToString("dd/MM/yyyy") @(Model.Program.DateCompleted == null ? "(Active)" : " to " + (Model.Program.DateCompleted ?? DateTime.Now).ToString("dd/MM/yyyy"))</span>
+                                <span class="ultra-small light-blue-text">From @Model.Regimen.StartedOn.ToString("dd/MM/yyyy") @(Model.Program.DateCompleted == null ? "(Active)" : " to " + (Model.Program.DateCompleted ?? DateTime.Now).ToString("dd/MM/yyyy"))</span>
                             </p>
-                            <a href="#!" class="secondary-content">
+                            <a class="pointer secondary-content @(Model.Program.DateCompleted.HasValue ? "" : "modal-trigger") modal-alerts" data-target="@(Model.Program.DateCompleted.HasValue ? "" : "update-regimen-modal")" data-dead="@Model.Patient.Dead" data-outcome="@Model.Program.Outcome.Id">
                                 <i class="material-icons">healing</i>
                             </a>
                         </li>
@@ -353,7 +369,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var contact in Model.Contacts) {
+                            @foreach (var contact in Model.Contacts)
+                            {
                                 <tr>
                                     <td>@contact.Identifier</td>
                                     <td><a class="blue-text" href="/contacts/@contact.Uuid">@contact.Person.Name.ToUpper()</a></td>
@@ -461,7 +478,7 @@
 
                 <div class="input-field col m6 s12">
                     <i class="material-icons prefix">event</i>
-                    @Html.TextBoxFor(model => model.DateOfBirth, DateTime.Now.ToString("d MMMM, yyyy"), new { @class = "datepicker" })
+                    @Html.TextBoxFor(model => model.OutcomeDate, new { placeholder = "dd/mm/yyyy" })
                     <label>Outcome Date</label>
                 </div>
 
@@ -489,6 +506,50 @@
             @Html.HiddenFor(model => model.Program.Id)
             @Html.HiddenFor(model => model.Program.Program.Id)
             @Html.HiddenFor(model => model.Patient.Id)
+            @Html.HiddenFor(model => model.Patient.Uuid)
+
+            <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+            <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("UpdatePatientRegimen", "Patient", FormMethod.Post, new { id = "update-regimen-form" }))
+{
+    <div id="update-regimen-modal" class="modal modal-fixed-footer" style="width: 650px; min-height:580px">
+        <div class="modal-content">
+            <h4>Update Regimen</h4>
+            <p>Specify the Regimen details in the form below</p>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    @Html.TextBoxFor(model => model.Patient.Person.Name, new { @readonly = "readonly" })
+                    <label>Full Names</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">history</i>
+                    @Html.DropDownListFor(model => model.Regimen.Regimen.Id, Model.Regimens)
+                    <label for="gender">New Regimen</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">event</i>
+                    @Html.TextBoxFor(model => model.RegimenDate, new { placeholder = "dd/mm/yyyy" })
+                    <label>Started On</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">assignment</i>
+                    @Html.TextAreaFor(model => model.Regimen.Notes, new { @class = "materialize-textarea" })
+                    <label for="message">Change Notes</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            @Html.HiddenFor(model => model.Regimen.Id)
+            @Html.HiddenFor(model => model.Regimen.Program.Id)
             @Html.HiddenFor(model => model.Patient.Uuid)
 
             <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>

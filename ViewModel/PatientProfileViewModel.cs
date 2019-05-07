@@ -15,11 +15,14 @@ namespace EtbSomalia.ViewModel
         public PatientExamination Examination { get; set; }
 
         public string DateOfBirth { get; set; }
+        public string RegimenDate { get; set; }
+        public string OutcomeDate { get; set; }
 
         public IEnumerable<SelectListItem> Gender { get; set; }
         public IEnumerable<SelectListItem> Facility { get; set; }
         public IEnumerable<SelectListItem> Outcomes { get; set; }
         public IEnumerable<SelectListItem> ExamOpts { get; set; }
+        public IEnumerable<SelectListItem> Regimens { get; set; }
 
 
         public List<Examinations> Examinations { get; set; }
@@ -30,6 +33,10 @@ namespace EtbSomalia.ViewModel
             Program = new PatientProgram();
             Regimen = new PatientRegimen();
             Examination = new PatientExamination();
+
+            DateOfBirth = DateTime.Now.ToString("d MMMM, yyyy");
+            RegimenDate = DateTime.Now.ToString("d MMMM, yyyy");
+            OutcomeDate = DateTime.Now.ToString("d MMMM, yyyy");
 
             LatestVitals = new Vitals();
             Examinations = new List<Examinations>();

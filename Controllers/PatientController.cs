@@ -133,12 +133,18 @@ namespace EtbSomalia.Controllers
                 return LocalRedirect("/registration/intake/" + model.Program.Id);
             }
 
+            model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
             model.ExamOpts = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
             model.Outcomes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TREATMENT_OUTCOME));
+            model.Regimen = core.GetPatientRegimen(model.Program);
+            model.Facility = core.GetFacilitiesIEnumerable();
 
             model.DateOfBirth = model.Patient.Person.DateOfBirth.ToString("dd/MM/yyyy");
-            model.Facility = core.GetFacilitiesIEnumerable();
-            model.Regimen = core.GetPatientRegimen(model.Program);
+            model.RegimenDate = model.Regimen.StartedOn.ToString("dd/MM/yyyy");
+            model.OutcomeDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+
+
             model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
             model.Examinations = core.GetRecentExaminations(model.Program);
@@ -308,7 +314,7 @@ namespace EtbSomalia.Controllers
 
         [HttpPost]
         public IActionResult UpdatePatientOutcome() {
-            DateTime date = DateTime.Parse(ProfileModel.DateOfBirth);
+            DateTime date = DateTime.ParseExact(ProfileModel.OutcomeDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             PatientProgram pp = ProfileModel.Program;
             PatientExamination px = ProfileModel.Examination;
@@ -332,6 +338,18 @@ namespace EtbSomalia.Controllers
 
             return LocalRedirect("/patients/profile/" + pt.GetUuid());
         }
+
+        [HttpPost]
+        public IActionResult UpdatePatientRegimen() {
+            DateTime date = DateTime.ParseExact(ProfileModel.RegimenDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            PatientRegimen rx = ProfileModel.Regimen;
+            rx.CreatedOn = date;
+            rx.Save(HttpContext);
+
+            return LocalRedirect("/patients/profile/" + ProfileModel.Patient.GetUuid());
+        }
+
 
         [HttpPost]
         public IActionResult RegisterNewIntake() {
@@ -436,8 +454,7 @@ namespace EtbSomalia.Controllers
 
         public Boolean IsNumber(String s) {
             Boolean value = true;
-            foreach (Char c in s.ToCharArray())
-            {
+            foreach (Char c in s.ToCharArray()) {
                 value = value && Char.IsDigit(c);
             }
 
