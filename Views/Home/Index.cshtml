@@ -68,6 +68,9 @@
         cursor: pointer;
         font-size: 1.2em;
     }
+    div.modules .card .card-content {
+        padding: 5px 10px;
+    }
 </style>
 
 
@@ -322,8 +325,8 @@
 <!-- Main Options -->
 <div class="row" style="margin-top: -30px;">
     <div class="col s12 m5 l5">
-        <img class="zero margin" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;" />
-        <div class="collection z-depth-1 hide-on-med-and-down" style="padding-bottom:30px">
+        <img class="zero margin hide-on-small-only" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;" />
+        <div class="collection z-depth-1 hide-on-med-and-down" style="padding-bottom:15px; margin-bottom:0rem">
             <div class="input-field col s11">
                 <i class="material-icons prefix">history</i>
                 <input id="search_string" type="text" class="validate">
@@ -352,66 +355,104 @@
             <a href="/patients/active" class="btn waves-effect waves-light gradient-45deg-light-blue-cyan" style="width:100%"><i class="material-icons">lightbulb_outline</i>Active Patients</a>
             <a href="/registration/add" class="btn waves-effect waves-light gradient-45deg-green-teal" style="width:100%"><i class="material-icons">group_add</i>Register Patients</a>
         </div>
+
+        <div class="modules">
+            <div class="card card-border z-depth-2 col m6 l3 zero-padding" style="width:24.25%">
+              <div class="card-image">
+                <a href="/pharmacy"><img src="~/images/apps/pharma.png" alt=""></a>
+              </div>
+              <div class="card-content center-align">
+                <a class="blue-text" href="/pharmacy">Pharmacy</a>
+              </div>
+            </div>
+
+            <div class="card card-border z-depth-2 col m6 l3 zero-padding" style="margin-left:1%; width:24.25%">
+              <div class="card-image">
+                <a href="/inventory"><img src="~/images/apps/inventory.png" alt=""></a>
+              </div>
+              <div class="card-content center-align">
+                <a class="blue-text" href="/inventory">Inventory</a>
+              </div>
+            </div>
+
+            <div class="card card-border z-depth-2 col m6 l3 zero-padding" style="margin-left:1%;width:24.25%">
+              <div class="card-image">
+                <a href="/transfers"><img src="~/images/apps/transfers.png" alt=""></a>
+              </div>
+              <div class="card-content center-align">
+                <a class="blue-text" href="/transfers">Transfers</a>
+              </div>
+            </div>
+
+            <div class="card card-border z-depth-2 col m6 l3 zero-padding" style="margin-left:1%;width:24.25%">
+              <div class="card-image">
+                <a href="/finance"><img src="~/images/apps/finance.png" alt=""></a>
+              </div>
+              <div class="card-content center-align">
+                <a class="blue-text" href="/finance">Finance</a>
+              </div>
+            </div>
+        </div>
     </div>
 
     <ul id="profile-page-about-details" class="collection z-depth-1 col s12 m3 l3" style="padding:0">
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/patients/register/mdrtb">
+                <a class="col s7 m12 l7 black-text" href="/patients/register/mdrtb">
                     <i class="material-icons left">people</i>MDR Register
                 </a>
-                <div class="col s5 right-align">Patients</div>
+                <div class="col l5 right hide-on-med-only">Patients</div>
             </div>
         </li>
 
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="patients/register/tb">
+                <a class="col s7 m12 l7 black-text" href="patients/register/tb">
                     <i class="material-icons left">people_outline</i>TB Register
                 </a>
-                <div class="col s5 right-align">Patients</div>
+                <div class="col l5 right hide-on-med-only">Patients</div>
             </div>
         </li>
 
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/patients/recent">
+                <a class="col s7 m12 l7 black-text" href="/patients/recent">
                     <i class="material-icons left">event</i>Recently Added
                 </a>
-                <div class="col s5 right-align">Patients</div>
+                <div class="col l5 right hide-on-med-only">Patients</div>
             </div>
         </li>
 
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/contacts/register">
+                <a class="col s7 m12 l7 black-text" href="/contacts/register">
                     <i class="material-icons left">poll</i>View Register
                 </a>
-                <div class="col s5 right-align">Contacts</div>
+                <div class="col l5 right hide-on-med-only">Contacts</div>
             </div>
         </li>
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/patients/summary/national">
+                <a class="col s7 m12 l7 black-text" href="/patients/summary/national">
                     <i class="material-icons left">public</i>Data Summary
                 </a>
-                <div class="col s5 right-align">National</div>
+                <div class="col l5 right hide-on-med-only">National</div>
             </div>
         </li>
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/patients/summary/regional">
+                <a class="col s7 m12 l7 black-text" href="/patients/summary/regional">
                     <i class="material-icons left">share</i>Data Summary
                 </a>
-                <div class="col s5 right-align">Regional</div>
+                <div class="col l5 right hide-on-med-only">Regional</div>
             </div>
         </li>
         <li class="collection-item">
             <div class="row">
-                <a class="col s7 black-text" href="/patients/summary/facility">
+                <a class="col s7 m12 l7 black-text" href="/patients/summary/facility">
                     <i class="material-icons left">grain</i>Data Summary
                 </a>
-                <div class="col s5 right-align">Facility</div>
+                <div class="col l5 right hide-on-med-only">Facility</div>
             </div>
         </li>
     </ul>
