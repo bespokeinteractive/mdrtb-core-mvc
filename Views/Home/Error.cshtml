@@ -1,0 +1,22 @@
+﻿@model int;
+@{
+    ViewData["Title"] = "Error " + Model;
+}
+<style>
+    body {
+        background: #FFF;
+    }
+</style>
+
+<div class="row">
+    <!-- 404 -->
+    <div class="col s12 center-align white">
+        <img src="~/images/error-2.png" alt="" style="width:100%">
+        <h1 class="error-code m-0">@Model</h1>
+        <h6 class="mb-2">BAD REQUEST</h6>
+        <a class="btn waves-effect waves-light gradient-45deg-deep-purple-blue gradient-shadow mb-4" href="/">
+            Back
+            TO Home
+        </a>
+    </div>
+</div>

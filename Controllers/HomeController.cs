@@ -25,6 +25,11 @@ namespace EtbSomalia.Controllers
             return View();
         }
 
+        [Route("error/{code:int}")]
+        public IActionResult Error(int code) {
+            return View(code);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
