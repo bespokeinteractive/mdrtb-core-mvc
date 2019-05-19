@@ -169,6 +169,10 @@ namespace EtbSomalia.Services
             return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' AND fc_idnt IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ") ORDER BY fc_name");
         }
 
+        public List<SelectListItem> GetAllOtherCentersIEnumerable(Facility fac) {
+            return GetIEnumerable("SELECT fc_idnt, fc_name FROM Facilities WHERE fc_status='active' AND fc_idnt<>" + fac.Id + " ORDER BY fc_name");
+        }
+
         //AGENCIES
         public List<SelectListItem> GetAgenciesIEnumerable() {
             return GetIEnumerable("SELECT ag_idnt, ag_name FROM Agency WHERE ag_idnt<>0 ORDER BY ag_name");
@@ -469,6 +473,11 @@ namespace EtbSomalia.Services
         public void UpdateOutcome(PatientProgram pp) {
             SqlServerConnection conn = new SqlServerConnection();
             conn.SqlServerUpdate("UPDATE PatientProgram SET pp_laboratory_no='" + pp.LaboratoryNumber + "', pp_completed_on='" + pp.DateCompleted + "', pp_outcome=" + pp.Outcome.Id + " WHERE pp_idnt=" + pp.Id);
+        }
+
+        public void UpdateTransfer(PatientProgram pp) {
+            SqlServerConnection conn = new SqlServerConnection();
+            conn.SqlServerUpdate("UPDATE PatientProgram SET pp_completed_on='" + pp.DateCompleted + "', pp_outcome=79 WHERE pp_idnt=" + pp.Id);
         }
 
         public PatientRegimen SavePatientRegimen(PatientRegimen pr) {

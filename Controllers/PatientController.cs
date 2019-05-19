@@ -133,17 +133,17 @@ namespace EtbSomalia.Controllers
                 return LocalRedirect("/registration/intake/" + model.Program.Id);
             }
 
-            model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
-            model.ExamOpts = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
-            model.Outcomes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TREATMENT_OUTCOME));
-            model.Regimen = core.GetPatientRegimen(model.Program);
-            model.Facility = core.GetFacilitiesIEnumerable();
+            if (!model.Program.DateCompleted.HasValue) {
+                model.Regimens = core.GetRegimensIEnumerable(model.Program.Program);
+                model.ExamOpts = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
+                model.Outcomes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TREATMENT_OUTCOME));
+                model.Centers = core.GetAllOtherCentersIEnumerable(model.Program.Facility);
+                model.Facility = core.GetFacilitiesIEnumerable();
+            }
 
+            model.Regimen = core.GetPatientRegimen(model.Program);
             model.DateOfBirth = model.Patient.Person.DateOfBirth.ToString("dd/MM/yyyy");
             model.RegimenDate = model.Regimen.StartedOn.ToString("dd/MM/yyyy");
-            model.OutcomeDate = DateTime.Now.ToString("dd/MM/yyyy");
-
-
 
             model.Program.Facility = core.GetFacility(model.Program.Facility.Id);
             model.LatestVitals = ps.GetLatestVitals(model.Patient);
@@ -346,6 +346,23 @@ namespace EtbSomalia.Controllers
             PatientRegimen rx = ProfileModel.Regimen;
             rx.CreatedOn = date;
             rx.Save(HttpContext);
+
+            return LocalRedirect("/patients/profile/" + ProfileModel.Patient.GetUuid());
+        }
+
+        [HttpPost]
+        public IActionResult TransferPatient()
+        {
+            DateTime date = DateTime.ParseExact(ProfileModel.TransferDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            PatientProgram pp = ProfileModel.Program;
+            pp.DateCompleted = date;
+            pp.UpdateTransfer();
+
+            PatientTransfer tf = ProfileModel.Transfer;
+            tf.Date = date;
+            tf.Program = pp;
+            tf.Save(HttpContext);
 
             return LocalRedirect("/patients/profile/" + ProfileModel.Patient.GetUuid());
         }

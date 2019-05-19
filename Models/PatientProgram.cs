@@ -102,6 +102,10 @@ namespace EtbSomalia.Models
             new CoreService().UpdateOutcome(this);
         }
 
+        public void UpdateTransfer() {
+            new CoreService().UpdateTransfer(this);
+        }
+
         public int GetVisitsCount() {
             return new CoreService().GetPatientExaminationVisitsCount(this);
         }

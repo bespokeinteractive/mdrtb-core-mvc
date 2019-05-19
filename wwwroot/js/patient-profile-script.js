@@ -39,6 +39,15 @@
 
         jq('#update-regimen-form').submit();
     });
+
+    jq('#transfer-patient-modal a.btn-post').click(function(){
+        if (validate(jq('#TransferDate').val()) == false){
+            Materialize.toast('<span>Invalid date format for Regimen Date</span><a class="btn-flat yellow-text" href="#!">Close<a>', 3000);
+            return;
+        }
+
+        jq('#transfer-patient-form').submit();
+    });
     
     jq('a.btn-add-contacts').click(function(){
         window.location.href = "/contacts/add?p=" + xProg;

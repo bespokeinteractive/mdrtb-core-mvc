@@ -154,13 +154,24 @@
             {
                 if (!Model.Patient.isDead())
                 {
-                    <li class="collection-item">
-                        <div class="row" style="margin-bottom: 0px;">
-                            <div class="col s12">
-                                <i class="material-icons left">call_missed_outgoing</i> <a class="black-text" href="/registration/enroll?p=@Model.Patient.Uuid">Enroll to Program</a>
+                    if (Model.Program.Outcome.Id.Equals(79)){
+                        <li class="collection-item">
+                            <div class="row" style="margin-bottom: 0px;">
+                                <div class="col s12">
+                                    <i class="material-icons left">call_missed</i> <a class="black-text pointer">Transferred Out</a>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
+                    }
+                    else {
+                        <li class="collection-item">
+                            <div class="row" style="margin-bottom: 0px;">
+                                <div class="col s12">
+                                    <i class="material-icons left">call_missed_outgoing</i> <a class="black-text" href="/registration/enroll?p=@Model.Patient.Uuid">Enroll to Program</a>
+                                </div>
+                            </div>
+                        </li>
+                    }
                 }
             }
             else
@@ -199,6 +210,7 @@
                         </div>
                     </div>
                 </li>
+
                 <li class="collection-item">
                     <div class="row" style="margin-bottom: 0px;">
                         <div class="col s12">
@@ -283,7 +295,7 @@
                             <span class="title">Patient Regimen</span>
                             <p>
                                 @Model.Regimen.Regimen.Name, @Model.Regimen.Regimen.Description (@Model.Regimen.Regimen.Program.Description)
-                                <br>
+                                <br />
                                 <span class="ultra-small light-blue-text">From @Model.Regimen.StartedOn.ToString("dd/MM/yyyy") @(Model.Program.DateCompleted == null ? "(Active)" : " to " + (Model.Program.DateCompleted ?? DateTime.Now).ToString("dd/MM/yyyy"))</span>
                             </p>
                             <a class="pointer secondary-content @(Model.Program.DateCompleted.HasValue ? "" : "modal-trigger") modal-alerts" data-target="@(Model.Program.DateCompleted.HasValue ? "" : "update-regimen-modal")" data-dead="@Model.Patient.Dead" data-outcome="@Model.Program.Outcome.Id">
@@ -550,6 +562,49 @@
         <div class="modal-footer">
             @Html.HiddenFor(model => model.Regimen.Id)
             @Html.HiddenFor(model => model.Regimen.Program.Id)
+            @Html.HiddenFor(model => model.Patient.Uuid)
+
+            <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>
+            <a class="btn btn-post modal-action modal-submit modal-post waves-effect waves-green btn-flats ">Agree</a>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("TransferPatient", "Patient", FormMethod.Post, new { id = "transfer-patient-form" }))
+{
+    <div id="transfer-patient-modal" class="modal modal-fixed-footer" style="width: 650px; min-height: 580px">
+        <div class="modal-content">
+            <h4>Transfer Patient</h4>
+            <p>Specify the Transfer details in the form below</p>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">account_circle</i>
+                    @Html.TextBoxFor(model => model.Patient.Person.Name, new { @readonly = "readonly" })
+                    <label>Full Names</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">history</i>
+                    @Html.DropDownListFor(model => model.Transfer.Facility.Id, Model.Centers)
+                    <label for="gender">Transfer To</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">event</i>
+                    @Html.TextBoxFor(model => model.TransferDate, new { placeholder = "dd/mm/yyyy" })
+                    <label>Transfer Date</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">assignment</i>
+                    @Html.TextAreaFor(model => model.Transfer.Description, new { @class = "materialize-textarea" })
+                    <label for="message">Transfer Notes</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            @Html.HiddenFor(model => model.Program.Id)
             @Html.HiddenFor(model => model.Patient.Uuid)
 
             <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Disagree</a>

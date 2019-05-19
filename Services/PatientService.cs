@@ -853,7 +853,7 @@ namespace EtbSomalia.Services
             return cx;
         }
 
-        public Transfers SaveTransfers(Transfers tf) {
+        public PatientTransfer SavePatientTransfer(PatientTransfer tf) {
             SqlServerConnection conn = new SqlServerConnection();
             tf.Id = conn.SqlServerUpdate("DECLARE @idnt INT=" + tf.Id + ", @date DATE='" + tf.Date + "', @prog INT=" + tf.Program + ", @facl INT=" + tf.Facility.Id + ", @user INT=" + Actor + ", @desc NVARCHAR(MAX)='" + tf.Description + "'; IF NOT EXISTS (SELECT tr_idnt FROM Transfers WHERE tr_idnt=@idnt) BEGIN INSERT INTO Transfers (tr_date, tr_program, tr_facility, tr_created_by, tr_description) output INSERTED.tr_idnt VALUES (@date, @prog, @facl, @user, @desc) END ELSE BEGIN UPDATE Transfers SET tr_date=@date, tr_facility=@facl, tr_description=@desc output INSERTED.tr_idnt WHERE tr_idnt=@idnt END");
 

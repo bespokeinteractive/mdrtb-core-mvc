@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace EtbSomalia.Models
 {
-    public class Transfers
+    public class PatientTransfer
     {
         public long Id { get; set; }
         public DateTime Date { get; set; }
@@ -21,7 +21,7 @@ namespace EtbSomalia.Models
         public string RejectedReason { get; set; }
         public string Description { get; set; }
 
-        public Transfers() {
+        public PatientTransfer() {
             Id = 0;
             Date = DateTime.Now;
             Program = new PatientProgram();
@@ -41,12 +41,12 @@ namespace EtbSomalia.Models
             Description = "";
         }
 
-        public Transfers(long idnt) : this() {
+        public PatientTransfer(long idnt) : this() {
             Id = idnt;
         }
 
-        public Transfers Save(HttpContext Context) {
-            return new PatientService(Context).SaveTransfers(this);
+        public PatientTransfer Save(HttpContext Context) {
+            return new PatientService(Context).SavePatientTransfer(this);
         }
     }
 }
