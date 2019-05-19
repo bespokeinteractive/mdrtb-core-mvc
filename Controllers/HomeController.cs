@@ -20,6 +20,11 @@ namespace EtbSomalia.Controllers
             return LocalRedirect("/");
         }
 
+        [Route("error/404")]
+        public IActionResult Error404(int code) {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
