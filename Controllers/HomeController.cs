@@ -7,9 +7,9 @@ using EtbSomalia.Services;
 
 namespace EtbSomalia.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
+        [Authorize]
         public IActionResult Index(HomeIndexViewModel model, CoreService service) {
             model.Facilities = service.GetFacilitiesRandom(12);
             return View(model);
