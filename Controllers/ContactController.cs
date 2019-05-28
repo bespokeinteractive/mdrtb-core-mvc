@@ -58,6 +58,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult RegisterNewContact()
         {
             Contacts contact = ContactAddModel.Contact;

@@ -41,6 +41,7 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("registration/intake/{idnt}")]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult Intake(long idnt, PatientIntakeViewModel model, PatientService ps, ConceptService cs)
         {
             CoreService core = new CoreService(HttpContext);
@@ -95,6 +96,7 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("registration/enroll")]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult Enroll(string p, PatientRegisterViewModel model, ConceptService cs) {
             model.Patient = new PatientService(HttpContext).GetPatient(p);
             model.Program.Category = new Concept(Constants.RELAPSE);
@@ -154,6 +156,7 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/visits/add")]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult VisitsAdd(string p, PatientVisitsViewModel model, CoreService core, PatientService ps, ConceptService cs) {
             model.Patient = ps.GetPatient(p);
             model.Program = ps.GetPatientProgram(model.Patient);
@@ -246,19 +249,16 @@ namespace EtbSomalia.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
         public JsonResult SearchPatient(string qString) {
             return Json(new PatientService(HttpContext).SearchPatients(qString));
         }
 
-        [AllowAnonymous]
         public JsonResult GetRecentlyAdded(string start, string stops, string filter = "") {
             if (string.IsNullOrEmpty(filter))
                 filter = "";
             return Json(new PatientService(HttpContext).SearchPatients(filter, start, stops));
         }
 
-        [AllowAnonymous]
         public JsonResult GetRecentContacts(string start, string stops, string filter = "") {
             if (string.IsNullOrEmpty(filter))
                 filter = "";
@@ -266,6 +266,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult RegisterNewPatient() {
             Patient patient = RegisterModel.Patient;
             patient.Person.DateOfBirth = DateTime.ParseExact(RegisterModel.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -284,6 +285,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult EnrollExistingPatient() {
             Patient patient = RegisterModel.Patient;
 
@@ -296,6 +298,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult UpdatePatientDetails() {
             Patient pt = ProfileModel.Patient;
             Person ps = pt.Person;
@@ -313,6 +316,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult UpdatePatientOutcome() {
             DateTime date = DateTime.ParseExact(ProfileModel.OutcomeDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
@@ -340,6 +344,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult UpdatePatientRegimen() {
             DateTime date = DateTime.ParseExact(ProfileModel.RegimenDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
@@ -351,6 +356,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult TransferPatient()
         {
             DateTime date = DateTime.ParseExact(ProfileModel.TransferDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -369,6 +375,7 @@ namespace EtbSomalia.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult RegisterNewIntake() {
             PatientProgram pp = IntakeModel.Program;
             pp.ArtStartedOn = DateTime.Parse(IntakeModel.ArtStartedOn);
@@ -393,6 +400,7 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult AddVisits() {
             PatientProgram pp = VisitModel.Program;
             pp.ArtStartedOn = DateTime.Parse(VisitModel.ArtStartedOn);

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace EtbSomalia.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
     public class InventoryController : Controller
     {
         [Route("inventory")]
