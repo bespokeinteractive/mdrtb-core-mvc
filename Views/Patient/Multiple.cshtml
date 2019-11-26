@@ -1,0 +1,123 @@
+﻿@model EtbSomalia.ViewModel.PatientMultipleRegisterModel;
+
+@{
+    ViewData["Title"] = "Register Patients";
+    var e = Model.Facilities.FirstOrDefault();
+    Model.Facility = Convert.ToInt32(e.Value);
+}
+
+<style>
+    div.container.body-content {
+        width:98%;
+    }
+    #patients-table input {
+        padding: 0 0 0 2px;
+        margin: 0 !important;
+        height: 2rem;
+        font-size: 1.2em;
+    }
+    #patients-table td {
+        padding: 2px;
+    }
+</style>
+<script src="~/js/multiple-register-script.js"></script>
+
+<div class="card zero-padding" style="margin-bottom:0; border-radius: 3px 3px 0 0; box-shadow:none;">
+    <div class="card-content deep-orange accent-2 white-text table-card" style="border-radius:0">
+        <h5 class="card-stats-number"><i class="material-icons left">group_add</i>&nbsp; Register Patients</h5>
+        <p class="card-stats-compare right">
+            <i class="material-icons left">keyboard_arrow_down</i>TMBU:
+            <span class="deep-orange-text text-lighten-5"><span class="facility-name">@e.Text </span> <i class="material-icons tiny blue-text pointer change-facility">border_color</i></span>
+        </p>
+    </div>
+</div>
+
+<table id="patients-table" class="custom" style="font-size:0.9em">
+    <thead class="deep-orange accent-2">
+        <tr>
+            <th style="width: 1px">#</th>
+            <th>REGNO</th>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>GENDER</th>
+            <th>WEIGHT</th>
+            <th>PHONE</th>
+            <th>ENROLLED</th>
+            <th>TYPE</th>
+            <th>CATEGORY</th>
+            <th>SITE</th>
+            <th>CONF</th>
+            <th>DOT BY</th>
+            <th>REF BY</th>
+            <th>SPUTUM</th>
+            <th>HIV</th>
+            <th style="width:1px;"></th>
+        </tr>
+    </thead>
+    <tbody style="font-size: 0.8em">
+        @using (Html.BeginForm("RegisterMultiple", "Patient", FormMethod.Post, new { id = "patient-registration-form" }))
+        {
+            @for (int i = 0; i < Model.PatientModel.Count; i++) {
+                <tr class="rows @(i == 0 ? "":"hide")">
+                    <td class="center-text">@(i+1).</td>
+                    <td class="width-60px">@Html.TextBoxFor(model => model.PatientModel[i].PatientProgram.RegisterNumber)</td>
+                    <td class="width-150px">@Html.TextBoxFor(model => model.PatientModel[i].PatientProgram.Patient.Person.Name)</td>
+                    <td class="width-50px">@Html.TextBoxFor(model => model.PatientModel[i].Age)</td>
+                    <td class="width-70px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Patient.Person.Gender, Model.Gender)</td>
+                    <td class="width-50px">@Html.TextBoxFor(model => model.PatientModel[i].Weight)</td>
+                    <td class="width-100px">@Html.TextBoxFor(model => model.PatientModel[i].Address)</td>
+                    <td class="width-120px">@Html.TextBoxFor(model => model.PatientModel[i].Date, new { @class = "datepicker" })</td>
+                    <td class="width-60px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Program.Id, Model.ResistanceProfile)</td>
+                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Category.Id, Model.TBCategory)</td>
+                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Type.Id, Model.TBTypes)</td>
+                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Confirmation.Id, Model.TBConfirmation)</td>
+                    <td class="width-130px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.DotsBy.Id, Model.DotsBy)</td>
+                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.ReferredBy.Id, Model.Referees)</td>
+                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.SputumSmear.Id, Model.SputumSmearItems)</td>
+                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.HivExam.Id, Model.HivExamItems)</td>
+                    <td>
+                        <a class="red-text right remove-patient-row" style="font-size:0.6em" data-line="0">
+                            <i class="material-icons pointer">delete_forever</i>
+                        </a>
+                    </td>
+                </tr>
+            }
+
+            @Html.HiddenFor(model => model.Facility, new { @class = "facility-idnt" })
+        }
+    </tbody>
+
+    <tfoot>
+        <tr style="padding-top: 5px">
+            <td colspan="17">
+                <hr style="margin:10px 0 0; border-top: 1px solid #E2E0E0"/>
+                <a class="btn-patient-bulk-row btn-floating waves-effect waves-light gradient-45deg-light-blue-cyan" style="margin:10px 30px 0">
+                    <i class="material-icons">exposure_plus_1</i>
+                </a>
+
+                <a class="btn btn-save waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow right" data-index="1" style="margin:5px">Save</a>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div id="change-facility-modal" class="modal modal-fixed-footer" style="width: 500px">
+    <div class="modal-content">
+        <h4>Change Facilities</h4>
+        <p>Specify the below Parameters for the Facility</p>
+        <div>
+            <div class="input-field">
+                <i class="material-icons prefix">public</i>
+                @Html.DropDownListFor(model => model.Facility, Model.Facilities)
+                <label for="Facility">Facility</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn modal-action modal-close waves-effect waves-red btn-flat ">Cancel</a>
+        <a class="btn btn-post modal-action modal-submit modal-close modal-post waves-effect waves-green btn-flats ">Change</a>
+    </div>
+</div>
+
+

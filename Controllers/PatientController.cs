@@ -26,6 +26,9 @@ namespace EtbSomalia.Controllers
         [BindProperty]
         public PatientProfileViewModel ProfileModel { get; set; }
 
+        [BindProperty]
+        public PatientMultipleRegisterModel MultipleModel { get; set; }
+
         // GET: /<controller>/
         [Route("registration/add")]
         public IActionResult Register(PatientRegisterViewModel model, ConceptService cs) {
@@ -36,6 +39,25 @@ namespace EtbSomalia.Controllers
             model.TBTypes = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_TYPE));
             model.TBConfirmation = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_CONFIRMATION));
             model.ResistanceProfile = cs.GetConceptAnswersIEnumerable(new Concept(Constants.RESISTANCE_PROFILE));
+
+            return View(model);
+        }
+
+        [Route("registration/multiple")]
+        public IActionResult Multiple(PatientMultipleRegisterModel model, ConceptService cs) {
+            CoreService service = new CoreService(HttpContext);
+            model.Facilities = service.GetFacilitiesIEnumerable();
+            model.TBCategory = cs.GetConceptAnswersIEnumerable(new Concept(Constants.TB_CATEGORY));
+
+            //Referral Options
+            model.DotsBy = cs.GetConceptAnswersIEnumerable(new Concept(Constants.DOTS_BY));
+            model.Referees = cs.GetConceptAnswersIEnumerable(new Concept(Constants.REFERRED_BY));
+
+            //Exam Options
+            model.SputumSmearItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.SPUTUM_SMEAR));
+            model.GeneXpertItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.GENE_XPERT));
+            model.HivExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.HIV_EXAM));
+            model.XrayExamItems = cs.GetConceptAnswersIEnumerable(new Concept(Constants.XRAY_EXAM));
 
             return View(model);
         }
@@ -282,6 +304,13 @@ namespace EtbSomalia.Controllers
             program.Create(HttpContext);
             
             return LocalRedirect("/registration/intake/" + program.Id);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
+        public IActionResult RegisterMultiple()
+        {
+            return LocalRedirect("/patients/register/tb?fac=" + MultipleModel.Facility);
         }
 
         [HttpPost]
