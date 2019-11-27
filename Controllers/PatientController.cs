@@ -6,7 +6,6 @@ using EtbSomalia.ViewModel;
 using EtbSomalia.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
-using System.Collections.Generic;
 using EtbSomalia.Extensions;
 
 namespace EtbSomalia.Controllers
@@ -257,7 +256,9 @@ namespace EtbSomalia.Controllers
         }
 
         [Route("patients/summary/{type}")]
-        public IActionResult Summary(string type, PatientSummaryViewModel model, PatientService service) {
+        public IActionResult Summary(string type, PatientSummaryViewModel model) {
+            PatientService service = new PatientService(HttpContext);
+
             model.Title = type.FirstCharToUpper();
             if (type.Equals("national"))
                 model.Summary = service.GetDataSummaryNational();

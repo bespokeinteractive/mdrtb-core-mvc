@@ -79,6 +79,15 @@
 
                 year = summ.Year;
             }
+
+            @if(Model.Summary.Count == 0)
+            {
+                <tr>
+                    <td class="bold-text" colspan="@(Model.Title == "National" ? "13" : "12")">
+                        NO DATA RECORDS FOUND IN THE SYSTEM
+                    </td>
+                </tr>
+            }
         </tbody>
 
         <thead class="deep-orange accent-2">
