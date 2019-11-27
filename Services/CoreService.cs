@@ -14,11 +14,71 @@ namespace EtbSomalia.Services
     {
         private int Actor { get; set; }
         private string Username { get; set; }
+        private ClaimsPrincipal User { get; set; }
 
         public CoreService() {}
         public CoreService(HttpContext context) {
             Actor = int.Parse(context.User.FindFirst(ClaimTypes.Actor).Value);
+            User = context.User;
             Username = context.User.FindFirst(ClaimTypes.UserData).Value;
+        }
+
+        private string GetRolesCommand(string label = "", bool where = true) {
+            if (User.IsInRole("Super User") || User.IsInRole("Administrator"))
+                return "";
+            if (User.IsInRole("Regional Admin"))
+                return (where ? "WHERE " : "AND ") + label + " IN (SELECT fc_idnt FROM Facilities WHERE fc_region = " + User.FindFirst(ClaimTypes.Thumbprint).Value + ")";
+            if (User.IsInRole("Agency Admin"))
+                return (where ? "WHERE " : "AND ") + label + " IN (SELECT fc_idnt FROM Facilities WHERE fc_agency = " + User.FindFirst(ClaimTypes.Thumbprint).Value + ")";
+
+            return (where ? "WHERE " : "AND ") + label + " IN (SELECT uf_facility FROM UsersFacilities WHERE uf_user=" + Actor + ")";
+        }
+
+        public Dashboard GetDashboardSummary() {
+            Dashboard ds = new Dashboard();
+
+            SqlServerConnection conn = new SqlServerConnection();
+            SqlDataReader dr = conn.SqlServerConnect("DECLARE @yr INT = YEAR(GETDATE()); SELECT COUNT(*)total, SUM(CASE WHEN ps_gender='male' THEN 1 ELSE 0 END)males, SUM(CASE WHEN ps_gender='female' THEN 1 ELSE 0 END)females, SUM(CASE WHEN age BETWEEN 0 AND 17 THEN 1 ELSE 0 END)children, SUM(CASE WHEN age BETWEEN 18 AND 34 THEN 1 ELSE 0 END)youths, SUM(CASE WHEN age BETWEEN 35 AND 64 THEN 1 ELSE 0 END)adults, SUM(CASE WHEN age>=65 THEN 1 ELSE 0 END)seniors, SUM(CASE WHEN pp_enrolled_on>=DATEADD(MONTH,4,GETDATE()) THEN 1 ELSE 0 END)t_new, SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr THEN 1 ELSE 0 END)t_year, SUM(CASE WHEN YEAR(pp_enrolled_on)=(@yr-1) THEN 1 ELSE 0 END)t_prev, SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=10 THEN 1 ELSE 0 END)new, SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=11 THEN 1 ELSE 0 END)relapse, SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=12 THEN 1 ELSE 0 END)failr, SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=13 THEN 1 ELSE 0 END)transfr FROM (SELECT ps_gender, pp_category, pp_enrolled_on, DATEDIFF(hour,ps_dob,GETDATE())/8766 AS age FROM PatientProgram INNER JOIN Patient ON pt_idnt=pp_patient INNER JOIN Person ON pt_person=ps_idnt " + GetRolesCommand("pp_facility") + ") As Foo");
+            if (dr.Read()) {
+                ds = new Dashboard {
+                    AllPatients = Convert.ToInt64(dr[0]), 
+                    Male = Convert.ToInt64(dr[1]),
+                    Female = Convert.ToInt64(dr[2]),
+                    Children = Convert.ToInt64(dr[3]),
+                    Youths = Convert.ToInt64(dr[4]),
+                    Adults = Convert.ToInt64(dr[5]),
+                    Seniors = Convert.ToInt64(dr[6]),
+                    CaseNew = Convert.ToInt64(dr[7]),
+                    CaseCurrent = Convert.ToInt64(dr[8]),
+                    CasePrevious = Convert.ToInt64(dr[9]),
+                    NewCatg = Convert.ToInt64(dr[10]),
+                    Relapse = Convert.ToInt64(dr[11]),
+                    Failure = Convert.ToInt64(dr[12]),
+                    Transfer = Convert.ToInt64(dr[13])
+                };                    
+            }
+
+            if (ds.CaseCurrent == ds.CasePrevious || ds.CaseCurrent == 0)
+                ds.CasePercent = 0;
+            else if (ds.CasePrevious == 0)
+                ds.CasePercent = 100;
+            else if (ds.CaseCurrent > ds.CasePrevious)
+                ds.CasePercent = (ds.CasePrevious / ds.CaseCurrent) * 100;
+            else if (ds.CasePrevious > ds.CaseCurrent) {
+                ds.CasePercent = 100 - ((ds.CaseCurrent / ds.CasePrevious) * 100);
+                ds.CaseStatus = "Decrease";
+            }
+
+            conn = new SqlServerConnection();
+            dr = conn.SqlServerConnect("SELECT mnth_prefix, COUNT(*) [count] FROM Months LEFT OUTER JOIN PatientProgram ON mnth_idnt=MONTH(pp_enrolled_on) AND YEAR(pp_enrolled_on)=YEAR(GETDATE()) " + GetRolesCommand("pp_facility", true) + " GROUP BY mnth_idnt, mnth_prefix, mnth_name ORDER BY mnth_idnt");
+            if (dr.HasRows) {
+                while (dr.Read()) {
+                    ds.MonthNames.Add(dr[0].ToString());
+                    ds.MonthValue.Add(Convert.ToInt32(dr[1]));
+                }
+            }
+
+            return ds;
         }
 
         public List<SelectListItem> GetIEnumerable(string query) {

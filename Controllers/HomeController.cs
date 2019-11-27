@@ -10,8 +10,12 @@ namespace EtbSomalia.Controllers
     public class HomeController : Controller
     {
         [Authorize]
-        public IActionResult Index(HomeIndexViewModel model, CoreService service) {
-            model.Facilities = service.GetFacilitiesRandom(12);
+        public IActionResult Index(HomeIndexViewModel model) {
+            CoreService Core = new CoreService(HttpContext);
+
+            model.Dashboard = Core.GetDashboardSummary();
+            model.Facilities = Core.GetFacilitiesRandom(12);
+
             return View(model);
         }
 

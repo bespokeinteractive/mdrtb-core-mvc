@@ -6,11 +6,18 @@
 
     int count = 0;
     int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
+    int index = (DateTime.Now.Month - 9);
 }
 
 <script>
-    //  Trending line chart data (Stations Sales)
+    /*  Trending line chart data (Facility Data) */
     var trendingLineChart;
+    var NewCatg = @(Model.Dashboard.NewCatg);
+    var Relapse = @(Model.Dashboard.Relapse);
+    var Failure = @(Model.Dashboard.Failure);
+    var Transfr = @(Model.Dashboard.Transfer);
+    var mnths = @(index+8);
+
     var data = {
         labels: ["@(Model.Facilities[0].Prefix)", "@(Model.Facilities[1].Prefix)", "@(Model.Facilities[2].Prefix)", "@(Model.Facilities[3].Prefix)", "@(Model.Facilities[4].Prefix)", "@(Model.Facilities[5].Prefix)", "@(Model.Facilities[6].Prefix)", "@(Model.Facilities[7].Prefix)", "@(Model.Facilities[8].Prefix)", "@(Model.Facilities[9].Prefix)", "@(Model.Facilities[10].Prefix)", "@(Model.Facilities[11].Prefix)"],
         datasets: [{
@@ -40,16 +47,57 @@
         // Get a random index point
         var indexToUpdate = Math.round(Math.random() * (data.labels.length - 1));
         if (typeof trendingLineChart != "undefined") {
-            // Update one of the points in the second dataset
+            // Update Data Per Quarter (Then Total)
             if (trendingLineChart.datasets[0].points[indexToUpdate].value) {
-                trendingLineChart.datasets[0].points[indexToUpdate].value = Math.round(Math.random() * 100);
+                //trendingLineChart.datasets[0].points[indexToUpdate].value = Math.round(Math.random() * 100);
             }
             if (trendingLineChart.datasets[1].points[indexToUpdate].value) {
-                trendingLineChart.datasets[1].points[indexToUpdate].value = Math.round(Math.random() * 100);
+                //trendingLineChart.datasets[1].points[indexToUpdate].value = Math.round(Math.random() * 100);
             }
             trendingLineChart.update();
         }
     }, 2000);
+
+    // Trending Bar Chart
+    var MonthName = @Html.Raw(Json.Serialize(Model.Dashboard.MonthNames));
+    var MonthData = @Html.Raw(Json.Serialize(Model.Dashboard.MonthValue));
+    var dataBarChart = {
+        labels: ["@(Model.Dashboard.MonthNames[index])", "@(Model.Dashboard.MonthNames[index+1])", "@(Model.Dashboard.MonthNames[index+2])", "@(Model.Dashboard.MonthNames[index+3])", "@(Model.Dashboard.MonthNames[index+4])", "@(Model.Dashboard.MonthNames[index+5])", "@(Model.Dashboard.MonthNames[index+6])", "@(Model.Dashboard.MonthNames[index+7])", "@(Model.Dashboard.MonthNames[index+8])"],
+        datasets: [{
+            label: "Bar dataset",
+            fillColor: "#46BFBD",
+            strokeColor: "#46BFBD",
+            highlightFill: "rgba(70, 191, 189, 0.4)",
+            highlightStroke: "rgba(70, 191, 189, 0.9)",
+            data: [@(Model.Dashboard.MonthValue[index]), @(Model.Dashboard.MonthValue[index+1]), @(Model.Dashboard.MonthValue[index+2]), @(Model.Dashboard.MonthValue[index+3]), @(Model.Dashboard.MonthValue[index+4]), @(Model.Dashboard.MonthValue[index+5]), @(Model.Dashboard.MonthValue[index+6]), @(Model.Dashboard.MonthValue[index+7]), @(Model.Dashboard.MonthValue[index+8])]
+        }]
+    };
+
+	var nReloads1 = 0;
+	var min1 = 1;
+	var max1 = 1;
+	var l1 = 0;
+	var trendingBarChart;
+
+	function updateBarChart() {
+        mnths++;
+        if (mnths == 12){
+            mnths = 0;
+        }
+
+		if (typeof trendingBarChart != "undefined") {
+			nReloads1++;
+			var x = MonthData[mnths];
+			trendingBarChart.addData([x], MonthName[mnths]);
+			trendingBarChart.removeData();
+			l1++;
+			if (l1 == dataBarChart.labels.length) {
+				l1 = 0;
+			}
+		}
+	}
+	setInterval(updateBarChart, 5000); 
+
 </script>
 
 <script src="~/js/scripts/dashboard-analytics.js"></script>
@@ -85,9 +133,9 @@
                         <p>Drug Orders</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">46,900</h5>
+                        <h5 class="mb-0">@string.Format("{0:N0}", Model.Dashboard.DrugsQuantity)</h5>
                         <p class="no-margin">Items</p>
-                        <p>$23,600,000</p>
+                        <p>$@string.Format("{0:N2}", Model.Dashboard.DrugsCosting)</p>
                     </div>
                 </div>
             </div>
@@ -100,9 +148,9 @@
                         <p>Patients</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">1,885</h5>
+                        <h5 class="mb-0">@string.Format("{0:N0}", Model.Dashboard.CaseNew)</h5>
                         <p class="no-margin">New</p>
-                        <p>44,112,900</p>
+                        <p>@string.Format("{0:N0}", Model.Dashboard.AllPatients)</p>
                     </div>
                 </div>
             </div>
@@ -115,9 +163,9 @@
                         <p>Case Detection</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">20%</h5>
-                        <p class="no-margin">Growth</p>
-                        <p>1,420,230</p>
+                        <h5 class="mb-0">@string.Format("{0:N2}", Model.Dashboard.CasePercent)%</h5>
+                        <p class="no-margin">@Model.Dashboard.CaseStatus</p>
+                        <p>@string.Format("{0:N0}", Model.Dashboard.CaseCurrent)</p>
                     </div>
                 </div>
             </div>
@@ -130,9 +178,9 @@
                         <p>Expenditure</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">21.80%</h5>
+                        <h5 class="mb-0">@string.Format("{0:N2}", Model.Dashboard.Usage)%</h5>
                         <p class="no-margin">Budget</p>
-                        <p>6,525,000</p>
+                        <p>$@string.Format("{0:N2}", Model.Dashboard.Expenditure)</p>
                     </div>
                 </div>
             </div>
@@ -152,9 +200,9 @@
                         <div>
                             <span class="chart-title white-text">Detections / Outcomes</span>
                             <div class="chart-revenue cyan darken-2 white-text">
-                                <p class="chart-revenue-total">4,500,675.85</p>
+                                <p class="chart-revenue-total">@string.Format("{0:N0}", Model.Dashboard.AllPatients)</p>
                                 <p class="chart-revenue-per">
-                                    <i class="material-icons">arrow_drop_up</i> 21.80 %
+                                    <i class="material-icons">@(Model.Dashboard.CaseStatus == "Growth" ? "arrow_drop_up" : "arrow_drop_down")</i>@string.Format("{0:N2}", Model.Dashboard.CasePercent) %
                                 </p>
                             </div>
                             <div class="switch chart-revenue-switch right">
@@ -180,7 +228,7 @@
                         <div id="doughnut-chart-wrapper">
                             <canvas id="doughnut-chart" height="200"></canvas>
                             <div class="doughnut-chart-status">
-                                4,584
+                                @string.Format("{0:N0}", Model.Dashboard.CaseCurrent)
                                 <p class="ultra-small center-align">CASES</p>
                             </div>
                         </div>
@@ -458,6 +506,14 @@
                     <i class="material-icons left">grain</i>Data Summary
                 </a>
                 <div class="col l5 right hide-on-med-only">Facility</div>
+            </div>
+        </li>
+        <li class="collection-item">
+            <div class="row">
+                <a class="col s7 m12 l7 black-text" href="/patients/summary/agency">
+                    <i class="material-icons left">assignment_ind</i>Data Summary
+                </a>
+                <div class="col l5 right hide-on-med-only">Agency</div>
             </div>
         </li>
     </ul>

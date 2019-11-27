@@ -4,61 +4,26 @@
 
 	// Polor chart data
 	var doughnutData = [{
-		value: 3000,
+		value: NewCatg,
 		color: "#F7464A",
 		highlight: "#FF5A5E",
 		label: "New"
 	}, {
-		value: 500,
+		value: Relapse,
 		color: "#46BFBD",
 		highlight: "#5AD3D1",
 		label: "Relapse"
 	}, {
-		value: 1000,
+		value: Failure,
 		color: "#FDB45C",
 		highlight: "#FFC870",
 		label: "Failure"
 	}, {
-        value: 1000,
+        value: Transfr,
         color: "#ab47bc",
         highlight: "#ab47bc",
         label: "Transfers"
     }];
-
-
-	// Trending Bar Chart	
-	var dataBarChart = {
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug"],
-		datasets: [{
-			label: "Bar dataset",
-			fillColor: "#46BFBD",
-			strokeColor: "#46BFBD",
-			highlightFill: "rgba(70, 191, 189, 0.4)",
-			highlightStroke: "rgba(70, 191, 189, 0.9)",
-			data: [6, 9, 8, 4, 6, 7, 9, 4]
-		}]
-	};
-
-	var nReloads1 = 0;
-	var min1 = 1;
-	var max1 = 10;
-	var l1 = 0;
-	var trendingBarChart;
-
-	function updateBarChart() {
-		if (typeof trendingBarChart != "undefined") {
-			nReloads1++;
-			var x = Math.floor(Math.random() * (max1 - min1 + 1)) + min1;
-			trendingBarChart.addData([x], dataBarChart.labels[l1]);
-			trendingBarChart.removeData();
-			l1++;
-			if (l1 == dataBarChart.labels.length) {
-				l1 = 0;
-			}
-		}
-	}
-	setInterval(updateBarChart, 5000);
-
 
 	// Trending Bar chart	data
 	var radarChartData = {

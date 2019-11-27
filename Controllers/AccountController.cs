@@ -83,7 +83,7 @@ namespace EtbSomalia.Controllers
                     new Claim(ClaimTypes.UserData, user.Username),
                     new Claim(ClaimTypes.Role, user.Role.Name),
                     new Claim(ClaimTypes.Locality, user.Role.Id.ToString()),
-                    new Claim(ClaimTypes.Thumbprint, user.AdminRole.ToString()),
+                    new Claim(ClaimTypes.Thumbprint, user.AdminLevel.ToString()),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(
