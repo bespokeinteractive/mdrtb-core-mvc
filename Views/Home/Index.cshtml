@@ -427,7 +427,7 @@
                 <div class="progress-fields">
                     <div class="col s3 progress-text right-text">Children</div>
                     <div class="col s9 zero-margin">
-                        <div class="progress">
+                        <div class="progress tooltipped" data-position="bottom" data-tooltip="@(string.Format("{0:N0}", Model.Dashboard.Children)) Children">
                             <div class="determinate center-text white-text" style="width: @(childrenPerc+"%")">@(childrenPerc)%</div>
                         </div>
                     </div>
@@ -437,7 +437,7 @@
                 <div class="progress-fields">
                     <div class="col s3 progress-text right-text">Youths</div>
                     <div class="col s9 zero-margin">
-                        <div class="progress">
+                        <div class="progress tooltipped" data-position="bottom" data-tooltip="@(string.Format("{0:N0}", Model.Dashboard.Youths)) Youth">
                             <div class="determinate center-text white-text" style="width: @(youthPerc+"%")">@(youthPerc)%</div>
                         </div>
                     </div>
@@ -447,7 +447,7 @@
                 <div class="progress-fields">
                     <div class="col s3 progress-text right-text">Adults</div>
                     <div class="col s9 zero-margin">
-                        <div class="progress">
+                        <div class="progress tooltipped" data-position="bottom" data-tooltip="@(string.Format("{0:N0}", Model.Dashboard.Adults)) Adults">
                             <div class="determinate center-text white-text" style="width: @(adultsPerc+"%")">@(adultsPerc)%</div>
                         </div>
                     </div>
@@ -457,7 +457,7 @@
                 <div class="progress-fields">
                     <div class="col s3 progress-text right-text">Seniors</div>
                     <div class="col s9 zero-margin">
-                        <div class="progress">
+                        <div class="progress tooltipped" data-position="bottom" data-tooltip="@(string.Format("{0:N0}", Model.Dashboard.Seniors)) Seniors">
                             <div class="determinate center-text white-text" style="width: @(seniorPerc+"%")">@(seniorPerc)%</div>
                         </div>
                     </div>
