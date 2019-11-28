@@ -26,6 +26,7 @@ namespace EtbSomalia.Models
         public decimal DrugsCosting { get; set; }
 
         public long Facility { get; set; }
+        public long TBMUs { get; set; }
         public long Female { get; set; }
         public long Male { get; set; }
 
@@ -54,6 +55,7 @@ namespace EtbSomalia.Models
             Failure = 0;
             Transfer = 0;
             Facility = 0;
+            TBMUs = 0;
 
             DrugsQuantity = 0;
             DrugsCosting = 0;

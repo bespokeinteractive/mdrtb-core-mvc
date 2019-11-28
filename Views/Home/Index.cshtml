@@ -466,7 +466,7 @@
             </div>
             <div style="clear:both"></div>
             <div class="distribution-summary center-text">
-                Source: Total Cases from @(Model.Dashboard.Facility) @(Model.Dashboard.Facility == 1 ? "TBMU" : "TBMU's") as of @(DateTime.Now.ToString("MMMM yyyy"))
+                <b>Source:</b> Total Cases from @(Model.Dashboard.Facility) of @(Model.Dashboard.TBMUs) <a href="/patients/summary/facility" class="blue-text">@(Model.Dashboard.TBMUs == 1 ? "Facility" : "Facilities")</a> as of @(DateTime.Now.ToString("MMMM yyyy"))
             </div>
         </div>
         

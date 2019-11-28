@@ -79,6 +79,12 @@ namespace EtbSomalia.Services
                 }
             }
 
+            conn = new SqlServerConnection();
+            dr = conn.SqlServerConnect("SELECT COUNT(*) FROM Facilities WHERE fc_void=0 " + GetRolesCommand("pp_facility", true));
+            if (dr.Read()) {
+                ds.TBMUs = Convert.ToInt64(dr[0]);
+            }
+
             return ds;
         }
 
