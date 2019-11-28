@@ -1,4 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700|Rubik:400,400i,500);
+.gender-pink {
+    color: #f33d8d !important;
+}
+.gender-blue {
+    color: #00a4b6 !important;
+}
 .materialize-red {
   background-color: #e51c23 !important;
 }

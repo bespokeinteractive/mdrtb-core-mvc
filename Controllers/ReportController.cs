@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using EtbSomalia.Services;
+using EtbSomalia.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EtbSomalia.Controllers
@@ -9,8 +7,11 @@ namespace EtbSomalia.Controllers
     public class ReportController : Controller
     {
         [Route("reports")]
-        public IActionResult Index() {
-            return View();
+        public IActionResult Index(ReportViewModel model) {
+            CoreService Core = new CoreService(HttpContext);
+
+            model.Dashboard = Core.GetDashboardSummary();
+            return View(model);
         }
     }
 }

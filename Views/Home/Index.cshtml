@@ -7,6 +7,14 @@
     int count = 0;
     int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
     int index = (DateTime.Now.Month - 9);
+
+    var femalePerc = (Model.Dashboard.Female / Model.Dashboard.AllPatients) * 100;
+    var malePerc = (Model.Dashboard.Male / Model.Dashboard.AllPatients) * 100;
+
+    var childrenPerc = Convert.ToInt32((Model.Dashboard.Children / Model.Dashboard.AllPatients) * 100);
+    var youthPerc = Convert.ToInt32((Model.Dashboard.Youths / Model.Dashboard.AllPatients) * 100);
+    var adultsPerc = Convert.ToInt32((Model.Dashboard.Adults / Model.Dashboard.AllPatients) * 100);
+    var seniorPerc = Convert.ToInt32((Model.Dashboard.Seniors / Model.Dashboard.AllPatients) * 100);
 }
 
 <script>
@@ -106,11 +114,9 @@
     .collection-item .row {
         margin: 0;
     }
-
     .collection .collection-item {
         padding: 10px 0px;
     }
-
     li.collection-item.dismissable p {
         padding: 8px 0 5px 35px;
         cursor: pointer;
@@ -118,6 +124,43 @@
     }
     div.modules .card .card-content {
         padding: 5px 10px;
+    }
+    div.distribution {
+        background: 5px 5px/100% auto no-repeat #fff url("/images/analysis-dist.png");
+        padding: 0px;
+        margin-bottom: 0px;
+        min-height: 180px;
+    }
+    h4.gender-pink {
+        margin-bottom: 0px;
+    }
+    h4.gender-blue {
+        margin-top: 10px;
+        margin-bottom: 0px;
+    }
+    div.dist div,
+    div.progress-text{
+        font-size: 0.8em;
+        color: #6c767c;
+    }
+    div.progress {
+        margin: 1px;
+        height: 17px;
+        background-color: #a1f4ff;
+        background: 0 0/auto 100% repeat-x #fff url("/images/progress-bg.jpg");
+    }
+    div.progress .determinate{
+        background-color: #00a749;
+        font-size: 0.6em;
+        padding-top: 1px;
+    }
+    div.progress-fields{
+        margin-top:2px;
+    }
+    div.distribution-summary{
+        padding-top: 20px;
+        font-size: 0.8em;
+        color: #6c767c;
     }
 </style>
 
@@ -373,7 +416,60 @@
 <!-- Main Options -->
 <div class="row" style="margin-top: -30px;">
     <div class="col s12 m5 l5">
-        <img class="zero margin hide-on-small-only" src="~/images/analysis.png" style="width:100%; border:1px solid #eee; border-radius:2px;margin-top:8px!important;" />
+        <div class="collection z-depth-1 hide-on-med-and-down distribution">
+            <div class="dist col s4" style="padding-left:40px;">
+                <h4 class="gender-pink bold-text">@(string.Format("{0:N1}", femalePerc))%</h4>
+                <div>@(string.Format("{0:N0}", Model.Dashboard.Female)) females</div>
+                <h4 class="gender-blue bold-text">@(string.Format("{0:N1}", malePerc))%</h4>
+                <div>@(string.Format("{0:N0}", Model.Dashboard.Male)) males</div>
+            </div>
+            <div class="col s8" style="padding-top:30px">
+                <div class="progress-fields">
+                    <div class="col s3 progress-text right-text">Children</div>
+                    <div class="col s9 zero-margin">
+                        <div class="progress">
+                            <div class="determinate center-text white-text" style="width: @(childrenPerc+"%")">@(childrenPerc)%</div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+
+                <div class="progress-fields">
+                    <div class="col s3 progress-text right-text">Youths</div>
+                    <div class="col s9 zero-margin">
+                        <div class="progress">
+                            <div class="determinate center-text white-text" style="width: @(youthPerc+"%")">@(youthPerc)%</div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+
+                <div class="progress-fields">
+                    <div class="col s3 progress-text right-text">Adults</div>
+                    <div class="col s9 zero-margin">
+                        <div class="progress">
+                            <div class="determinate center-text white-text" style="width: @(adultsPerc+"%")">@(adultsPerc)%</div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+
+                <div class="progress-fields">
+                    <div class="col s3 progress-text right-text">Seniors</div>
+                    <div class="col s9 zero-margin">
+                        <div class="progress">
+                            <div class="determinate center-text white-text" style="width: @(seniorPerc+"%")">@(seniorPerc)%</div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+            <div class="distribution-summary center-text">
+                Source: Total Cases from @(Model.Dashboard.Facility) @(Model.Dashboard.Facility == 1 ? "TBMU" : "TBMU's") as of @(DateTime.Now.ToString("MMMM yyyy"))
+            </div>
+        </div>
+        
         <div class="collection z-depth-1 hide-on-med-and-down" style="padding-bottom:15px; margin-bottom:0rem">
             <div class="input-field col s11">
                 <i class="material-icons prefix">history</i>
@@ -484,6 +580,16 @@
                 <div class="col l5 right hide-on-med-only">Contacts</div>
             </div>
         </li>
+
+        <li class="collection-item">
+            <div class="row">
+                <a class="col s7 m12 l7 black-text" href="/patients/recent#contacts">
+                    <i class="material-icons left">event</i>Recently Added
+                </a>
+                <div class="col l5 right hide-on-med-only">Contacts</div>
+            </div>
+        </li>
+
         <li class="collection-item">
             <div class="row">
                 <a class="col s7 m12 l7 black-text" href="/patients/summary/national">

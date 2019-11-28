@@ -38,7 +38,7 @@ namespace EtbSomalia.Services
             Dashboard ds = new Dashboard();
 
             SqlServerConnection conn = new SqlServerConnection();
-            SqlDataReader dr = conn.SqlServerConnect("DECLARE @yr INT = YEAR(GETDATE()); SELECT COUNT(*)total, ISNULL(SUM(CASE WHEN ps_gender='male' THEN 1 ELSE 0 END),0)males, ISNULL(SUM(CASE WHEN ps_gender='female' THEN 1 ELSE 0 END),0)females, ISNULL(SUM(CASE WHEN age BETWEEN 0 AND 17 THEN 1 ELSE 0 END),0)children, ISNULL(SUM(CASE WHEN age BETWEEN 18 AND 34 THEN 1 ELSE 0 END),0)youths, ISNULL(SUM(CASE WHEN age BETWEEN 35 AND 64 THEN 1 ELSE 0 END),0)adults, ISNULL(SUM(CASE WHEN age>=65 THEN 1 ELSE 0 END),0)seniors, ISNULL(SUM(CASE WHEN pp_enrolled_on>=DATEADD(MONTH,-4,GETDATE()) THEN 1 ELSE 0 END),0)t_new, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr THEN 1 ELSE 0 END),0)t_year, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=(@yr-1) THEN 1 ELSE 0 END),0)t_prev, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=10 THEN 1 ELSE 0 END),0)new, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=11 THEN 1 ELSE 0 END),0)relapse, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=12 THEN 1 ELSE 0 END),0)failr, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=13 THEN 1 ELSE 0 END),0)transfr FROM (SELECT ps_gender, pp_category, pp_enrolled_on, DATEDIFF(hour,ps_dob,GETDATE())/8766 AS age FROM PatientProgram INNER JOIN Patient ON pt_idnt=pp_patient INNER JOIN Person ON pt_person=ps_idnt " + GetRolesCommand("pp_facility") + ") As Foo");
+            SqlDataReader dr = conn.SqlServerConnect("DECLARE @yr INT = YEAR(GETDATE()); SELECT COUNT(*)total, ISNULL(SUM(CASE WHEN ps_gender='male' THEN 1 ELSE 0 END),0)males, ISNULL(SUM(CASE WHEN ps_gender='female' THEN 1 ELSE 0 END),0)females, ISNULL(SUM(CASE WHEN age BETWEEN 0 AND 17 THEN 1 ELSE 0 END),0)children, ISNULL(SUM(CASE WHEN age BETWEEN 18 AND 34 THEN 1 ELSE 0 END),0)youths, ISNULL(SUM(CASE WHEN age BETWEEN 35 AND 64 THEN 1 ELSE 0 END),0)adults, ISNULL(SUM(CASE WHEN age>=65 THEN 1 ELSE 0 END),0)seniors, ISNULL(SUM(CASE WHEN pp_enrolled_on>=DATEADD(MONTH,-4,GETDATE()) THEN 1 ELSE 0 END),0)t_new, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr THEN 1 ELSE 0 END),0)t_year, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=(@yr-1) THEN 1 ELSE 0 END),0)t_prev, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=10 THEN 1 ELSE 0 END),0)new, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=11 THEN 1 ELSE 0 END),0)relapse, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=12 THEN 1 ELSE 0 END),0)failr, ISNULL(SUM(CASE WHEN YEAR(pp_enrolled_on)=@yr AND pp_category=13 THEN 1 ELSE 0 END),0)transfr, COUNT(DISTINCT pp_facility)facility FROM (SELECT pp_facility, ps_gender, pp_category, pp_enrolled_on, DATEDIFF(hour,ps_dob,GETDATE())/8766 AS age FROM PatientProgram INNER JOIN Patient ON pt_idnt=pp_patient INNER JOIN Person ON pt_person=ps_idnt " + GetRolesCommand("pp_facility") + ") As Foo");
             if (dr.Read()) {
                 ds = new Dashboard {
                     AllPatients = Convert.ToInt64(dr[0]), 
@@ -54,7 +54,8 @@ namespace EtbSomalia.Services
                     NewCatg = Convert.ToInt64(dr[10]),
                     Relapse = Convert.ToInt64(dr[11]),
                     Failure = Convert.ToInt64(dr[12]),
-                    Transfer = Convert.ToInt64(dr[13])
+                    Transfer = Convert.ToInt64(dr[13]),
+                    Facility = Convert.ToInt64(dr[14])
                 };                    
             }
 

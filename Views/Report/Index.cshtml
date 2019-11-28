@@ -1,35 +1,26 @@
-﻿@{
+﻿@model EtbSomalia.ViewModel.ReportViewModel;
+@{
     ViewData["Title"] = "Reports";
 }
 
-<div class="row hidden">
-    <div class="col s12 m6 l3">
-        <div class="card" style="background:#ff0027">
-            x
-        </div>
-    </div>
-
-    <div class="col s12 m6 l3">
-        <div class="card" style="background:#47c5f4">
-            x
-        </div>
-    </div>
-
-    <div class="col s12 m6 l3">
-        <div class="card" style="background:#ffba00">
-            x
-        </div>
-    </div>
-
-    <div class="col s12 m6 l3">
-        <div class="card" style="background:#5ecb23">
-            x
-        </div>
-    </div>
-</div>
-
+<!--dashboard Icons-->
 <div id="card-stats">
     <div class="row">
+        <div class="col s12 m6 l3">
+            <div class="card gradient-45deg-light-blue-cyan gradient-shadow min-height-100 white-text">
+                <div class="padding-4">
+                    <div class="col s7 m7">
+                        <i class="material-icons background-round mt-5">add_shopping_cart</i>
+                        <p>Drug Orders</p>
+                    </div>
+                    <div class="col s5 m5 right-align">
+                        <h5 class="mb-0">@string.Format("{0:N0}", Model.Dashboard.DrugsQuantity)</h5>
+                        <p class="no-margin">Items</p>
+                        <p>$@string.Format("{0:N2}", Model.Dashboard.DrugsCosting)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col s12 m6 l3">
             <div class="card gradient-45deg-red-pink gradient-shadow min-height-100 white-text">
                 <div class="padding-4">
@@ -38,20 +29,12 @@
                         <p>Patients</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">1,885</h5>
+                        <h5 class="mb-0">@string.Format("{0:N0}", Model.Dashboard.CaseNew)</h5>
                         <p class="no-margin">New</p>
-                        <p>44,112,900</p>
+                        <p>@string.Format("{0:N0}", Model.Dashboard.AllPatients)</p>
                     </div>
                 </div>
             </div>
-
-            <h5>WHO Reports</h5>
-            <ul class="pending-push">
-                <li>
-                    <i class="material-icons">close</i>
-                    <span><a href="/core/stations/gitimbine">Cohort Report</a>, <small>Metrics over Time</small></span>
-                </li>
-            </ul>
         </div>
         <div class="col s12 m6 l3">
             <div class="card gradient-45deg-amber-amber gradient-shadow min-height-100 white-text">
@@ -61,9 +44,9 @@
                         <p>Case Detection</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">20%</h5>
-                        <p class="no-margin">Growth</p>
-                        <p>1,420,230</p>
+                        <h5 class="mb-0">@string.Format("{0:N2}", Model.Dashboard.CasePercent)%</h5>
+                        <p class="no-margin">@Model.Dashboard.CaseStatus</p>
+                        <p>@string.Format("{0:N0}", Model.Dashboard.CaseCurrent)</p>
                     </div>
                 </div>
             </div>
@@ -76,27 +59,47 @@
                         <p>Expenditure</p>
                     </div>
                     <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">21.80%</h5>
+                        <h5 class="mb-0">@string.Format("{0:N2}", Model.Dashboard.Usage)%</h5>
                         <p class="no-margin">Budget</p>
-                        <p>6,525,000</p>
+                        <p>$@string.Format("{0:N2}", Model.Dashboard.Expenditure)</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="card-stats zero-margin">
+    <div class="row">
         <div class="col s12 m6 l3">
-            <div class="card gradient-45deg-light-blue-cyan gradient-shadow min-height-100 white-text">
-                <div class="padding-4">
-                    <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">add_shopping_cart</i>
-                        <p>Drug Orders</p>
-                    </div>
-                    <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">46,900</h5>
-                        <p class="no-margin">Items</p>
-                        <p>$23,600,000</p>
-                    </div>
-                </div>
-            </div>
+            <h5 class="zero-margin">WHO Reports</h5>
+            <ul class="pending-push">
+                <li>
+                    <i class="material-icons">close</i>
+                    <span><a href="/reports/case-finding">Case Finding Report</a>, <small>New Cases</small></span>
+                </li>
+                <li>
+                    <i class="material-icons">close</i>
+                    <span><a href="/reports/cohort">Cohort Report</a>, <small>Metrics over Time</small></span>
+                </li>
+                <li>
+                    <i class="material-icons">close</i>
+                    <span><a href="/reports/tb08">Outcomes Report</a>, <small>WHO TB-08</small></span>
+                </li>
+                <li>
+                    <i class="material-icons">close</i>
+                    <span><a href="/reports/contacts">Contacts Report</a>, <small>Contact Tracing</small></span>
+                </li>
+            </ul>
+        </div>
+        <div class="col s12 m6 l3">
+            <h5 class="zero-margin">DHIS Reports</h5>
+        </div>
+        <div class="col s12 m6 l3">
+            <h5 class="zero-margin">Finance Reports</h5>
+        </div>
+        <div class="col s12 m6 l3">
+            <h5 class="zero-margin">Pharmaceuticals</h5>
         </div>
     </div>
 </div>
