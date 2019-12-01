@@ -80,9 +80,36 @@ namespace EtbSomalia.Services
             }
 
             conn = new SqlServerConnection();
-            dr = conn.SqlServerConnect("SELECT COUNT(*) FROM Facilities WHERE fc_void=0 " + GetRolesCommand("pp_facility", true));
+            dr = conn.SqlServerConnect("SELECT COUNT(*) FROM Facilities WHERE fc_void=0 " + GetRolesCommand("fc_idnt", false));
             if (dr.Read()) {
                 ds.TBMUs = Convert.ToInt64(dr[0]);
+            }
+
+            DashboardStats stats = new DashboardStats(); 
+            conn = new SqlServerConnection();
+            dr = conn.SqlServerConnect("SELECT mnth_idnt, ISNULL(Pul,0)Pul, ISNULL(Ep,0)Ep, ISNULL(Bc,0)Bc, ISNULL(Cd,0)Cd, ISNULL(Hiv,0)Hiv FROM Months LEFT OUTER JOIN (SELECT DATEPART(QUARTER, pp_enrolled_on)QT, SUM(CASE WHEN pp_type=3 THEN 1 ELSE 0 END)Pul, SUM(CASE WHEN pp_type=4 THEN 1 ELSE 0 END)Ep, SUM(CASE WHEN pp_confirmation=6 THEN 1 ELSE 0 END)Bc, SUM(CASE WHEN pp_confirmation=7 THEN 1 ELSE 0 END)Cd, SUM(CASE WHEN pe_hiv_exam=36 THEN 1 ELSE 0 END)Hiv FROM PatientProgram LEFT OUTER JOIN PatientExamination ON pp_idnt=pe_program WHERE YEAR(pp_enrolled_on)=YEAR(GETDATE()) " + GetRolesCommand("pp_facility", false) + " GROUP BY DATEPART(QUARTER, pp_enrolled_on)) As Foo ON QT=mnth_idnt");
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    var stat = new DashboardStats
+                    {
+                        Month = Convert.ToInt64(dr[0]),
+                        Pul = Convert.ToInt64(dr[1]),
+                        Ep = Convert.ToInt64(dr[2]),
+                        Bc = Convert.ToInt64(dr[3]),
+                        Cd = Convert.ToInt64(dr[4]),
+                        Hiv = Convert.ToInt64(dr[5])
+                    };
+
+                    stats.Pul += stat.Pul;
+                    stats.Ep += stat.Ep;
+                    stats.Bc += stat.Bc;
+                    stats.Cd += stat.Cd;
+                    stats.Hiv += stat.Hiv;
+
+                    ds.Stats.Add(stat);
+                }
             }
 
             return ds;

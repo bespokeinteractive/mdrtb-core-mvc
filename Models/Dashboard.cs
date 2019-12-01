@@ -37,6 +37,7 @@ namespace EtbSomalia.Models
 
         public List<string> MonthNames { get; set; }
         public List<int> MonthValue { get; set; }
+        public List<DashboardStats> Stats { get; set; }
 
         public Dashboard() {
             NewPatients = 0;
@@ -70,6 +71,25 @@ namespace EtbSomalia.Models
 
             MonthNames = new List<string>();
             MonthValue = new List<int>();
+            Stats = new List<DashboardStats>();
+        }
+    }
+
+    public class DashboardStats {
+        public long Month { get; set; }
+        public long Pul { get; set; }
+        public long Ep { get; set; }
+        public long Bc { get; set; }
+        public long Cd { get; set; }
+        public long Hiv { get; set; }
+
+        public DashboardStats() {
+            Month = 0;
+            Pul = 0;
+            Ep = 0;
+            Bc = 0;
+            Cd = 0;
+            Hiv = 0;
         }
     }
 }

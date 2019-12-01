@@ -8,13 +8,13 @@
     int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
     int index = (DateTime.Now.Month - 9);
 
-    var femalePerc = (Model.Dashboard.Female / Model.Dashboard.AllPatients) * 100;
-    var malePerc = (Model.Dashboard.Male / Model.Dashboard.AllPatients) * 100;
+    var femalePerc = (Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Female / Model.Dashboard.AllPatients) * 100);
+    var malePerc = (Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Male / Model.Dashboard.AllPatients) * 100);
 
-    var childrenPerc = Convert.ToInt32((Model.Dashboard.Children / Model.Dashboard.AllPatients) * 100);
-    var youthPerc = Convert.ToInt32((Model.Dashboard.Youths / Model.Dashboard.AllPatients) * 100);
-    var adultsPerc = Convert.ToInt32((Model.Dashboard.Adults / Model.Dashboard.AllPatients) * 100);
-    var seniorPerc = Convert.ToInt32((Model.Dashboard.Seniors / Model.Dashboard.AllPatients) * 100);
+    var childrenPerc = Convert.ToInt32((Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Children / Model.Dashboard.AllPatients) * 100));
+    var youthPerc = Convert.ToInt32((Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Youths / Model.Dashboard.AllPatients) * 100));
+    var adultsPerc = Convert.ToInt32((Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Adults / Model.Dashboard.AllPatients) * 100));
+    var seniorPerc = Convert.ToInt32((Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Seniors / Model.Dashboard.AllPatients) * 100));
 }
 
 <script>
