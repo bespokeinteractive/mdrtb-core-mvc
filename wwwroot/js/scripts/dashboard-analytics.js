@@ -25,9 +25,10 @@
         label: "Transfers"
     }];
 
-	// Trending Bar chart	data
+	// RADAR CHART	data
+	var radarLabels = ["Pulmonary", "HIV+", "Clinically", "Bacterialogical", "Extra Pulmonary"];
 	var radarChartData = {
-		labels: ["Bacterialogical", "Clinically", "Pulmonary", "Extra Pulmonary", "Second Line"],
+		labels: radarLabels,
 		datasets: [{
 			label: "First dataset",
 			fillColor: "rgba(255,255,255,0.2)",
@@ -51,13 +52,19 @@
 		if (typeof trendingRadarChart != "undefined") {
 			nReloads2++;
 			var x = Math.floor(Math.random() * (max2 - min2 + 1)) + min2;
-			trendingRadarChart.addData([x], radarChartData.labels[l2]);
+			trendingRadarChart.addData([x], radarLabels);
 			var y = trendingRadarChart.removeData();
 			l2++;
 			if (l2 == radarChartData.labels.length) {
 				l2 = 0;
 			}
 		}
+	}
+
+	function UIupdateRadarChart() {
+		radarChartData.labels = ["xx", "HIV+", "Clinically", "Bacterialogical", "Extra Pulmonary"];
+		trendingRadarChart.update();
+		//trendingRadarChart.removeData();
 	}
 	setInterval(trendingRadarChartupdate, 5000);
 

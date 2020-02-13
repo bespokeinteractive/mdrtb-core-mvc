@@ -29,5 +29,8 @@ namespace EtbSomalia.Models
         public const long LATENT_TB_INFECTION = 75;
         public const long PATIENT_DIED = 78;
         public const long TREATMENT_OUTCOME = 85;
+
+        public const long REG_SHORT_ADULT = 1;
+        public const long REG_SHORT_CHILD = 2;
     }
 }

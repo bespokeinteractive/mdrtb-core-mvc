@@ -10,7 +10,8 @@
     div.container.body-content {
         width:98%;
     }
-    #patients-table input {
+    #patients-table input,
+    #patients-table select.browser-default {
         padding: 0 0 0 2px;
         margin: 0 !important;
         height: 2rem;
@@ -55,7 +56,7 @@
         </tr>
     </thead>
     <tbody style="font-size: 0.8em">
-        @using (Html.BeginForm("RegisterMultiple", "Patient", FormMethod.Post, new { id = "patient-registration-form" }))
+        @using (Html.BeginForm("RegisterMultiple", "Patient", FormMethod.Post, new { id = "patient-registration-form", autocomplete = "off" }))
         {
             @for (int i = 0; i < Model.PatientModel.Count; i++) {
                 <tr class="rows @(i == 0 ? "":"hide")">
@@ -63,18 +64,18 @@
                     <td class="width-60px">@Html.TextBoxFor(model => model.PatientModel[i].PatientProgram.RegisterNumber)</td>
                     <td class="width-150px">@Html.TextBoxFor(model => model.PatientModel[i].PatientProgram.Patient.Person.Name)</td>
                     <td class="width-50px">@Html.TextBoxFor(model => model.PatientModel[i].Age)</td>
-                    <td class="width-70px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Patient.Person.Gender, Model.Gender)</td>
+                    <td class="width-70px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Patient.Person.Gender, Model.Genders, new { @class = "browser-default" })</td>
                     <td class="width-50px">@Html.TextBoxFor(model => model.PatientModel[i].Weight)</td>
                     <td class="width-100px">@Html.TextBoxFor(model => model.PatientModel[i].Address)</td>
                     <td class="width-120px">@Html.TextBoxFor(model => model.PatientModel[i].Date, new { @class = "datepicker" })</td>
-                    <td class="width-60px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Program.Id, Model.ResistanceProfile)</td>
-                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Category.Id, Model.TBCategory)</td>
-                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Type.Id, Model.TBTypes)</td>
-                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Confirmation.Id, Model.TBConfirmation)</td>
-                    <td class="width-130px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.DotsBy.Id, Model.DotsBy)</td>
-                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.ReferredBy.Id, Model.Referees)</td>
-                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.SputumSmear.Id, Model.SputumSmearItems)</td>
-                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.HivExam.Id, Model.HivExamItems)</td>
+                    <td class="width-60px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Program.Id, Model.ResistanceProfile, new { @class = "browser-default" })</td>
+                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Category.Id, Model.TBCategory, new { @class = "browser-default" })</td>
+                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Type.Id, Model.TBTypes, new { @class = "browser-default" })</td>
+                    <td class="width-50px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.Confirmation.Id, Model.TBConfirmation, new { @class = "browser-default" })</td>
+                    <td class="width-130px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.DotsBy.Id, Model.DotsBy, new { @class = "browser-default" })</td>
+                    <td class="width-100px">@Html.DropDownListFor(model => model.PatientModel[i].PatientProgram.ReferredBy.Id, Model.Referees, new { @class = "browser-default" })</td>
+                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.SputumSmear.Id, Model.SputumSmearItems, new { @class = "browser-default" })</td>
+                    <td class="width-80px">@Html.DropDownListFor(model => model.PatientModel[i].Examination.HivExam.Id, Model.HivExamItems, new { @class = "browser-default" })</td>
                     <td>
                         <a class="red-text right remove-patient-row" style="font-size:0.6em" data-line="0">
                             <i class="material-icons pointer">delete_forever</i>

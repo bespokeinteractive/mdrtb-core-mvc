@@ -110,6 +110,8 @@ namespace EtbSomalia.Services
 
                     ds.Stats.Add(stat);
                 }
+
+                ds.Stats.Add(stats);
             }
 
             return ds;

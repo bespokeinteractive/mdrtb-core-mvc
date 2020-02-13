@@ -8,7 +8,7 @@ namespace EtbSomalia.ViewModel
 {
     public class PatientMultipleRegisterModel
     {
-        public IEnumerable<SelectListItem> Gender { get; set; }
+        public IEnumerable<SelectListItem> Genders { get; set; }
         public IEnumerable<SelectListItem> Facilities { get; set; }
         public IEnumerable<SelectListItem> TBTypes { get; set; }
         public IEnumerable<SelectListItem> TBConfirmation { get; set; }
@@ -27,7 +27,7 @@ namespace EtbSomalia.ViewModel
 
         public PatientMultipleRegisterModel()
         {
-            Gender = new PatientService().InitializeGender();
+            Genders = new PatientService().InitializeGender();
 
             Facilities = new List<SelectListItem>();
             TBCategory = new List<SelectListItem>();

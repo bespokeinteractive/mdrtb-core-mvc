@@ -311,6 +311,51 @@ namespace EtbSomalia.Controllers
         [Authorize(Roles = "Administrator, Super User, Regional Admin, Agency Admin, Facility Admin")]
         public IActionResult RegisterMultiple()
         {
+            Facility facility = new Facility { Id = MultipleModel.Facility };
+
+            foreach (var line in MultipleModel.PatientModel)
+            {
+                if (string.IsNullOrEmpty(line.PatientProgram.Patient.Person.Name))
+                    continue;
+
+                Patient patient = line.PatientProgram.Patient;
+                patient.Person.DateOfBirth = DateTime.Now.AddYears(0 - Convert.ToInt32(line.Age));
+                patient.Save();
+
+                patient.Person.Address = new PersonAddress {
+                    Telephone = line.Address,
+                    Person = patient.Person
+                }.Save(HttpContext);
+
+                PatientProgram pp = line.PatientProgram;
+                pp.Facility = facility;
+                pp.Patient = patient;
+                pp.DateEnrolled = DateTime.Parse(line.Date);
+                pp.Create(HttpContext);
+
+                //Update Intake
+                pp.ArtStartedOn = DateTime.Parse(line.Date);
+                pp.CptStartedOn = DateTime.Parse(line.Date);
+                pp.UpdateIntake();
+
+                //Regimen
+                new PatientRegimen {
+                    Regimen = new Regimen { Id = Constants.REG_SHORT_ADULT },
+                    Program = pp
+                }.Save(HttpContext);
+
+                //Examinations
+                PatientExamination px = line.Examination;
+                px.Program = pp;
+                px.Visit = new Visit(1);
+                px.LabNo = "N/A";
+                px.SputumSmearDate = DateTime.Parse(line.Date);
+                px.GeneXpertDate = DateTime.Parse(line.Date);
+                px.HivExamDate = DateTime.Parse(line.Date);
+                px.XrayExamDate = DateTime.Parse(line.Date);
+                px.Save(HttpContext);
+            }
+
             return LocalRedirect("/patients/register/tb?fac=" + MultipleModel.Facility);
         }
 

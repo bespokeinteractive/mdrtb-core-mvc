@@ -6,7 +6,7 @@
 
     int count = 0;
     int role = int.Parse(HttpContextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.Locality).Value);
-    int index = (DateTime.Now.Month - 9);
+    int index = (DateTime.Now.Month - 1);
 
     var femalePerc = (Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Female / Model.Dashboard.AllPatients) * 100);
     var malePerc = (Model.Dashboard.AllPatients == 0 ? 0 : (Model.Dashboard.Male / Model.Dashboard.AllPatients) * 100);
